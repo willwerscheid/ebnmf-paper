@@ -1,0 +1,109 @@
+---
+title: "EBNMF on the swimmer dataset"
+author: "Jason Willwerscheid"
+date: "2023-12-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+Load packages:
+
+```{r}
+library(tidyverse)
+library(flashier)
+```
+
+Read in data. The `swimmer.mat` dataset was downloaded directly from Victoria Stodden's website (as `Y.mat`):
+
+```{r}
+swimmer <- R.matlab::readMat("./data/swimmer.mat")
+dat <- apply(swimmer$Y, 3, as.vector)
+dat <- dat - 1
+```
+
+## EBNMF (flashier)
+
+At present I am using the `allow_zero_rows` branch of `flashier` on my Github (which skips the check for zero rows/columns if row-/column-specific precision parameters are not being estimated). I will likely move these changes into the main branch in the near future:
+
+```{r}
+t0 <- Sys.time()
+fl <- flash(dat, ebnm_fn = ebnm_point_exponential, backfit = TRUE)
+tf <- Sys.time() - t0
+```
+
+#### Report fitting time:
+
+```{r}
+tf
+```
+
+#### Display factors:
+
+```{r}
+plot_images <- function(fitted_L) {
+  colnames(fitted_L) <- paste0("V", 1:ncol(fitted_L))
+  tib <- as_tibble(fitted_L) |>
+    mutate(
+      row = rep(1:32, each = 32),
+      col = rep(1:32, times = 32)
+    ) |>
+    pivot_longer(
+      cols = -c(row, col),
+      names_to = "k",
+      values_to = "loading",
+      names_prefix = "V",
+      names_transform = as.numeric
+    )
+  p <- ggplot(tib, aes(x = row, y = col, fill = loading)) +
+    geom_tile() +
+    scale_y_reverse() +
+    scale_fill_gradient(low = "white", high = "black") +
+    facet_wrap(~k) +
+    guides(fill = "none")
+  return(p)
+}
+
+plot_images(ldf(fl, type = "m")$L)
+```
+
+## RcppML
+
+Now I run NMF as implemented by the `RcppML` package. We need to specify $K$. I will over-specify to see what happens:
+
+```{r}
+set.seed(666) # NMF is random
+
+t0 <- Sys.time()
+nmf_res <- RcppML::nmf(dat, k = 20)
+tf <- Sys.time() - t0
+```
+
+#### Report fitting time:
+
+```{r}
+tf
+```
+
+#### Display factors:
+
+```{r}
+plot_images(nmf_res$w)
+```
+
+#### L1 regularization
+
+We can set L1 penalties, but it difficult to know what values to choose, and it does not seem to improve results:
+
+```{r}
+t0 <- Sys.time()
+spnmf_res <- RcppML::nmf(dat, k = 20, L1 = c(0.9, 0.9))
+tf <- Sys.time() - t0
+
+plot_images(spnmf_res$w)
+```
+
