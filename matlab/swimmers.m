@@ -1,0 +1,25 @@
+rng(1);
+% k = 17; % Number of factors.
+% sW = 0.95; % Average sparsity of W.
+sW = 0;
+k = 16;
+load('../data/swimmer.mat');
+Y = reshape(Y,1024,256);
+Y = Y - 1;
+options.sW = sW; 
+options.sH = 0;
+options.maxiter = 100; 
+options.delta = 1e-8;
+[W,H,e,t] = sparseNMF(Y,k,options);
+disp(sum(sum(W > 1e-6))); % Sparsity of W.
+fprintf('Sparsity in columns of H:\n');
+fprintf('%d ',sum(H > 0.001));
+fprintf('\n');
+clf;
+x = zeros(1,k);
+for i = 1:k
+  subplot(5,4,i);
+  imshow(reshape(W(:,i),32,32));
+  x(i) = sp_col(W(:,i));
+end
+fprintf('Hoyer sparsity of columns of W: %0.3f\n',mean(x));
