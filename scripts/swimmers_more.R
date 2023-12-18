@@ -16,33 +16,39 @@ Y <- readMat("../data/swimmer.mat")$Y
 Y <- apply(Y,3,as.vector)
 Y <- Y - 1
 
-# Initialize the flash fit.
-n <- nrow(Y)
-m <- ncol(Y)
-
 # This reproduces Jason's result:
 #
 #   fit <- flash(Y,ebnm_fn = ebnm_point_exponential,
 #                backfit = TRUE,var_type = 0)
 #
 
-# TO DO: Explain what this code does, and how to use it.
+fit1 <- flash(Y,greedy_Kmax = 2,
+              ebnm_fn = ebnm_point_exponential,
+              backfit = TRUE,var_type = 0)
+print(plot_images(ldf(fit1)$L))
+
+# Initialize the flash fit.
+n <- nrow(Y)
+m <- ncol(Y)
 k <- 17
 gl <- ebnm_point_exponential(x = c(rep(40,100)))
 gf <- ebnm_point_exponential(x = c(rep(1,100)))
 gl$fitted_g$pi <- c(0.99,0.01)
-gf$fitted_g$pi <- c(0.75,0.25)
+gf$fitted_g$pi <- c(0.9,0.1)
 ebnm_exp_L <- flash_ebnm(prior_family = "point_exponential",
                          fix_g = TRUE,
                          g_init = gl)
 ebnm_exp_F <- flash_ebnm(prior_family = "point_exponential",
                          fix_g = TRUE,
                          g_init = gf)
-init <- list(u = matrix(runif(n*k),n,k),
-             v = matrix(runif(m*k),m,k),
-             d = rep(1,256))
+# init <- list(u = matrix(runif(n*k),n,k),
+#              v = matrix(runif(m*k),m,k),
+#              d = rep(1,256))
 fit <- flash_init(Y,var_type = 0)
-fit <- flash_factors_init(fit,init,list(L = ebnm_exp_L,F = ebnm_exp_F))
+fit <- flash_factors_init(fit,
+                          list(matrix(runif(n*k),n,k),
+                               matrix(runif(m*k),m,k)),
+                          list(L = ebnm_exp_L,F = ebnm_exp_F))
 fit <- flash_backfit(fit)
 
 plot_images <- function (fitted_L) {
