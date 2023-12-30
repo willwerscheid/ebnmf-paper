@@ -1,0 +1,12 @@
+---
+title: Comparing different NMF analyses of the swimmer data set
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+ADD TEXT HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
