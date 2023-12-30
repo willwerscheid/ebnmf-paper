@@ -1,7 +1,13 @@
 ---
-title: Comparing different NMF analyses of the swimmer data set
+title: More NMF analyses of the swimmer dataset
 author: Peter Carbonetto
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
 ---
 
 ADD TEXT HERE.
@@ -9,4 +15,24 @@ ADD TEXT HERE.
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
+```
+
+First load the packages needed for the computations below.
+
+```{r load-pkgs, message=FALSE}
+library(R.matlab)
+```
+
+Initialize the sequence of pseudorandom numbers.
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the swimmer data set.
+
+```{r load-swimmer}
+Y <- readMat("data/swimmer.mat")$Y
+Y <- apply(Y,3,as.vector)
+Y <- Y - 1
 ```
