@@ -1,14 +1,13 @@
-name: "ebnmf-paper"
+name: ebnmf-paper
 output_dir: ../docs
 navbar:
-  title: "ebnmf-paper"
+  title: ebnmf-paper
   left:
-  - text: Home
+  - text: Overview
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  right:
+    - text: source
+      href: https://github.com/willwerscheid/ebnmf-paper
 output:
   workflowr::wflow_html:
     toc: yes
