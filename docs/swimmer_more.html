@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-12-29
+<strong>Last updated:</strong> 2023-12-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree8b27cdcf7047e3079932df0924d3c80edce9a9e0targetblank8b27cdca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaftargetblank7a2e9ffa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/8b27cdcf7047e3079932df0924d3c80edce9a9e0" target="_blank">8b27cdc</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf" target="_blank">7a2e9ff</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree8b27cdcf7047e3079932df0924d3c80edce9a9e0targetblank8b27cdca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaftargetblank7a2e9ffa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/8b27cdcf7047e3079932df0924d3c80edce9a9e0" target="_blank">8b27cdc</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf" target="_blank">7a2e9ff</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,8 +464,11 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
+Untracked files:
+    Untracked:  swimmer_more.R
+
 Unstaged changes:
-    Modified:   matlab/swimmer.m
+    Modified:   code/swimmer_functions.R
 
 </code></pre>
 <p>
@@ -511,6 +514,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf/analysis/swimmer_more.Rmd" target="_blank">7a2e9ff</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/5552850bcf07e779794bb35a42fb9761ba12fd34/docs/swimmer_more.html" target="_blank">5552850</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+Added visualization of NMF model fit to swimmer_more analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -604,8 +641,45 @@ Y &lt;- apply(Y,3,as.vector)
 Y &lt;- Y - 1</code></pre>
 <p>ADD TEXT HERE.</p>
 <pre class="r"><code>nmf &lt;- readMat(&quot;matlab/swimmer_nmf.mat&quot;)
-plot_images(nmf$W)</code></pre>
-<p><img src="figure/swimmer_more.Rmd/vanilla-nmf-1.png" width="390" style="display: block; margin: auto;" /></p>
+plot_images(nmf$W,nrow = 2,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/vanilla-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-vanilla-nmf-1">
+Past versions of vanilla-nmf-1.png
+</button>
+</p>
+<div id="fig-vanilla-nmf-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5552850bcf07e779794bb35a42fb9761ba12fd34/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">5552850</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
