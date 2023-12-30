@@ -17,10 +17,17 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-First load the packages needed for the computations below.
+First load the packages and some custom functions needed for the
+analysis below.
 
 ```{r load-pkgs, message=FALSE}
 library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+source("code/swimmer_functions.R")
 ```
 
 Initialize the sequence of pseudorandom numbers.
@@ -35,4 +42,11 @@ Load the swimmer data set.
 Y <- readMat("data/swimmer.mat")$Y
 Y <- apply(Y,3,as.vector)
 Y <- Y - 1
+```
+
+ADD TEXT HERE.
+
+```{r vanilla-nmf, fig.height=3.5, fig.width=3.25}
+nmf <- readMat("matlab/swimmer_nmf.mat")
+plot_images(nmf$W)
 ```
