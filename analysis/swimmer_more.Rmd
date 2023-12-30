@@ -46,7 +46,7 @@ Y <- Y - 1
 
 ADD TEXT HERE.
 
-```{r vanilla-nmf, fig.height=3.5, fig.width=3.25}
+```{r vanilla-nmf, fig.height=2, fig.width=7}
 nmf <- readMat("matlab/swimmer_nmf.mat")
-plot_images(nmf$W)
+plot_images(nmf$W,nrow = 2,ncol = 8)
 ```
