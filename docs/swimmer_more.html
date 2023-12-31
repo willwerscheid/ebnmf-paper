@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-12-30
+<strong>Last updated:</strong> 2023-12-31
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2targetblanka6ac453a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cbtargetblankea1c781a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2" target="_blank">a6ac453</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb" target="_blank">ea1c781</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2targetblanka6ac453a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cbtargetblankea1c781a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2" target="_blank">a6ac453</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb" target="_blank">ea1c781</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,10 +464,8 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Unstaged changes:
-    Modified:   code/swimmer_functions.R
-    Modified:   matlab/swimmer.m
-    Modified:   matlab/swimmer_nmf.mat
+Untracked files:
+    Untracked:  scripts/#swimmers_more.R#
 
 </code></pre>
 <p>
@@ -513,6 +511,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb/analysis/swimmer_more.Rmd" target="_blank">ea1c781</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/f4cdd1b847ad62dcfe45fa8d67294566ca8660f4/docs/swimmer_more.html" target="_blank">f4cdd1b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+Added sparseNMF estmates to swimmer_more analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -665,6 +697,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(cowplot)
+library(ebnm)
+library(flashier)
 source(&quot;code/swimmer_functions.R&quot;)</code></pre>
 <p>Initialize the sequence of pseudorandom numbers.</p>
 <pre class="r"><code>set.seed(1)</code></pre>
@@ -737,6 +771,43 @@ with this. In this second attempt, also implemented in the
 <pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/swimmer_nmf_sW=0.95.mat&quot;)
 plot_images(sparse_nmf$W,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/sparse-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sparse-nmf-1">
+Past versions of sparse-nmf-1.png
+</button>
+</p>
+<div id="fig-sparse-nmf-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/f4cdd1b847ad62dcfe45fa8d67294566ca8660f4/docs/figure/swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">f4cdd1b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>However, this doesn’t seem to do the right thing: the solution
 satisfies the sparsity constraint by forcing some of the factors to
 represent multiple parts, which is sort of the opposite of what we
@@ -748,6 +819,15 @@ class="math inline">\(\mathbf{W}\)</span> to be so high (0.95):</p>
 mean(sparse_nmf$sp)
 # [1] 0.9124888
 # [1] 0.9501749</code></pre>
+<p>Let’s now compare the NMF decompositions to a decomposition-by-parts
+obtained by running flashier. Remarkably, running flash with the
+point-exponential prior gets the right result, automatically splitting
+the torso and limb positions correctly into 17 factors (and even though
+we did not tell flashier that we wanted exactly 17 factors):</p>
+<pre class="r"><code>fl &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+            backfit = TRUE,var_type = 0)
+plot_images(ldf(fl)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-1.png" width="840" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -772,25 +852,30 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.1     ggplot2_3.3.6     tidyr_1.1.3       dplyr_1.0.7      
-# [5] tibble_3.1.3      R.matlab_3.6.2    workflowr_1.7.0.5
+#  [1] flashier_1.0.20   magrittr_2.0.1    ebnm_1.1-2        cowplot_1.1.1    
+#  [5] ggplot2_3.3.6     tidyr_1.1.3       dplyr_1.0.7       tibble_3.1.3     
+#  [9] R.matlab_3.6.2    workflowr_1.7.0.5
 # 
 # loaded via a namespace (and not attached):
-#  [1] tidyselect_1.1.1  xfun_0.36         bslib_0.3.1       purrr_0.3.4      
-#  [5] colorspace_1.4-1  vctrs_0.3.8       generics_0.0.2    htmltools_0.5.4  
-#  [9] yaml_2.2.0        utf8_1.1.4        rlang_1.0.6       R.oo_1.24.0      
-# [13] later_1.0.0       pillar_1.6.2      jquerylib_0.1.4   withr_2.5.0      
-# [17] glue_1.4.2        DBI_1.1.0         R.utils_2.11.0    lifecycle_1.0.3  
-# [21] stringr_1.4.0     munsell_0.5.0     gtable_0.3.0      R.methodsS3_1.8.1
-# [25] evaluate_0.14     labeling_0.3      knitr_1.37        callr_3.7.0      
-# [29] fastmap_1.1.0     httpuv_1.5.2      ps_1.6.0          fansi_0.4.0      
-# [33] highr_0.8         Rcpp_1.0.8        scales_1.1.0      promises_1.1.0   
-# [37] jsonlite_1.7.2    farver_2.0.1      fs_1.5.2          digest_0.6.23    
-# [41] stringi_1.4.3     processx_3.5.2    getPass_0.2-2     grid_3.6.2       
-# [45] rprojroot_2.0.3   cli_3.5.0         tools_3.6.2       magrittr_2.0.1   
-# [49] sass_0.4.0        crayon_1.4.1      whisker_0.4       pkgconfig_2.0.3  
-# [53] ellipsis_0.3.2    assertthat_0.2.1  rmarkdown_2.21    httr_1.4.2       
-# [57] rstudioapi_0.13   R6_2.4.1          git2r_0.29.0      compiler_3.6.2</code></pre>
+#  [1] Rcpp_1.0.8        horseshoe_0.2.0   invgamma_1.1      lattice_0.20-38  
+#  [5] getPass_0.2-2     ps_1.6.0          assertthat_0.2.1  rprojroot_2.0.3  
+#  [9] digest_0.6.23     utf8_1.1.4        truncnorm_1.0-8   R6_2.4.1         
+# [13] evaluate_0.14     highr_0.8         httr_1.4.2        pillar_1.6.2     
+# [17] rlang_1.0.6       irlba_2.3.3       rstudioapi_0.13   whisker_0.4      
+# [21] callr_3.7.0       jquerylib_0.1.4   R.utils_2.11.0    R.oo_1.24.0      
+# [25] Matrix_1.3-4      rmarkdown_2.21    labeling_0.3      splines_3.6.2    
+# [29] stringr_1.4.0     munsell_0.5.0     mixsqp_0.3-48     compiler_3.6.2   
+# [33] httpuv_1.5.2      xfun_0.36         pkgconfig_2.0.3   SQUAREM_2017.10-1
+# [37] htmltools_0.5.4   tidyselect_1.1.1  fansi_0.4.0       crayon_1.4.1     
+# [41] withr_2.5.0       later_1.0.0       R.methodsS3_1.8.1 grid_3.6.2       
+# [45] jsonlite_1.7.2    gtable_0.3.0      lifecycle_1.0.3   DBI_1.1.0        
+# [49] git2r_0.29.0      scales_1.1.0      cli_3.5.0         stringi_1.4.3    
+# [53] farver_2.0.1      fs_1.5.2          promises_1.1.0    bslib_0.3.1      
+# [57] ellipsis_0.3.2    generics_0.0.2    vctrs_0.3.8       trust_0.1-8      
+# [61] tools_3.6.2       softImpute_1.4    glue_1.4.2        purrr_0.3.4      
+# [65] parallel_3.6.2    processx_3.5.2    fastmap_1.1.0     yaml_2.2.0       
+# [69] colorspace_1.4-1  ashr_2.2-57       deconvolveR_1.2-1 knitr_1.37       
+# [73] sass_0.4.0</code></pre>
 </div>
 
 
