@@ -1,4 +1,5 @@
-# TO DO: Explain here what this function is for, and how to use it.
+# This takes the m x k matrix of feature weights and plots them as n x
+# n images, where m = n^2. Note that nrow*ncol >= k is expected.
 plot_images <- function (W, n = 32, font_size = 9, nrow = 4, ncol = 4) {
   k <- ncol(W)
   colnames(W) <- paste0("V",1:k)
