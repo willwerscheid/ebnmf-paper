@@ -27,6 +27,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(cowplot)
+library(ebnm)
+library(flashier)
 source("code/swimmer_functions.R")
 ```
 
@@ -79,4 +81,16 @@ why we need to set the sparsity constraint on $\mathbf{W}$ to be so high
 ```{r compare-sparsity}
 mean(nmf$sp)
 mean(sparse_nmf$sp)
+```
+
+Let's now compare the NMF decompositions to a decomposition-by-parts
+obtained by running flashier. Remarkably, running flash with the
+point-exponential prior gets the right result, automatically splitting
+the torso and limb positions correctly into 17 factors (and even
+though we did not tell flashier that we wanted exactly 17 factors):
+
+```{r flash, results="hide", fig.height=3, fig.width=7}
+fl <- flash(Y,ebnm_fn = ebnm_point_exponential,
+            backfit = TRUE,var_type = 0)
+plot_images(ldf(fl)$L,nrow = 3,ncol = 8)
 ```
