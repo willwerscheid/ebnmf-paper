@@ -44,9 +44,39 @@ Y <- apply(Y,3,as.vector)
 Y <- Y - 1
 ```
 
-ADD TEXT HERE.
+This is the decomposition produced by "vanilla NMF" with 16
+faactors—by "vanilla", we meaan NMF without any penalties on the
+parameters. See the
+[swimmer.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m)
+script for details.
 
 ```{r vanilla-nmf, fig.height=2, fig.width=7}
 nmf <- readMat("matlab/swimmer_nmf.mat")
 plot_images(nmf$W,nrow = 2,ncol = 8)
+```
+
+Vanilla NMF doesn't identify the correct "parts" because all the
+factors include the torso. So perhaps encouraging the parts to be more
+sparse --- and therefore capturing more local features --- would help
+deal with this. In this second attempt, also implemented in the
+**swimmer.m** script, we forced the average sparsity of the 17 factors
+to be at least 0.95:
+
+```{r sparse-nmf, fig.height=3, fig.width=7}
+sparse_nmf <- readMat("matlab/swimmer_nmf_sW=0.95.mat")
+plot_images(sparse_nmf$W,nrow = 3,ncol = 8)
+```
+
+However, this doesn't seem to do the right thing: the solution
+satisfies the sparsity constraint by forcing some of the factors to
+represent multiple parts, which is sort of the opposite of what we
+actually want.
+
+Note that the vanilla NMF estimates are already very sparse which is
+why we need to set the sparsity constraint on $\mathbf{W}$ to be so high
+(0.95):
+
+```{r compare-sparsity}
+mean(nmf$sp)
+mean(sparse_nmf$sp)
 ```
