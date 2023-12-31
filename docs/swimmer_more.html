@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaftargetblank7a2e9ffa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2targetblanka6ac453a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf" target="_blank">7a2e9ff</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2" target="_blank">a6ac453</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaftargetblank7a2e9ffa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2targetblanka6ac453a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf" target="_blank">7a2e9ff</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2" target="_blank">a6ac453</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,11 +464,10 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  swimmer_more.R
-
 Unstaged changes:
     Modified:   code/swimmer_functions.R
+    Modified:   matlab/swimmer.m
+    Modified:   matlab/swimmer_nmf.mat
 
 </code></pre>
 <p>
@@ -514,6 +513,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2/analysis/swimmer_more.Rmd" target="_blank">a6ac453</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/02ce52d8e70c6079a03430c43a52b2ebd6ab6b5d/docs/swimmer_more.html" target="_blank">02ce52d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+Improved the plot_images function for the swimmer data analyses.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -639,7 +672,11 @@ source(&quot;code/swimmer_functions.R&quot;)</code></pre>
 <pre class="r"><code>Y &lt;- readMat(&quot;data/swimmer.mat&quot;)$Y
 Y &lt;- apply(Y,3,as.vector)
 Y &lt;- Y - 1</code></pre>
-<p>ADD TEXT HERE.</p>
+<p>This is the decomposition produced by “vanilla NMF” with 16
+faactors—by “vanilla”, we meaan NMF without any penalties on the
+parameters. See the <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m">swimmer.m</a>
+script for details.</p>
 <pre class="r"><code>nmf &lt;- readMat(&quot;matlab/swimmer_nmf.mat&quot;)
 plot_images(nmf$W,nrow = 2,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/vanilla-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
@@ -667,6 +704,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/02ce52d8e70c6079a03430c43a52b2ebd6ab6b5d/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">02ce52d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5552850bcf07e779794bb35a42fb9761ba12fd34/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">5552850</a>
 </td>
 <td>
@@ -680,6 +728,26 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Vanilla NMF doesn’t identify the correct “parts” because all the
+factors include the torso. So perhaps encouraging the parts to be more
+sparse — and therefore capturing more local features — would help deal
+with this. In this second attempt, also implemented in the
+<strong>swimmer.m</strong> script, we forced the average sparsity of the
+17 factors to be at least 0.95:</p>
+<pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/swimmer_nmf_sW=0.95.mat&quot;)
+plot_images(sparse_nmf$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/sparse-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>However, this doesn’t seem to do the right thing: the solution
+satisfies the sparsity constraint by forcing some of the factors to
+represent multiple parts, which is sort of the opposite of what we
+actually want.</p>
+<p>Note that the vanilla NMF estimates are already very sparse which is
+why we need to set the sparsity constraint on <span
+class="math inline">\(\mathbf{W}\)</span> to be so high (0.95):</p>
+<pre class="r"><code>mean(nmf$sp)
+mean(sparse_nmf$sp)
+# [1] 0.9124888
+# [1] 0.9501749</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
