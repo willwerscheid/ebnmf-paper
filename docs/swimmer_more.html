@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2404d81d943667057cbc59d73a11fb897222848atargetblank2404d81a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeb8f6cbbddf88c87e79401e8889facb0ae8b2e6e3targetblankb8f6cbba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2404d81d943667057cbc59d73a11fb897222848a" target="_blank">2404d81</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/b8f6cbbddf88c87e79401e8889facb0ae8b2e6e3" target="_blank">b8f6cbb</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2404d81d943667057cbc59d73a11fb897222848atargetblank2404d81a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeb8f6cbbddf88c87e79401e8889facb0ae8b2e6e3targetblankb8f6cbba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2404d81d943667057cbc59d73a11fb897222848a" target="_blank">2404d81</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/b8f6cbbddf88c87e79401e8889facb0ae8b2e6e3" target="_blank">b8f6cbb</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -509,6 +509,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b8f6cbbddf88c87e79401e8889facb0ae8b2e6e3/analysis/swimmer_more.Rmd" target="_blank">b8f6cbb</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/e42e804e4239dbd339a1bff8a6ea64bae812ea39/docs/swimmer_more.html" target="_blank">e42e804</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1068,14 +1102,13 @@ Peter Carbonetto
 and NMF were initialized in the same way. (And the greedy initialization
 is particularly well suited for the swimmer data set because it
 identifies the torso as the first factor.)</p>
-<p>Let’s see if we can improve the factorization further by adapting the
-priors. Unfortunately, random initialization with an adaptive prior does
-not work well at all, and I’m not sure why:</p>
-<pre class="r"><code>set.seed(1)
+<p>Let’s see if we can improve the decomposition further by adapting the
+priors:</p>
+<pre class="r"><code>L0 &lt;- ldf(fit2)$L
+F0 &lt;- ldf(fit2)$F
 fit3 &lt;- flash_init(Y,var_type = 0)
 fit3 &lt;- flash_factors_init(fit3,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
+                           list(L0,F0),
                            ebnm_point_exponential)
 fit3 &lt;- flash_backfit(fit3)
 plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)</code></pre>
@@ -1118,15 +1151,8 @@ Peter Carbonetto
 </div>
 </div>
 <pre><code># Backfitting 17 factors (tolerance: 3.91e-03)...
-#   --Estimate of factor 2 is numerically zero!
-#   --Estimate of factor 12 is numerically zero!
-#   --Estimate of factor 13 is numerically zero!
-#   --Estimate of factor 14 is numerically zero!
-#   --Estimate of factor 15 is numerically zero!
-#   --Estimate of factor 9 is numerically zero!
-#   --Estimate of factor 17 is numerically zero!
-#   --Estimate of factor 9 is numerically zero!
-#   --Estimate of factor 17 is numerically zero!
+#   --Estimate of factor 16 is numerically zero!
+#   Difference between iterations is within 1.0e+05...
 #   Difference between iterations is within 1.0e+04...
 #   Difference between iterations is within 1.0e+03...
 #   Difference between iterations is within 1.0e+02...
@@ -1134,9 +1160,10 @@ Peter Carbonetto
 #   Difference between iterations is within 1.0e+00...
 #   Difference between iterations is within 1.0e-01...
 #   Difference between iterations is within 1.0e-02...
-#   Difference between iterations is within 1.0e-03...
 # Wrapping up...
 # Done.</code></pre>
+<p>This improved the decomposition slightly by “cleaning up” the messy
+factor, factor 16.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
