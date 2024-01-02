@@ -122,8 +122,14 @@ fit2 <- flash_backfit(fit2)
 plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
 ```
 
-Unfortunately, random initialization with an adaptive prior does not
-work well at all, and I'm not sure why:
+This is perhaps a more "fair" comparison to NMF since both flashier
+and NMF were initialized in the same way. (And the greedy
+initialization is particularly well suited for the swimmer data set
+because it identifies the torso as the first factor.)
+
+Let's see if we can improve the factorization further by adapting the
+priors. Unfortunately, random initialization with an adaptive prior
+does not work well at all, and I'm not sure why:
 
 ```{r flash-adapt-rand-init, fig.height=3, fig.width=7}
 set.seed(1)
