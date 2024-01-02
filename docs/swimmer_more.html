@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-12-31
+<strong>Last updated:</strong> 2024-01-02
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cbtargetblankea1c781a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec196d8f2a690398020eeb4047cffbab27fdbdc88targetblankc196d8fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb" target="_blank">ea1c781</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c196d8f2a690398020eeb4047cffbab27fdbdc88" target="_blank">c196d8f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cbtargetblankea1c781a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec196d8f2a690398020eeb4047cffbab27fdbdc88targetblankc196d8fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb" target="_blank">ea1c781</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c196d8f2a690398020eeb4047cffbab27fdbdc88" target="_blank">c196d8f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,8 +464,8 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  scripts/#swimmers_more.R#
+Unstaged changes:
+    Modified:   scripts/swimmers_more.R
 
 </code></pre>
 <p>
@@ -511,6 +511,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c196d8f2a690398020eeb4047cffbab27fdbdc88/analysis/swimmer_more.Rmd" target="_blank">c196d8f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2d6bf15f934c369e770554ea809a1cddefd11ed1/analysis/swimmer_more.Rmd" target="_blank">2d6bf15</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-01
+</td>
+<td>
+Added boxes to panels in plot_images().
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/4aed4611c6bedc60e60ac8d6f78aead7cb5b934d/analysis/swimmer_more.Rmd" target="_blank">4aed461</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-01
+</td>
+<td>
+Working on adding variants of flash to the swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/efe3bc97bf93a98dc62b3bc74197680bfa86a203/docs/swimmer_more.html" target="_blank">efe3bc9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+<td>
+Added ‘default’ flash result to swimmer_more analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -688,8 +756,10 @@ workflowr::wflow_publish("index.Rmd")
 </div>
 </div>
 </div>
-<p>ADD TEXT HERE.</p>
-<p>First load the packages and some custom functions needed for the
+<p>This workflowr page contains some additional explorations of NMF
+methods (and the EBNMF methods implemented in flashier) for learning
+parts from the swimmer data set.</p>
+<p>First, load the packages and some custom functions needed for the
 analysis below.</p>
 <pre class="r"><code>library(R.matlab)
 library(tibble)
@@ -820,14 +890,109 @@ mean(sparse_nmf$sp)
 # [1] 0.9124888
 # [1] 0.9501749</code></pre>
 <p>Let’s now compare the NMF decompositions to a decomposition-by-parts
-obtained by running flashier. Remarkably, running flash with the
-point-exponential prior gets the right result, automatically splitting
-the torso and limb positions correctly into 17 factors (and even though
-we did not tell flashier that we wanted exactly 17 factors):</p>
-<pre class="r"><code>fl &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
-            backfit = TRUE,var_type = 0)
-plot_images(ldf(fl)$L,nrow = 3,ncol = 8)</code></pre>
+obtained by running flashier with sparse, non-negative priors
+(<code>ebnm_point_exponential</code>). Remarkably, running flash with
+the point-exponential prior gets the right result, automatically
+splitting the torso and limb positions correctly into 17 factors (and
+even though we did not tell flashier that we wanted exactly 17
+factors):</p>
+<pre class="r"><code>fit1 &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+              backfit = TRUE,var_type = 0)
+plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-1">
+Past versions of flash-1.png
+</button>
+</p>
+<div id="fig-flash-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/efe3bc97bf93a98dc62b3bc74197680bfa86a203/docs/figure/swimmer_more.Rmd/flash-1.png" target="_blank">efe3bc9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Let’s dig into this result a bit deeper. By default, flashier
+initializes the factors in a “greedy” way, which is different from the
+more typical random initialization in NMF (indeed, <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m">SparseNMF.m</a>
+has a random initialization by default). Also, let’s see what happens
+when we don’t adapt the prior, and instead we use a “flat” prior (here,
+an exponential prior with large scale). Remarkably, flashier still does
+pretty well in recovering the parts, although not quite as well as
+flashier with the greedy initialization and the adapted priors:</p>
+<pre class="r"><code>set.seed(1)
+n &lt;- nrow(Y)
+m &lt;- ncol(Y)
+k &lt;- 17
+g &lt;- ebnm_point_exponential(x = c(rep(1,100)))
+g$fitted_g$pi &lt;- c(0.0001,0.9999)
+ebnm_g &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+                     fix_g = TRUE,g_init = g)
+fit2 &lt;- flash_init(Y,var_type = 0)
+fit2 &lt;- flash_factors_init(fit2,
+                           list(matrix(runif(n*k),n,k),
+                                matrix(runif(m*k),m,k)),
+                           ebnm_g)
+fit2 &lt;- flash_backfit(fit2)
+plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-flat-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Unfortunately, random initialization with an adaptive prior does not
+work well at all, and I’m not sure why:</p>
+<pre class="r"><code>set.seed(1)
+fit3 &lt;- flash_init(Y,var_type = 0)
+fit3 &lt;- flash_factors_init(fit3,
+                           list(matrix(runif(n*k),n,k),
+                                matrix(runif(m*k),m,k)),
+                           ebnm_point_exponential)
+fit3 &lt;- flash_backfit(fit3)
+plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-adapt-rand-init-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre><code># Backfitting 17 factors (tolerance: 3.91e-03)...
+#   --Estimate of factor 2 is numerically zero!
+#   --Estimate of factor 12 is numerically zero!
+#   --Estimate of factor 13 is numerically zero!
+#   --Estimate of factor 14 is numerically zero!
+#   --Estimate of factor 15 is numerically zero!
+#   --Estimate of factor 9 is numerically zero!
+#   --Estimate of factor 17 is numerically zero!
+#   --Estimate of factor 9 is numerically zero!
+#   --Estimate of factor 17 is numerically zero!
+#   Difference between iterations is within 1.0e+04...
+#   Difference between iterations is within 1.0e+03...
+#   Difference between iterations is within 1.0e+02...
+#   Difference between iterations is within 1.0e+01...
+#   Difference between iterations is within 1.0e+00...
+#   Difference between iterations is within 1.0e-01...
+#   Difference between iterations is within 1.0e-02...
+#   Difference between iterations is within 1.0e-03...
+# Wrapping up...
+# Done.</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
