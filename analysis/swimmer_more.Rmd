@@ -130,7 +130,7 @@ because it identifies the torso as the first factor.)
 Let's see if we can improve the decomposition further by adapting the
 priors:
 
-```{r flash-adapt-rand-init, fig.height=3, fig.width=7}
+```{r flash-adapt-rand-init, results="hide", fig.height=3, fig.width=7}
 L0 <- ldf(fit2)$L
 F0 <- ldf(fit2)$F
 fit3 <- flash_init(Y,var_type = 0)
