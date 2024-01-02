@@ -12,9 +12,6 @@ output:
 
 ADD TEXT HERE.
 
-TO DO: Add boxes around the individual plotted factors in
-plot_images.
-
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)

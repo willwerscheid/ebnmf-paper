@@ -19,5 +19,6 @@ plot_images <- function (W, n = 32, font_size = 9, nrow = 4, ncol = 4) {
     guides(fill = "none",x = "none",y = "none") +
     labs(x = "",y = "") +
     theme_cowplot(font_size = font_size) +
-    theme(strip.background = element_blank()))
+    theme(strip.background = element_blank(),
+          panel.border = element_rect(color = "black",size = 0.5)))
 }
