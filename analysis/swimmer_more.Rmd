@@ -127,17 +127,19 @@ and NMF were initialized in the same way. (And the greedy
 initialization is particularly well suited for the swimmer data set
 because it identifies the torso as the first factor.)
 
-Let's see if we can improve the factorization further by adapting the
-priors. Unfortunately, random initialization with an adaptive prior
-does not work well at all, and I'm not sure why:
+Let's see if we can improve the decomposition further by adapting the
+priors:
 
 ```{r flash-adapt-rand-init, fig.height=3, fig.width=7}
-set.seed(1)
+L0 <- ldf(fit2)$L
+F0 <- ldf(fit2)$F
 fit3 <- flash_init(Y,var_type = 0)
 fit3 <- flash_factors_init(fit3,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
+                           list(L0,F0),
                            ebnm_point_exponential)
 fit3 <- flash_backfit(fit3)
 plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)
 ```
+
+This improved the decomposition slightly by "cleaning up" the messy
+factor, factor 16.
