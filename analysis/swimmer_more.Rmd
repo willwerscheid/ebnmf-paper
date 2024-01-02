@@ -12,6 +12,9 @@ output:
 
 ADD TEXT HERE.
 
+TO DO: Add boxes around the individual plotted factors in
+plot_images.
+
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
@@ -90,7 +93,42 @@ the torso and limb positions correctly into 17 factors (and even
 though we did not tell flashier that we wanted exactly 17 factors):
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
-fl <- flash(Y,ebnm_fn = ebnm_point_exponential,
-            backfit = TRUE,var_type = 0)
-plot_images(ldf(fl)$L,nrow = 3,ncol = 8)
+fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,
+              backfit = TRUE,var_type = 0)
+plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
 ```
+
+ADD TEXT HERE.
+
+```{r flash-flat, results="hide", fig.height=3, fig.width=7}
+set.seed(1)
+n <- nrow(Y)
+m <- ncol(Y)
+k <- 17
+g <- ebnm_point_exponential(x = c(rep(1,100)))
+g$fitted_g$pi <- c(0.0001,0.9999)
+ebnm_g <- flash_ebnm(prior_family = "point_exponential",
+                       fix_g = TRUE,g_init = g)
+fit2 <- flash_init(Y,var_type = 0)
+fit2 <- flash_factors_init(fit2,
+                           list(matrix(runif(n*k),n,k),
+                                matrix(runif(m*k),m,k)),
+                           ebnm_g)
+fit2 <- flash_backfit(fit2)
+plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
+
+```{r flash-adapt-rand-init, fig.height=3, fig.width=7}
+set.seed(1)
+fit3 <- flash_init(Y,var_type = 0)
+fit3 <- flash_factors_init(fit3,
+                           list(matrix(runif(n*k),n,k),
+                                matrix(runif(m*k),m,k)),
+                           ebnm_point_exponential)
+fit3 <- flash_backfit(fit3)
+plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
