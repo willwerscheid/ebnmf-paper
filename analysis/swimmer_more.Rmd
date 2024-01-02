@@ -10,14 +10,16 @@ output:
     self_contained: no
 ---
 
-ADD TEXT HERE.
+This workflowr page contains some additional explorations of NMF
+methods (and the EBNMF methods implemented in flashier) for learning
+parts from the swimmer data set.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-First load the packages and some custom functions needed for the
+First, load the packages and some custom functions needed for the
 analysis below.
 
 ```{r load-pkgs, message=FALSE}
@@ -84,7 +86,8 @@ mean(sparse_nmf$sp)
 ```
 
 Let's now compare the NMF decompositions to a decomposition-by-parts
-obtained by running flashier. Remarkably, running flash with the
+obtained by running flashier with sparse, non-negative priors
+(`ebnm_point_exponential`). Remarkably, running flash with the
 point-exponential prior gets the right result, automatically splitting
 the torso and limb positions correctly into 17 factors (and even
 though we did not tell flashier that we wanted exactly 17 factors):
@@ -95,7 +98,11 @@ fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,
 plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
 ```
 
-ADD TEXT HERE.
+Let's dig into this result a bit deeper. By default, flashier
+initializes the factors in a "greedy" way, which is different from the
+more typical random initialization in NMF (indeed,
+[SparseNMF.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m)
+has a random initialization by default). Also, let's see what happens when we don't adapt the prior, and instead we use a "flat" prior (here, an exponential prior with large scale). Remarkably, flashier still does pretty well in recovering the parts, although not quite as well as flashier with the greedy initialization and the adapted priors:
 
 ```{r flash-flat, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
@@ -105,7 +112,7 @@ k <- 17
 g <- ebnm_point_exponential(x = c(rep(1,100)))
 g$fitted_g$pi <- c(0.0001,0.9999)
 ebnm_g <- flash_ebnm(prior_family = "point_exponential",
-                       fix_g = TRUE,g_init = g)
+                     fix_g = TRUE,g_init = g)
 fit2 <- flash_init(Y,var_type = 0)
 fit2 <- flash_factors_init(fit2,
                            list(matrix(runif(n*k),n,k),
@@ -115,7 +122,8 @@ fit2 <- flash_backfit(fit2)
 plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
 ```
 
-ADD TEXT HERE.
+Unfortunately, random initialization with an adaptive prior does not
+work well at all, and I'm not sure why:
 
 ```{r flash-adapt-rand-init, fig.height=3, fig.width=7}
 set.seed(1)
@@ -127,5 +135,3 @@ fit3 <- flash_factors_init(fit3,
 fit3 <- flash_backfit(fit3)
 plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)
 ```
-
-ADD TEXT HERE.
