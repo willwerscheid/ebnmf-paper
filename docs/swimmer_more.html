@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree8e6e3e281575f0124a198e3df0ec7b39736184b7targetblank8e6e3e2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9114490232b09f011dd9b70ab3173b3a69edeef9targetblank9114490a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/8e6e3e281575f0124a198e3df0ec7b39736184b7" target="_blank">8e6e3e2</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9114490232b09f011dd9b70ab3173b3a69edeef9" target="_blank">9114490</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree8e6e3e281575f0124a198e3df0ec7b39736184b7targetblank8e6e3e2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9114490232b09f011dd9b70ab3173b3a69edeef9targetblank9114490a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/8e6e3e281575f0124a198e3df0ec7b39736184b7" target="_blank">8e6e3e2</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9114490232b09f011dd9b70ab3173b3a69edeef9" target="_blank">9114490</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -509,6 +509,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9114490232b09f011dd9b70ab3173b3a69edeef9/analysis/swimmer_more.Rmd" target="_blank">9114490</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/swimmer_more.html" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1158,6 +1192,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">b4a4907</a>
 </td>
 <td>
@@ -1171,10 +1216,13 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Even with this “flat” prior, flashier did remarkably well in
-recovering the parts, although not quite as well as first flashier
-fit.</p>
-<p>Now let’s see if a spase prior improves the result:</p>
+<p>Even with this “flat” prior (and with a random initialization),
+flashier still did remarkably well in recovering the parts, although not
+quite as well as first flashier fit above. (It is possible that this
+so-called “flat” prior might actually encourage the factors to be
+sparse—I haven’t looked at this closely.)</p>
+<p>Now let’s see if a “sparse prior”—that is, a prior with most of its
+weight on zero—improves the result:</p>
 <pre class="r"><code>set.seed(1)
 sparse_prior &lt;- flat_prior
 sparse_prior$fitted_g$pi &lt;- c(0.999,0.001)
@@ -1188,12 +1236,49 @@ fit3 &lt;- flash_factors_init(fit3,
 fit3 &lt;- flash_backfit(fit3)
 plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-sparse-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-sparse-1">
+Past versions of flash-sparse-1.png
+</button>
+</p>
+<div id="fig-flash-sparse-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-sparse-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The sparse prior improved the decomposition considerably by “cleaning
 up” some of the factors.</p>
 <p>Let’s now see if we can also get a good result by tuning the priors
 automatically based on the data. Adapting the priors only seems to work
-here if we provide a good initialization—here we initialize based on the
-estimates with the flat priors:</p>
+in this example if we first provide a good initialization, so here we
+initialize based on the factors estimated with the flat priors:</p>
 <pre class="r"><code>L0 &lt;- ldf(fit2)$L
 F0 &lt;- ldf(fit2)$F
 fit4 &lt;- flash_init(Y,var_type = 0)
@@ -1201,8 +1286,56 @@ fit4 &lt;- flash_factors_init(fit4,list(L0,F0),ebnm_point_exponential)
 fit4 &lt;- flash_backfit(fit4)
 plot_images(ldf(fit4)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>This improved the earlier result with flat priors, but didn’t work
-quite as well as fixing the priors to be sparse.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-1">
+Past versions of flash-adapt-prior-1.png
+</button>
+</p>
+<div id="fig-flash-adapt-prior-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This improved the earlier result with flat priors, but didn’t work as
+well as the fixed sparse priors.</p>
+<p>Adapting the priors is a “chicken-and-egg” problem that can be
+sensitive to initialization, so if we provide flashier with the better
+estimates with the sparse priors, adapting the priors does indeed
+improve the result further:</p>
+<pre class="r"><code>L0 &lt;- ldf(fit3)$L
+F0 &lt;- ldf(fit3)$F
+fit5 &lt;- flash_init(Y,var_type = 0)
+fit5 &lt;- flash_factors_init(fit5,list(L0,F0),ebnm_point_exponential)
+fit5 &lt;- flash_backfit(fit5)
+plot_images(ldf(fit5)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" width="840" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
