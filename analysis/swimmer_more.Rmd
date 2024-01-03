@@ -130,11 +130,14 @@ fit2 <- flash_backfit(fit2)
 plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
 ```
 
-Even with this "flat" prior, flashier did remarkably well in
-recovering the parts, although not quite as well as first flashier
-fit.
+Even with this "flat" prior (and with a random initialization),
+flashier still did remarkably well in recovering the parts, although
+not quite as well as first flashier fit above. (It is possible that
+this so-called "flat" prior might actually encourage the factors to be
+sparse—I haven't looked at this closely.)
 
-Now let's see if a spase prior improves the result:
+Now let's see if a "sparse prior"—that is, a prior with most of its
+weight on zero—improves the result:
 
 ```{r flash-sparse, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
@@ -156,8 +159,9 @@ up" some of the factors.
 
 Let's now see if we can also get a good result by tuning the priors
 automatically based on the data. Adapting the priors only seems to
-work here if we provide a good initialization—here we initialize based
-on the estimates with the flat priors:
+work in this example if we first provide a good initialization, so
+here we initialize based on the factors estimated with the flat
+priors:
 
 ```{r flash-adapt-prior, results="hide", fig.height=3, fig.width=7}
 L0 <- ldf(fit2)$L
@@ -169,6 +173,20 @@ plot_images(ldf(fit4)$L,nrow = 3,ncol = 8)
 ```
 
 This improved the earlier result with flat priors, but didn't work
-quite as well as fixing the priors to be sparse.
+as well as the fixed sparse priors.
+
+Adapting the priors is a "chicken-and-egg" problem that can be
+sensitive to initialization, so if we provide flashier with the better
+estimates with the sparse priors, adapting the priors does indeed
+improve the result further:
+
+```{r flash-adapt-prior-2, results="hide", fig.height=3, fig.width=7}
+L0 <- ldf(fit3)$L
+F0 <- ldf(fit3)$F
+fit5 <- flash_init(Y,var_type = 0)
+fit5 <- flash_factors_init(fit5,list(L0,F0),ebnm_point_exponential)
+fit5 <- flash_backfit(fit5)
+plot_images(ldf(fit5)$L,nrow = 3,ncol = 8)
+```
 
 [swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m
