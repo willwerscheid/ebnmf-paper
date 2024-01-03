@@ -49,48 +49,46 @@ Y <- Y - 1
 ```
 
 This is the decomposition produced by "vanilla NMF" with 16
-faactors—by "vanilla", we meaan NMF without any penalties on the
-parameters. See the
-[swimmer.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m)
-script for details.
+faactors—by "vanilla", we mean NMF without any penalties on the
+parameters. See [swimmer.m][swimmer_matlab] for details.
 
 ```{r vanilla-nmf, fig.height=2, fig.width=7}
 nmf <- readMat("matlab/swimmer_nmf.mat")
 plot_images(nmf$W,nrow = 2,ncol = 8)
 ```
 
-Vanilla NMF doesn't identify the correct "parts" because all the
-factors include the torso. So perhaps encouraging the parts to be more
+This vanilla NMF doesn't identify the correct "parts" because all the
+factors include the torso. Perhaps encouraging the parts to be more
 sparse --- and therefore capturing more local features --- would help
-deal with this. In this second attempt, also implemented in the
-**swimmer.m** script, we forced the average sparsity of the 17 factors
-to be at least 0.95:
+with this. In this second attempt (also implemented in
+[swimmer.m][swimmer_matlab]), we forced the average sparsity of the 17
+factors to be at least 0.95:
 
 ```{r sparse-nmf, fig.height=3, fig.width=7}
 sparse_nmf <- readMat("matlab/swimmer_nmf_sW=0.95.mat")
 plot_images(sparse_nmf$W,nrow = 3,ncol = 8)
 ```
 
-However, this doesn't seem to do the right thing: the solution
-satisfies the sparsity constraint by forcing some of the factors to
-represent multiple parts, which is sort of the opposite of what we
-actually want.
+However, this doesn't seem to help: the solution satisfies the
+sparsity constraint by forcing some of the factors to represent
+multiple parts, which is the opposite of what we actually want.
 
-Note that the vanilla NMF estimates are already very sparse which is
-why we need to set the sparsity constraint on $\mathbf{W}$ to be so high
-(0.95):
+Note that the vanilla NMF estimates were already very sparse which
+waas why we need to constrain the sparsity on $\mathbf{W}$ to be at
+least 0.95:
 
 ```{r compare-sparsity}
 mean(nmf$sp)
 mean(sparse_nmf$sp)
 ```
 
-Let's now compare the NMF decompositions to a decomposition-by-parts
+Let's now compare the NMF estimtes to a decomposition-by-parts
 obtained by running flashier with sparse, non-negative priors
 (`ebnm_point_exponential`). Remarkably, running flash with the
 point-exponential prior gets the right result, automatically splitting
-the torso and limb positions correctly into 17 factors (and even
-though we did not tell flashier that we wanted exactly 17 factors):
+the torso and limb positions correctly into 17 factors, and adapting
+the priors to capture the fact that the factors are very sparse (note
+that we did not tell flashier that we wanted exactly 17 factors):
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
 fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,
@@ -98,48 +96,79 @@ fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,
 plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
 ```
 
-Let's dig into this result a bit deeper. By default, flashier
-initializes the factors in a "greedy" way, which is different from the
-more typical random initialization in NMF (indeed,
+Let's now look at this remarkable result more closely.
+
+By default, flashier initializes the factors in a "greedy" way, which
+is different from the more typical random initialization in NMF.
+Indeed,
 [SparseNMF.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m)
-has a random initialization by default). Also, let's see what happens when we don't adapt the prior, and instead we use a "flat" prior (here, an exponential prior with large scale). Remarkably, flashier still does pretty well in recovering the parts, although not quite as well as flashier with the greedy initialization and the adapted priors:
+is initialized at random by default.  (Also, the greedy initialization
+may be particularly well suited for the swimmer data set.)  So let's
+see what happens when we initialize the flashier factorization at
+random.
+
+Also, let's see what happens when we don't adapt the prior. Let's
+start with a naive "flat" prior, and fix it rather than allow it to
+adapt it to the data. (Specifically, here we are using an exponential
+prior with large scale parameter.)
 
 ```{r flash-flat, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
 n <- nrow(Y)
 m <- ncol(Y)
 k <- 17
-g <- ebnm_point_exponential(x = c(rep(1,100)))
-g$fitted_g$pi <- c(0.0001,0.9999)
-ebnm_g <- flash_ebnm(prior_family = "point_exponential",
-                     fix_g = TRUE,g_init = g)
+flat_prior <- ebnm_point_exponential(x = c(rep(1,100)))
+flat_prior$fitted_g$pi <- c(0.001,0.999)
+ebnm_flat_prior <- flash_ebnm(prior_family = "point_exponential",
+                              fix_g = TRUE,g_init = flat_prior)
 fit2 <- flash_init(Y,var_type = 0)
 fit2 <- flash_factors_init(fit2,
                            list(matrix(runif(n*k),n,k),
                                 matrix(runif(m*k),m,k)),
-                           ebnm_g)
+                           ebnm_flat_prior)
 fit2 <- flash_backfit(fit2)
 plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
 ```
 
-This is perhaps a more "fair" comparison to NMF since both flashier
-and NMF were initialized in the same way. (And the greedy
-initialization is particularly well suited for the swimmer data set
-because it identifies the torso as the first factor.)
+Even with this "flat" prior, flashier did remarkably well in
+recovering the parts, although not quite as well as first flashier
+fit.
 
-Let's see if we can improve the decomposition further by adapting the
-priors:
+Now let's see if a spase prior improves the result:
 
-```{r flash-adapt-rand-init, results="hide", fig.height=3, fig.width=7}
-L0 <- ldf(fit2)$L
-F0 <- ldf(fit2)$F
+```{r flash-sparse, results="hide", fig.height=3, fig.width=7}
+set.seed(1)
+sparse_prior <- flat_prior
+sparse_prior$fitted_g$pi <- c(0.999,0.001)
+ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
+                                fix_g = TRUE,g_init = sparse_prior)
 fit3 <- flash_init(Y,var_type = 0)
 fit3 <- flash_factors_init(fit3,
-                           list(L0,F0),
-                           ebnm_point_exponential)
+                           list(matrix(runif(n*k),n,k),
+                                matrix(runif(m*k),m,k)),
+                           ebnm_sparse_prior)
 fit3 <- flash_backfit(fit3)
 plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)
 ```
 
-This improved the decomposition slightly by "cleaning up" the messy
-factor, factor 16.
+The sparse prior improved the decomposition considerably by "cleaning
+up" some of the factors.
+
+Let's now see if we can also get a good result by tuning the priors
+automatically based on the data. Adapting the priors only seems to
+work here if we provide a good initialization—here we initialize based
+on the estimates with the flat priors:
+
+```{r flash-adapt-prior, results="hide", fig.height=3, fig.width=7}
+L0 <- ldf(fit2)$L
+F0 <- ldf(fit2)$F
+fit4 <- flash_init(Y,var_type = 0)
+fit4 <- flash_factors_init(fit4,list(L0,F0),ebnm_point_exponential)
+fit4 <- flash_backfit(fit4)
+plot_images(ldf(fit4)$L,nrow = 3,ncol = 8)
+```
+
+This improved the earlier result with flat priors, but didn't work
+quite as well as fixing the priors to be sparse.
+
+[swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m
