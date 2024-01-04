@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-03
+<strong>Last updated:</strong> 2024-01-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9114490232b09f011dd9b70ab3173b3a69edeef9targetblank9114490a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa966916fc7911a35b7274c5a2602dd5bdcb37datargetblankfa96691a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9114490232b09f011dd9b70ab3173b3a69edeef9" target="_blank">9114490</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa966916fc7911a35b7274c5a2602dd5bdcb37da" target="_blank">fa96691</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9114490232b09f011dd9b70ab3173b3a69edeef9targetblank9114490a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa966916fc7911a35b7274c5a2602dd5bdcb37datargetblankfa96691a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9114490232b09f011dd9b70ab3173b3a69edeef9" target="_blank">9114490</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa966916fc7911a35b7274c5a2602dd5bdcb37da" target="_blank">fa96691</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,7 +464,12 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-working directory clean
+Ignored files:
+    Ignored:    analysis/figure/
+
+Unstaged changes:
+    Modified:   code/swimmer_functions.R
+
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -509,6 +514,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/fa966916fc7911a35b7274c5a2602dd5bdcb37da/analysis/swimmer_more.Rmd" target="_blank">fa96691</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/ce6db54cd5e5362f813e07a1cacc5d3f4c353d66/docs/swimmer_more.html" target="_blank">ce6db54</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+Added flashier result with fixed, sparse prior to swimmer_more.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1156,17 +1195,17 @@ prior with large scale parameter.)</p>
 n &lt;- nrow(Y)
 m &lt;- ncol(Y)
 k &lt;- 17
-flat_prior &lt;- ebnm_point_exponential(x = c(rep(1,100)))
-flat_prior$fitted_g$pi &lt;- c(0.001,0.999)
-ebnm_flat_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+flat_prior &lt;- ebnm_unimodal_nonnegative(x = runif(100,0,100),
+                                        gridmult = 10,nullweight = 4)
+ebnm_flat_prior &lt;- flash_ebnm(prior_family = &quot;unimodal_nonnegative&quot;,
                               fix_g = TRUE,g_init = flat_prior)
-fit2 &lt;- flash_init(Y,var_type = 0)
-fit2 &lt;- flash_factors_init(fit2,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
-                           ebnm_flat_prior)
-fit2 &lt;- flash_backfit(fit2)
-plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)</code></pre>
+fl_flat &lt;- flash_init(Y,var_type = 0)
+fl_flat &lt;- flash_factors_init(fl_flat,
+                              list(matrix(runif(n*k),n,k),
+                                   matrix(runif(m*k),m,k)),
+                              ebnm_flat_prior)
+fl_flat &lt;- flash_backfit(fl_flat)
+plot_images(ldf(fl_flat)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-flat-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-flat-1">
@@ -1224,17 +1263,17 @@ sparse—I haven’t looked at this closely.)</p>
 <p>Now let’s see if a “sparse prior”—that is, a prior with most of its
 weight on zero—improves the result:</p>
 <pre class="r"><code>set.seed(1)
-sparse_prior &lt;- flat_prior
+sparse_prior &lt;- ebnm_point_exponential(x = c(rep(1,100)))
 sparse_prior$fitted_g$pi &lt;- c(0.999,0.001)
 ebnm_sparse_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
                                 fix_g = TRUE,g_init = sparse_prior)
-fit3 &lt;- flash_init(Y,var_type = 0)
-fit3 &lt;- flash_factors_init(fit3,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
-                           ebnm_sparse_prior)
-fit3 &lt;- flash_backfit(fit3)
-plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)</code></pre>
+fl_sparse &lt;- flash_init(Y,var_type = 0)
+fl_sparse &lt;- flash_factors_init(fl_sparse,
+                                list(matrix(runif(n*k),n,k),
+                                     matrix(runif(m*k),m,k)),
+                                ebnm_sparse_prior)
+fl_sparse &lt;- flash_backfit(fl_sparse)
+plot_images(ldf(fl_sparse)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-sparse-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-sparse-1">
@@ -1279,12 +1318,12 @@ up” some of the factors.</p>
 automatically based on the data. Adapting the priors only seems to work
 in this example if we first provide a good initialization, so here we
 initialize based on the factors estimated with the flat priors:</p>
-<pre class="r"><code>L0 &lt;- ldf(fit2)$L
-F0 &lt;- ldf(fit2)$F
-fit4 &lt;- flash_init(Y,var_type = 0)
-fit4 &lt;- flash_factors_init(fit4,list(L0,F0),ebnm_point_exponential)
-fit4 &lt;- flash_backfit(fit4)
-plot_images(ldf(fit4)$L,nrow = 3,ncol = 8)</code></pre>
+<pre class="r"><code>L0 &lt;- ldf(fl_flat)$L
+F0 &lt;- ldf(fl_flat)$F
+fl_adapt &lt;- flash_init(Y,var_type = 0)
+fl_adapt &lt;- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
+fl_adapt &lt;- flash_backfit(fl_adapt)
+plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-1">
@@ -1329,13 +1368,54 @@ well as the fixed sparse priors.</p>
 sensitive to initialization, so if we provide flashier with the better
 estimates with the sparse priors, adapting the priors does indeed
 improve the result further:</p>
-<pre class="r"><code>L0 &lt;- ldf(fit3)$L
-F0 &lt;- ldf(fit3)$F
-fit5 &lt;- flash_init(Y,var_type = 0)
-fit5 &lt;- flash_factors_init(fit5,list(L0,F0),ebnm_point_exponential)
-fit5 &lt;- flash_backfit(fit5)
-plot_images(ldf(fit5)$L,nrow = 3,ncol = 8)</code></pre>
+<pre class="r"><code>L0 &lt;- ldf(fl_sparse)$L
+F0 &lt;- ldf(fl_sparse)$F
+fl_adapt2 &lt;- flash_init(Y,var_type = 0)
+fl_adapt2 &lt;- flash_factors_init(fl_adapt2,list(L0,F0),ebnm_point_exponential)
+fl_adapt2 &lt;- flash_backfit(fl_adapt2)
+plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-2-1">
+Past versions of flash-adapt-prior-2-1.png
+</button>
+</p>
+<div id="fig-flash-adapt-prior-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ce6db54cd5e5362f813e07a1cacc5d3f4c353d66/docs/figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" target="_blank">ce6db54</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ADD TEXT HERE.</p>
+<pre class="r"><code>rnorm(10)
+#  [1]  0.55823201 -0.07864577  0.74808608 -0.34911152  0.94649786  1.60628090
+#  [7] -0.53901870 -0.13099663  1.03559345  0.76750167</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1360,7 +1440,7 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-#  [1] flashier_1.0.20   magrittr_2.0.1    ebnm_1.1-2        cowplot_1.1.1    
+#  [1] flashier_1.0.20   magrittr_2.0.1    ebnm_1.1-3        cowplot_1.1.1    
 #  [5] ggplot2_3.3.6     tidyr_1.1.3       dplyr_1.0.7       tibble_3.1.3     
 #  [9] R.matlab_3.6.2    workflowr_1.7.0.5
 # 
