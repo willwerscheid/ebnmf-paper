@@ -102,8 +102,15 @@ By default, flashier initializes the factors in a "greedy" way, which
 is different from the more typical random initialization in NMF.
 Indeed,
 [SparseNMF.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m)
-is initialized at random by default.  (Also, the greedy initialization
-may be particularly well suited for the swimmer data set.)  So let's
+is initialized at random by default. The greedy initialization appears as follows:
+
+```{r}
+fit_greedyinit <- flash(Y,ebnm_fn = ebnm_point_exponential,
+              backfit = FALSE,var_type = 0,verbose = 0)
+plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)
+```
+
+The greedy initialization appears particularly well suited for the swimmer data set (backfitting only needs to clean up the first factor). So let's
 see what happens when we initialize the flashier factorization at
 random.
 
