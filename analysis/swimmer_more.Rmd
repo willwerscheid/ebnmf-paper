@@ -100,10 +100,8 @@ Let's now look at this remarkable result more closely.
 
 By default, flashier initializes the factors in a "greedy" way, which
 is different from the more typical random initialization in NMF.
-Indeed,
-[SparseNMF.m](https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m)
-is initialized at random by default. The greedy initialization appears
-as follows:
+Indeed, [SparseNMF.m][sparsenmf] is initialized at random by
+default. The greedy initialization appears as follows:
 
 ```{r flash-greedy, results="hide", fig.height=3, fig.width=7}
 fit_greedyinit <- flash(Y,ebnm_fn = ebnm_point_exponential,
@@ -115,16 +113,18 @@ The greedy initialization appears particularly well suited for the
 swimmer data set (backfitting only needs to clean up the first
 factor). And this seems due in large part to the "greediness" of the
 approach rather than to any sparsity-inducing properties of the
-priors. Indeed, if we simply use `flashier`'s greedy initialization
-function (alternating least squares) without doing any optimization on
+priors. Indeed, if we simply use flashier's greedy initialization
+function (alternating least-squares) without doing any optimization on
 the initialized factors, we get similar results:
 
 ```{r flash-greedy-2, fig.height=3, fig.width=7}
+k <- 18
 fl2 <- flash_init(Y)
-for (i in 1:20) {
-  next_f <- flash_greedy_init_default(flash_fit(fl2), sign_constraints = c(1, 1), seed = i)
-  next_f <- lapply(next_f, as.matrix, ncol = 1)
-  fl2 <- flash_factors_init(fl2, next_f)
+for (i in 1:k) {
+  next_f <- flash_greedy_init_default(flash_fit(fl2),seed = i,
+                                      sign_constraints = c(1,1))
+  next_f <- lapply(next_f,as.matrix,ncol = 1)
+  fl2    <- flash_factors_init(fl2,next_f)
 }
 plot_images(ldf(fl2)$L,nrow = 3,ncol = 8)
 ```
