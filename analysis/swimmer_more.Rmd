@@ -124,17 +124,17 @@ set.seed(1)
 n <- nrow(Y)
 m <- ncol(Y)
 k <- 17
-flat_prior <- ebnm_point_exponential(x = c(rep(1,100)))
-flat_prior$fitted_g$pi <- c(0.001,0.999)
-ebnm_flat_prior <- flash_ebnm(prior_family = "point_exponential",
+flat_prior <- ebnm_unimodal_nonnegative(x = runif(100,0,100),
+                                        gridmult = 10,nullweight = 4)
+ebnm_flat_prior <- flash_ebnm(prior_family = "unimodal_nonnegative",
                               fix_g = TRUE,g_init = flat_prior)
-fit2 <- flash_init(Y,var_type = 0)
-fit2 <- flash_factors_init(fit2,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
-                           ebnm_flat_prior)
-fit2 <- flash_backfit(fit2)
-plot_images(ldf(fit2)$L,nrow = 3,ncol = 8)
+fl_flat <- flash_init(Y,var_type = 0)
+fl_flat <- flash_factors_init(fl_flat,
+                              list(matrix(runif(n*k),n,k),
+                                   matrix(runif(m*k),m,k)),
+                              ebnm_flat_prior)
+fl_flat <- flash_backfit(fl_flat)
+plot_images(ldf(fl_flat)$L,nrow = 3,ncol = 8)
 ```
 
 Even with this "flat" prior (and with a random initialization),
@@ -148,17 +148,17 @@ weight on zero—improves the result:
 
 ```{r flash-sparse, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
-sparse_prior <- flat_prior
+sparse_prior <- ebnm_point_exponential(x = c(rep(1,100)))
 sparse_prior$fitted_g$pi <- c(0.999,0.001)
 ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
                                 fix_g = TRUE,g_init = sparse_prior)
-fit3 <- flash_init(Y,var_type = 0)
-fit3 <- flash_factors_init(fit3,
-                           list(matrix(runif(n*k),n,k),
-                                matrix(runif(m*k),m,k)),
-                           ebnm_sparse_prior)
-fit3 <- flash_backfit(fit3)
-plot_images(ldf(fit3)$L,nrow = 3,ncol = 8)
+fl_sparse <- flash_init(Y,var_type = 0)
+fl_sparse <- flash_factors_init(fl_sparse,
+                                list(matrix(runif(n*k),n,k),
+                                     matrix(runif(m*k),m,k)),
+                                ebnm_sparse_prior)
+fl_sparse <- flash_backfit(fl_sparse)
+plot_images(ldf(fl_sparse)$L,nrow = 3,ncol = 8)
 ```
 
 The sparse prior improved the decomposition considerably by "cleaning
@@ -171,12 +171,12 @@ here we initialize based on the factors estimated with the flat
 priors:
 
 ```{r flash-adapt-prior, results="hide", fig.height=3, fig.width=7}
-L0 <- ldf(fit2)$L
-F0 <- ldf(fit2)$F
-fit4 <- flash_init(Y,var_type = 0)
-fit4 <- flash_factors_init(fit4,list(L0,F0),ebnm_point_exponential)
-fit4 <- flash_backfit(fit4)
-plot_images(ldf(fit4)$L,nrow = 3,ncol = 8)
+L0 <- ldf(fl_flat)$L
+F0 <- ldf(fl_flat)$F
+fl_adapt <- flash_init(Y,var_type = 0)
+fl_adapt <- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
+fl_adapt <- flash_backfit(fl_adapt)
+plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)
 ```
 
 This improved the earlier result with flat priors, but didn't work
@@ -188,12 +188,19 @@ estimates with the sparse priors, adapting the priors does indeed
 improve the result further:
 
 ```{r flash-adapt-prior-2, results="hide", fig.height=3, fig.width=7}
-L0 <- ldf(fit3)$L
-F0 <- ldf(fit3)$F
-fit5 <- flash_init(Y,var_type = 0)
-fit5 <- flash_factors_init(fit5,list(L0,F0),ebnm_point_exponential)
-fit5 <- flash_backfit(fit5)
-plot_images(ldf(fit5)$L,nrow = 3,ncol = 8)
+L0 <- ldf(fl_sparse)$L
+F0 <- ldf(fl_sparse)$F
+fl_adapt2 <- flash_init(Y,var_type = 0)
+fl_adapt2 <- flash_factors_init(fl_adapt2,list(L0,F0),ebnm_point_exponential)
+fl_adapt2 <- flash_backfit(fl_adapt2)
+plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
+
+```{r summary}
+rnorm(10)
 ```
 
 [swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m
+[sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
