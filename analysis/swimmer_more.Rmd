@@ -117,9 +117,9 @@ set.seed(1)
 n <- nrow(Y)
 m <- ncol(Y)
 k <- 17
-flat_prior <- ebnm_unimodal_nonnegative(x = runif(100,0,100),
-                                        gridmult = 10,nullweight = 4)
-ebnm_flat_prior <- flash_ebnm(prior_family = "unimodal_nonnegative",
+flat_prior <- ebnm_point_exponential(x = c(rep(1,100)))
+flat_prior$fitted_g$pi <- c(0.001,0.999)
+ebnm_flat_prior <- flash_ebnm(prior_family = "point_exponential",
                               fix_g = TRUE,g_init = flat_prior)
 fl_flat <- flash_init(Y,var_type = 0)
 fl_flat <- flash_factors_init(fl_flat,
@@ -141,7 +141,7 @@ weight on zero—improves the result:
 
 ```{r flash-sparse, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
-sparse_prior <- ebnm_point_exponential(x = c(rep(1,100)))
+sparse_prior <- flat_prior
 sparse_prior$fitted_g$pi <- c(0.999,0.001)
 ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
                                 fix_g = TRUE,g_init = sparse_prior)
