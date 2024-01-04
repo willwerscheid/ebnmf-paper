@@ -113,13 +113,27 @@ plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)
 
 The greedy initialization appears particularly well suited for the
 swimmer data set (backfitting only needs to clean up the first
-factor). So let's see what happens when we initialize the flashier
-factorization at random.
+factor). And this seems due in large part to the "greediness" of the
+approach rather than to any sparsity-inducing properties of the
+priors. Indeed, if we simply use `flashier`'s greedy initialization
+function (alternating least squares) without doing any optimization on
+the initialized factors, we get similar results:
 
-Also, let's see what happens when we don't adapt the prior. Let's
-start with a naive "flat" prior, and fix it rather than allow it to
-adapt it to the data. (Specifically, here we are using an exponential
-prior with large scale parameter.)
+```{r}
+fl2 <- flash_init(Y)
+for (i in 1:20) {
+  next_f <- flash_greedy_init_default(flash_fit(fl2), sign_constraints = c(1, 1), seed = i)
+  next_f <- lapply(next_f, as.matrix, ncol = 1)
+  fl2 <- flash_factors_init(fl2, next_f)
+}
+plot_images(ldf(fl2)$L,nrow = 3,ncol = 8)
+```
+
+Now let's see what happens when we initialize the flashier
+factorization at random and when we don't adapt the prior. Let's start
+with a naive "flat" prior, and fix it rather than allow it to adapt it
+to the data. (Specifically, here we are using an exponential prior
+with large scale parameter.)
 
 ```{r flash-flat, results="hide", fig.height=3, fig.width=7}
 set.seed(1)
