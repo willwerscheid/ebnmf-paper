@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Peter Carbonetto" />
+
+
+<title>More NMF analyses of the swimmer dataset</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ebnmf-paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/ebnmf-paper">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">More NMF analyses of the swimmer
+dataset</h1>
+<h4 class="author">Peter Carbonetto</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-01-04
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0.5). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20231214code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20231214)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20231214code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20231214)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree89b854e5e1f918f72dce29611bd009a42e86f45etargetblank89b854ea">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/89b854e5e1f918f72dce29611bd009a42e86f45e" target="_blank">89b854e</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree89b854e5e1f918f72dce29611bd009a42e86f45etargetblank89b854ea"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/89b854e5e1f918f72dce29611bd009a42e86f45e" target="_blank">89b854e</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+working directory clean
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/swimmer_more.Rmd</code>) and HTML
+(<code>docs/swimmer_more.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/89b854e5e1f918f72dce29611bd009a42e86f45e/analysis/swimmer_more.Rmd" target="_blank">89b854e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Merge branch ‘master’ of github.com:willwerscheid/ebnmf-paper.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/89b854e5e1f918f72dce29611bd009a42e86f45e/docs/swimmer_more.html" target="_blank">89b854e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Merge branch ‘master’ of github.com:willwerscheid/ebnmf-paper.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/swimmer_more.html" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Rebuilt swimmer_more analysis after merging with Jason.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9cf314b245269175fab021ca9a2d195c5f19ab40/analysis/swimmer_more.Rmd" target="_blank">9cf314b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/b895f1bea9f4da6b9e1c391a9682d12b53b28d29/docs/swimmer_more.html" target="_blank">b895f1b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/983112b2d49e449eafd49a96100b70986060c489/analysis/swimmer_more.Rmd" target="_blank">983112b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/59603fe3ea78accdf185646e5e89e78d25d14b40/analysis/swimmer_more.Rmd" target="_blank">59603fe</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Merge branch ‘master’ of github.com:willwerscheid/ebnmf-paper.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/e7206dd0009558a92b224dbdb2cb82b16d11a716/analysis/swimmer_more.Rmd" target="_blank">e7206dd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Reverted the ‘flat’ prior back to point_exponential.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/swimmer_more.html" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0681401dc5b9f3a728287c83d7a8b111cb22291c/analysis/swimmer_more.Rmd" target="_blank">0681401</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Merge branch ‘master’ of <a
+href="https://github.com/willwerscheid/ebnmf-paper"
+class="uri">https://github.com/willwerscheid/ebnmf-paper</a>
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bf27384c71042f9935c400d9c082d106ad1deffb/analysis/swimmer_more.Rmd" target="_blank">bf27384</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+add greedy initialization images
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/5d21cb26e4fe7aff3e5e7024b5f1e29c7a8c1962/docs/swimmer_more.html" target="_blank">5d21cb2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/fa966916fc7911a35b7274c5a2602dd5bdcb37da/analysis/swimmer_more.Rmd" target="_blank">fa96691</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/ce6db54cd5e5362f813e07a1cacc5d3f4c353d66/docs/swimmer_more.html" target="_blank">ce6db54</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+Added flashier result with fixed, sparse prior to swimmer_more.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9114490232b09f011dd9b70ab3173b3a69edeef9/analysis/swimmer_more.Rmd" target="_blank">9114490</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/swimmer_more.html" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8e6e3e281575f0124a198e3df0ec7b39736184b7/analysis/swimmer_more.Rmd" target="_blank">8e6e3e2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/c8f4e5954a8391bbb27c7ffd390424db5c4caa55/docs/swimmer_more.html" target="_blank">c8f4e59</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+Removed output from last code chunk in swimmer_more.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/46ac496c1d251a7f60d88e3e2e1290c564d25cfd/analysis/swimmer_more.Rmd" target="_blank">46ac496</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/8862dbcefbcc43b23b498ab56b0e7f759cd1b00c/docs/swimmer_more.html" target="_blank">8862dbc</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+Fixed the last flashier analysis in swimmer_more.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b8f6cbbddf88c87e79401e8889facb0ae8b2e6e3/analysis/swimmer_more.Rmd" target="_blank">b8f6cbb</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/e42e804e4239dbd339a1bff8a6ea64bae812ea39/docs/swimmer_more.html" target="_blank">e42e804</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2404d81d943667057cbc59d73a11fb897222848a/analysis/swimmer_more.Rmd" target="_blank">2404d81</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/swimmer_more.html" target="_blank">b4a4907</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+Added some explanatory text to the swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c196d8f2a690398020eeb4047cffbab27fdbdc88/analysis/swimmer_more.Rmd" target="_blank">c196d8f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2d6bf15f934c369e770554ea809a1cddefd11ed1/analysis/swimmer_more.Rmd" target="_blank">2d6bf15</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-01
+</td>
+<td>
+Added boxes to panels in plot_images().
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/4aed4611c6bedc60e60ac8d6f78aead7cb5b934d/analysis/swimmer_more.Rmd" target="_blank">4aed461</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-01
+</td>
+<td>
+Working on adding variants of flash to the swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/efe3bc97bf93a98dc62b3bc74197680bfa86a203/docs/swimmer_more.html" target="_blank">efe3bc9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+<td>
+Added ‘default’ flash result to swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ea1c781c6d7a1b65cc8fae97d99d4cdc154fb9cb/analysis/swimmer_more.Rmd" target="_blank">ea1c781</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/f4cdd1b847ad62dcfe45fa8d67294566ca8660f4/docs/swimmer_more.html" target="_blank">f4cdd1b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+Added sparseNMF estmates to swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/a6ac45347b83c59a26f75d1ece83c5f2b6b4c0d2/analysis/swimmer_more.Rmd" target="_blank">a6ac453</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/02ce52d8e70c6079a03430c43a52b2ebd6ab6b5d/docs/swimmer_more.html" target="_blank">02ce52d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+Improved the plot_images function for the swimmer data analyses.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/7a2e9ff91bc9dea4601fb1ab5133dbe420f2caaf/analysis/swimmer_more.Rmd" target="_blank">7a2e9ff</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/5552850bcf07e779794bb35a42fb9761ba12fd34/docs/swimmer_more.html" target="_blank">5552850</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+Added visualization of NMF model fit to swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8b27cdcf7047e3079932df0924d3c80edce9a9e0/analysis/swimmer_more.Rmd" target="_blank">8b27cdc</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/2fe29111e9d15296b8ae9c5652f6b3e286a9c743/docs/swimmer_more.html" target="_blank">2fe2911</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+First build of the swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/714fff19a7e56d101414a66dcb178e1e2fd58846/analysis/swimmer_more.Rmd" target="_blank">714fff1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+workflowr::wflow_publish("swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ec0a1ad1c4f622b745274d6ebf805dac72664594/analysis/swimmer_more.Rmd" target="_blank">ec0a1ad</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+<td>
+workflowr::wflow_publish("index.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>This workflowr page contains some additional explorations of NMF
+methods (and the EBNMF methods implemented in flashier) for learning
+parts from the swimmer data set.</p>
+<p>First, load the packages and some custom functions needed for the
+analysis below.</p>
+<pre class="r"><code>library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+source(&quot;code/swimmer_functions.R&quot;)</code></pre>
+<p>Initialize the sequence of pseudorandom numbers.</p>
+<pre class="r"><code>set.seed(1)</code></pre>
+<p>Load the swimmer data set.</p>
+<pre class="r"><code>Y &lt;- readMat(&quot;data/swimmer.mat&quot;)$Y
+Y &lt;- apply(Y,3,as.vector)
+Y &lt;- Y - 1</code></pre>
+<p>This is the decomposition produced by “vanilla NMF” with 16
+faactors—by “vanilla”, we mean NMF without any penalties on the
+parameters. See <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m">swimmer.m</a>
+for details.</p>
+<pre class="r"><code>nmf &lt;- readMat(&quot;matlab/swimmer_nmf.mat&quot;)
+plot_images(nmf$W,nrow = 2,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/vanilla-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-vanilla-nmf-1">
+Past versions of vanilla-nmf-1.png
+</button>
+</p>
+<div id="fig-vanilla-nmf-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">b4a4907</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/02ce52d8e70c6079a03430c43a52b2ebd6ab6b5d/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">02ce52d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5552850bcf07e779794bb35a42fb9761ba12fd34/docs/figure/swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">5552850</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This vanilla NMF doesn’t identify the correct “parts” because all the
+factors include the torso. Perhaps encouraging the parts to be more
+sparse — and therefore capturing more local features — would help with
+this. In this second attempt (also implemented in <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m">swimmer.m</a>),
+we forced the average sparsity of the 17 factors to be at least
+0.95:</p>
+<pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/swimmer_nmf_sW=0.95.mat&quot;)
+plot_images(sparse_nmf$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/sparse-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-sparse-nmf-1">
+Past versions of sparse-nmf-1.png
+</button>
+</p>
+<div id="fig-sparse-nmf-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/figure/swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">b4a4907</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/f4cdd1b847ad62dcfe45fa8d67294566ca8660f4/docs/figure/swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">f4cdd1b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>However, this doesn’t seem to help: the solution satisfies the
+sparsity constraint by forcing some of the factors to represent multiple
+parts, which is the opposite of what we actually want.</p>
+<p>Note that the vanilla NMF estimates were already very sparse which
+waas why we need to constrain the sparsity on <span
+class="math inline">\(\mathbf{W}\)</span> to be at least 0.95:</p>
+<pre class="r"><code>mean(nmf$sp)
+mean(sparse_nmf$sp)
+# [1] 0.9124888
+# [1] 0.9501749</code></pre>
+<p>Let’s now compare the NMF estimtes to a decomposition-by-parts
+obtained by running flashier with sparse, non-negative priors
+(<code>ebnm_point_exponential</code>). Remarkably, running flash with
+the point-exponential prior gets the right result, automatically
+splitting the torso and limb positions correctly into 17 factors, and
+adapting the priors to capture the fact that the factors are very sparse
+(note that we did not tell flashier that we wanted exactly 17
+factors):</p>
+<pre class="r"><code>fit1 &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+              backfit = TRUE,var_type = 0)
+plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-1">
+Past versions of flash-1.png
+</button>
+</p>
+<div id="fig-flash-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/flash-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/figure/swimmer_more.Rmd/flash-1.png" target="_blank">b4a4907</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/efe3bc97bf93a98dc62b3bc74197680bfa86a203/docs/figure/swimmer_more.Rmd/flash-1.png" target="_blank">efe3bc9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2023-12-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Let’s now look at this remarkable result more closely.</p>
+<p>By default, flashier initializes the factors in a “greedy” way, which
+is different from the more typical random initialization in NMF. Indeed,
+<a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m">SparseNMF.m</a>
+is initialized at random by default. The greedy initialization appears
+as follows:</p>
+<pre class="r"><code>fit_greedyinit &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+                        backfit = FALSE,var_type = 0)
+plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-greedy-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-greedy-1">
+Past versions of flash-greedy-1.png
+</button>
+</p>
+<div id="fig-flash-greedy-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-greedy-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The greedy initialization appears particularly well suited for the
+swimmer data set (backfitting only needs to clean up the first factor).
+And this seems due in large part to the “greediness” of the approach
+rather than to any sparsity-inducing properties of the priors. Indeed,
+if we simply use <code>flashier</code>’s greedy initialization function
+(alternating least squares) without doing any optimization on the
+initialized factors, we get similar results:</p>
+<pre class="r"><code>fl2 &lt;- flash_init(Y)
+for (i in 1:20) {
+  next_f &lt;- flash_greedy_init_default(flash_fit(fl2), sign_constraints = c(1, 1), seed = i)
+  next_f &lt;- lapply(next_f, as.matrix, ncol = 1)
+  fl2 &lt;- flash_factors_init(fl2, next_f)
+}
+# Warning in scale.EF(EF): Fitting stopped after the initialization function
+# failed to find a non-zero factor.
+
+# Warning in scale.EF(EF): Fitting stopped after the initialization function
+# failed to find a non-zero factor.
+
+# Warning in scale.EF(EF): Fitting stopped after the initialization function
+# failed to find a non-zero factor.
+plot_images(ldf(fl2)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Now let’s see what happens when we initialize the flashier
+factorization at random and when we don’t adapt the prior. Let’s start
+with a naive “flat” prior, and fix it rather than allow it to adapt it
+to the data. (Specifically, here we are using an exponential prior with
+large scale parameter.)</p>
+<pre class="r"><code>set.seed(1)
+n &lt;- nrow(Y)
+m &lt;- ncol(Y)
+k &lt;- 17
+flat_prior &lt;- ebnm_point_exponential(x = c(rep(1,100)))
+flat_prior$fitted_g$pi &lt;- c(0.001,0.999)
+ebnm_flat_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+                              fix_g = TRUE,g_init = flat_prior)
+fl_flat &lt;- flash_init(Y,var_type = 0)
+fl_flat &lt;- flash_factors_init(fl_flat,
+                              list(matrix(runif(n*k),n,k),
+                                   matrix(runif(m*k),m,k)),
+                              ebnm_flat_prior)
+fl_flat &lt;- flash_backfit(fl_flat)
+plot_images(ldf(fl_flat)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-flat-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-flat-1">
+Past versions of flash-flat-1.png
+</button>
+</p>
+<div id="fig-flash-flat-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5d21cb26e4fe7aff3e5e7024b5f1e29c7a8c1962/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">5d21cb2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b4a4907ba3eed484e76cb89bc240348bb4e98b06/docs/figure/swimmer_more.Rmd/flash-flat-1.png" target="_blank">b4a4907</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Even with this “flat” prior (and with a random initialization),
+flashier still did remarkably well in recovering the parts, although not
+quite as well as first flashier fit above. (It is possible that this
+so-called “flat” prior might actually encourage the factors to be
+sparse—I haven’t looked at this closely.)</p>
+<p>Now let’s see if a “sparse prior”—that is, a prior with most of its
+weight on zero—improves the result:</p>
+<pre class="r"><code>set.seed(1)
+sparse_prior &lt;- flat_prior
+sparse_prior$fitted_g$pi &lt;- c(0.999,0.001)
+ebnm_sparse_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+                                fix_g = TRUE,g_init = sparse_prior)
+fl_sparse &lt;- flash_init(Y,var_type = 0)
+fl_sparse &lt;- flash_factors_init(fl_sparse,
+                                list(matrix(runif(n*k),n,k),
+                                     matrix(runif(m*k),m,k)),
+                                ebnm_sparse_prior)
+fl_sparse &lt;- flash_backfit(fl_sparse)
+plot_images(ldf(fl_sparse)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-sparse-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-sparse-1">
+Past versions of flash-sparse-1.png
+</button>
+</p>
+<div id="fig-flash-sparse-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-sparse-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/flash-sparse-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-sparse-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The sparse prior improved the decomposition considerably by “cleaning
+up” some of the factors.</p>
+<p>Let’s now see if we can also get a good result by tuning the priors
+automatically based on the data. Adapting the priors only seems to work
+in this example if we first provide a good initialization, so here we
+initialize based on the factors estimated with the flat priors:</p>
+<pre class="r"><code>L0 &lt;- ldf(fl_flat)$L
+F0 &lt;- ldf(fl_flat)$F
+fl_adapt &lt;- flash_init(Y,var_type = 0)
+fl_adapt &lt;- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
+fl_adapt &lt;- flash_backfit(fl_adapt)
+plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-1">
+Past versions of flash-adapt-prior-1.png
+</button>
+</p>
+<div id="fig-flash-adapt-prior-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5d21cb26e4fe7aff3e5e7024b5f1e29c7a8c1962/docs/figure/swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">5d21cb2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d5a139bd0e7a48868ccdad699fa55db8d3a04f3e/docs/figure/swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">d5a139b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This improved the earlier result with flat priors, but didn’t work as
+well as the fixed sparse priors.</p>
+<p>Adapting the priors is a “chicken-and-egg” problem that can be
+sensitive to initialization, so if we provide flashier with the better
+estimates with the sparse priors, adapting the priors does indeed
+improve the result further:</p>
+<pre class="r"><code>L0 &lt;- ldf(fl_sparse)$L
+F0 &lt;- ldf(fl_sparse)$F
+fl_adapt2 &lt;- flash_init(Y,var_type = 0)
+fl_adapt2 &lt;- flash_factors_init(fl_adapt2,list(L0,F0),ebnm_point_exponential)
+fl_adapt2 &lt;- flash_backfit(fl_adapt2)
+plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-2-1">
+Past versions of flash-adapt-prior-2-1.png
+</button>
+</p>
+<div id="fig-flash-adapt-prior-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ce6db54cd5e5362f813e07a1cacc5d3f4c353d66/docs/figure/swimmer_more.Rmd/flash-adapt-prior-2-1.png" target="_blank">ce6db54</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ADD TEXT HERE.</p>
+<pre class="r"><code>rnorm(10)
+#  [1]  0.55823201 -0.07864577  0.74808608 -0.34911152  0.94649786  1.60628090
+#  [7] -0.53901870 -0.13099663  1.03559345  0.76750167</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 3.6.2 (2019-12-12)
+# Platform: x86_64-apple-darwin15.6.0 (64-bit)
+# Running under: macOS Catalina 10.15.7
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+# LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+#  [1] flashier_1.0.20   magrittr_2.0.1    ebnm_1.1-3        cowplot_1.1.1    
+#  [5] ggplot2_3.3.6     tidyr_1.1.3       dplyr_1.0.7       tibble_3.1.3     
+#  [9] R.matlab_3.6.2    workflowr_1.7.0.5
+# 
+# loaded via a namespace (and not attached):
+#  [1] Rcpp_1.0.8        horseshoe_0.2.0   invgamma_1.1      lattice_0.20-38  
+#  [5] getPass_0.2-2     ps_1.6.0          assertthat_0.2.1  rprojroot_2.0.3  
+#  [9] digest_0.6.23     utf8_1.1.4        truncnorm_1.0-8   R6_2.4.1         
+# [13] evaluate_0.14     highr_0.8         httr_1.4.2        pillar_1.6.2     
+# [17] rlang_1.0.6       irlba_2.3.3       rstudioapi_0.13   whisker_0.4      
+# [21] callr_3.7.0       jquerylib_0.1.4   R.utils_2.11.0    R.oo_1.24.0      
+# [25] Matrix_1.3-4      rmarkdown_2.21    labeling_0.3      splines_3.6.2    
+# [29] stringr_1.4.0     munsell_0.5.0     mixsqp_0.3-48     compiler_3.6.2   
+# [33] httpuv_1.5.2      xfun_0.36         pkgconfig_2.0.3   SQUAREM_2017.10-1
+# [37] htmltools_0.5.4   tidyselect_1.1.1  fansi_0.4.0       crayon_1.4.1     
+# [41] withr_2.5.0       later_1.0.0       R.methodsS3_1.8.1 grid_3.6.2       
+# [45] jsonlite_1.7.2    gtable_0.3.0      lifecycle_1.0.3   DBI_1.1.0        
+# [49] git2r_0.29.0      scales_1.1.0      cli_3.5.0         stringi_1.4.3    
+# [53] farver_2.0.1      fs_1.5.2          promises_1.1.0    bslib_0.3.1      
+# [57] ellipsis_0.3.2    generics_0.0.2    vctrs_0.3.8       trust_0.1-8      
+# [61] tools_3.6.2       softImpute_1.4    glue_1.4.2        purrr_0.3.4      
+# [65] parallel_3.6.2    processx_3.5.2    fastmap_1.1.0     yaml_2.2.0       
+# [69] colorspace_1.4-1  ashr_2.2-57       deconvolveR_1.2-1 knitr_1.37       
+# [73] sass_0.4.0</code></pre>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
