@@ -42,7 +42,7 @@ end
 save('swimmer_nmf_sW=0.95.mat','W','H','sp');
 
 % Run vanilla NMF with the "greedy" initialization from
-% flash_factors_init() in R.
+% flash_greedy_init_default() in R.
 k = 17;
 options.sW = 0;
 options.sH = 0;
