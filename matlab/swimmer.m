@@ -1,5 +1,3 @@
-% TODO: Explain here what this script is for, and how to use it.
-
 % Initialize the pseudorandom number sequence.
 rng(1);
 
@@ -43,6 +41,25 @@ end
 % Save the results.
 save('swimmer_nmf_sW=0.95.mat','W','H','sp');
 
+% Run vanilla NMF with the "greedy" initialization from
+% flash_factors_init() in R.
+k = 17;
+options.sW = 0;
+options.sH = 0;
+options.W = importdata('flash_greedy_init_L.txt');
+options.H = importdata('flash_greedy_init_F.txt')';
+[W,H,e,t] = sparseNMF(Y,k,options);
+
+% Compute the sparsity of each column of W.
+sp = zeros(1,k);
+for i = 1:k
+  sp(i) = sp_col(W(:,i));
+end
+
+% Save the results.
+save('swimmer_nmf_greedy_init.mat','W','H','sp');
+
+%
 % disp(sum(sum(W > 1e-6)));
 % fprintf('Sparsity in columns of H:\n');
 % fprintf('%d ',sum(H > 0.001));
@@ -55,3 +72,4 @@ save('swimmer_nmf_sW=0.95.mat','W','H','sp');
 %   sp(i) = sp_col(W(:,i));
 % end
 % fprintf('Hoyer sparsity of columns of W: %0.3f\n',mean(sp));
+%
