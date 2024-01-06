@@ -1,6 +1,6 @@
 ---
 title: More NMF analyses of the swimmer dataset
-author: Peter Carbonetto
+author: Peter Carbonetto and Jason Willwerscheid
 output:
   workflowr::wflow_html:
     toc: no
