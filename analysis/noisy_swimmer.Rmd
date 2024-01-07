@@ -1,0 +1,171 @@
+---
+title: "EBNMF on the swimmer dataset"
+author: "Jason Willwerscheid"
+date: "2023-01-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+Load packages:
+
+```{r}
+library(tidyverse)
+library(flashier)
+```
+
+Read in data. 
+
+```{r}
+swimmer <- R.matlab::readMat("./data/swimmer.mat")
+dat <- apply(swimmer$Y, 3, as.vector)
+dat <- dat - 1
+```
+
+
+## Noise model
+
+Let $0 < \nu < 1$ be a noise parameter. We simulate values for blank pixels (zeroes) from a Beta$(\nu, 1)$ distribution and solid pixels (ones) from a Beta$(1, \nu)$ distribution. The larger the value of $\nu$, the noisier the images.
+
+```{r}
+add_noise <- function(dat, noise_lvl) {
+  shape1 <- ifelse(dat == 0, noise_lvl, 1)
+  shape2 <- ifelse(dat == 0, 1, noise_lvl)
+  noisy_dat <- matrix(rbeta(length(dat), shape1, shape2), nrow = nrow(dat))
+  return(noisy_dat)
+}
+
+plot_images <- function(fitted_L) {
+  colnames(fitted_L) <- paste0("V", 1:ncol(fitted_L))
+  tib <- as_tibble(fitted_L) |>
+    mutate(
+      row = rep(1:32, each = 32),
+      col = rep(1:32, times = 32)
+    ) |>
+    pivot_longer(
+      cols = -c(row, col),
+      names_to = "k",
+      values_to = "loading",
+      names_prefix = "V",
+      names_transform = as.numeric
+    )
+  p <- ggplot(tib, aes(x = row, y = col, fill = loading)) +
+    geom_tile() +
+    scale_y_reverse() +
+    scale_fill_gradient(low = "white", high = "black") +
+    facet_wrap(~k) +
+    guides(fill = "none")
+  return(p)
+}
+```
+
+
+## Low noise
+
+As a first example, we consider a low-noise model ($\nu = 0.01$). The first few images appear as follows: 
+
+```{r}
+noisy_dat <- add_noise(dat, 0.01)
+plot_images(noisy_dat[, 1:9])
+```
+
+In this "easy" case, NMF does pretty well, but maybe not as well as expected (we can probably disregard the last three factors, since there is a large dropoff in the scree plot beginning at $k = 17$):
+
+```{r}
+nmf_res <- RcppML::nmf(noisy_dat, k = 20, verbose = FALSE)
+plot_images(nmf_res$w)
+```
+
+`flashier` does very well; although it does not automatically select the correct $K$, there is an obvious drop in the scree plot beginning at $k = 18$:
+
+```{r}
+fl <- flash(noisy_dat, S = 1e-3, ebnm_fn = ebnm_point_exponential, greedy_Kmax = 20, backfit = TRUE, verbose = 0)
+plot_images(ldf(fl, type = "m")$L)
+```
+
+
+## Medium noise
+
+Next we make things more challenging by setting $\nu = 0.25$. The first few images appear as follows: 
+
+```{r}
+noisy_dat <- add_noise(dat, 0.25)
+plot_images(noisy_dat[, 1:9])
+```
+
+The NMF factors are very noisy:
+
+```{r}
+nmf_res <- RcppML::nmf(noisy_dat, k = 20, verbose = FALSE)
+plot_images(nmf_res$w)
+```
+
+Notice however that we can recover results that are pretty close to the truth by thresholding the NMF factors. For instance, if for each factor we set pixels that are less than half the value of the maximum pixel to zero, we get the following:
+
+```{r}
+thresholded_nmf <- apply(nmf_res$w, 2, function(x) ifelse(x > 0.5 * max(x), x, 0))
+plot_images(thresholded_nmf)
+```
+
+`flashier` has a different problem; with more noise it is easier to get unlucky with a poor initialization, in which case `flashier` can stop adding factors too early:
+
+```{r}
+fl <- flash(noisy_dat, S = 1e-3, ebnm_fn = ebnm_point_exponential, greedy_Kmax = 20, backfit = TRUE, verbose = 0)
+plot_images(ldf(fl, type = "m")$L)
+```
+
+If we try multiple initializations before terminating the greedy algorithm, we recover a very good factorization. The syntax is awkward here and we will probably want to find a better way to incorporate "restarts" into an initialization function:
+
+```{r}
+fl <- flash_init(noisy_dat, S = 1e-3) |>
+  flash_greedy(Kmax = 20, ebnm_fn = ebnm_point_exponential)
+fl <- fl |>
+  flash_greedy(Kmax = 20 - fl$n_factors, ebnm_fn = ebnm_point_exponential,
+               init_fn = function(f) flash_greedy_init_default(f, c(1, 1), seed = 1))
+fl <- fl |> flash_backfit()
+
+plot_images(ldf(fl, type = "m")$L)
+```
+
+
+
+## High noise
+
+With enough noise both NMF and `flashier` will do poorly. Under the current noise model `flashier` begins to fail around $\nu = 0.4$. This is not too surprising, as the images are very noisy:
+
+```{r}
+noisy_dat <- add_noise(dat, 0.4)
+plot_images(noisy_dat[, 1:9])
+```
+
+The factors are very difficult to discern using NMF:
+
+```{r}
+nmf_res <- RcppML::nmf(noisy_dat, k = 20, verbose = FALSE)
+plot_images(nmf_res$w)
+```
+
+Thresholding does not really do the trick:
+
+```{r}
+thresholded_nmf <- apply(nmf_res$w, 2, function(x) ifelse(x > 0.5 * max(x), x, 0))
+plot_images(thresholded_nmf)
+```
+
+`flashier` does an excellent job finding a subset of the "true" factors, but it also misses quite a few:
+
+```{r}
+fl <- flash_init(noisy_dat, S = 1e-3) |>
+  flash_greedy(Kmax = 20, ebnm_fn = ebnm_point_exponential)
+for (i in 1:10) {
+  fl <- fl |>
+    flash_greedy(Kmax = 20 - fl$n_factors, ebnm_fn = ebnm_point_exponential,
+                 init_fn = function(f) flash_greedy_init_default(f, c(1, 1), seed = i))
+}
+
+plot_images(ldf(fl, type = "m")$L)
+```
