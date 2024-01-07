@@ -230,11 +230,12 @@ plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)
 ADD TEXT HERE.
 
 ```{r summary}
-res <- data.frame(f = rep(0,6),sp = rep(0,6))
-rownames(res) <- c("nmf","sparse_nmf","flash_flat","flash_adapt",
+res <- data.frame(f = rep(0,7),sp = rep(0,7))
+rownames(res) <- c("nmf","sparse_nmf","flash","flash_flat","flash_adapt",
                    "flash_sparse","flash_adapt2")
 res["nmf","f"]           <- frobenius_norm_nmf(Y,nmf)
 res["sparse_nmf","f"]    <- frobenius_norm_nmf(Y,sparse_nmf)
+res["flash","f"]         <- frobenius_norm_flash(Y,fit1)
 res["flash_flat","f"]    <- frobenius_norm_flash(Y,fl_flat)
 res["flash_adapt","f"]   <- frobenius_norm_flash(Y,fl_adapt)
 res["flash_sparse","f"]  <- frobenius_norm_flash(Y,fl_sparse)
