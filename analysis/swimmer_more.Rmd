@@ -74,7 +74,7 @@ sparsity constraint by forcing some of the factors to represent
 multiple parts, which is the opposite of what we actually want.
 
 Note that the vanilla NMF estimates were already very sparse which
-waas why we need to constrain the sparsity on $\mathbf{W}$ to be at
+was why we need to constrain the sparsity on $\mathbf{W}$ to be at
 least 0.95:
 
 ```{r compare-sparsity}
@@ -230,7 +230,16 @@ plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)
 ADD TEXT HERE.
 
 ```{r summary}
-rnorm(10)
+res <- data.frame(f = rep(0,6),sp = rep(0,6))
+rownames(res) <- c("nmf","sparse_nmf","flash_flat","flash_adapt",
+                   "flash_sparse","flash_adapt2")
+res["nmf","f"]           <- frobenius_norm_nmf(Y,nmf)
+res["sparse_nmf","f"]    <- frobenius_norm_nmf(Y,sparse_nmf)
+res["flash_flat","f"]    <- frobenius_norm_flash(Y,fl_flat)
+res["flash_adapt","f"]   <- frobenius_norm_flash(Y,fl_adapt)
+res["flash_sparse","f"]  <- frobenius_norm_flash(Y,fl_sparse)
+res["flash_adapt2","f"]  <- frobenius_norm_flash(Y,fl_adapt2)
+transform(res,f = round(f))
 ```
 
 [swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m

@@ -2,6 +2,14 @@
 frobenius_norm <- function (X, W, H)
   sum((X - W %*% H)^2)
 
+# TO DO: Explain what this function does, and how to use it.
+frobenius_norm_nmf <- function (X, fit)
+  frobenius_norm(X,fit$W,fit$H)
+
+# TO DO: Explain what this function does, and how to use it.
+frobenius_norm_flash <- function (X, fit)
+  frobenius_norm(X,fit$L_pm,t(fit$F_pm))
+
 # This takes the m x k matrix of feature weights and plots them as n x
 # n images, where m = n^2. Note that nrow*ncol >= k is expected.
 plot_images <- function (W, n = 32, font_size = 9, nrow = 4, ncol = 4) {
