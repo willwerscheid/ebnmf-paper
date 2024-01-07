@@ -1,6 +1,6 @@
 ---
 title: More NMF analyses of the swimmer dataset
-author: Peter Carbonetto
+author: Peter Carbonetto and Jason Willwerscheid
 output:
   workflowr::wflow_html:
     toc: no
@@ -74,7 +74,7 @@ sparsity constraint by forcing some of the factors to represent
 multiple parts, which is the opposite of what we actually want.
 
 Note that the vanilla NMF estimates were already very sparse which
-waas why we need to constrain the sparsity on $\mathbf{W}$ to be at
+was why we need to constrain the sparsity on $\mathbf{W}$ to be at
 least 0.95:
 
 ```{r compare-sparsity}
@@ -126,7 +126,22 @@ for (i in 1:k) {
   next_f <- lapply(next_f,as.matrix,ncol = 1)
   fl2    <- flash_factors_init(fl2,next_f)
 }
-plot_images(ldf(fl2)$L,nrow = 3,ncol = 8)
+L  <- ldf(fl2)$L
+ks <- which(apply(is.finite(L),2,all))
+L  <- L[,ks]
+write.table(round(L,digits = 6),"flash_greedy_init_L.txt",
+            row.names = FALSE,col.names = FALSE)
+write.table(round(ldf(fl2)$F[,ks],digits = 6),"flash_greedy_init_F.txt",
+            row.names = FALSE,col.names = FALSE)
+plot_images(L,nrow = 3,ncol = 8)
+```
+
+And, indeed, NMF initialized to this greedy initialization finds the
+right solution (see [swimmer.m][swimmer_matlab] for details):
+
+```{r, fig.height=3, fig.width=7}
+nmf_greedy_init <- readMat("matlab/swimmer_nmf_greedy_init.mat")
+plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)
 ```
 
 Now let's see what happens when we initialize the flashier
@@ -215,7 +230,17 @@ plot_images(ldf(fl_adapt2)$L,nrow = 3,ncol = 8)
 ADD TEXT HERE.
 
 ```{r summary}
-rnorm(10)
+res <- data.frame(f = rep(0,7),sp = rep(0,7))
+rownames(res) <- c("nmf","sparse_nmf","flash","flash_flat","flash_adapt",
+                   "flash_sparse","flash_adapt2")
+res["nmf","f"]           <- frobenius_norm_nmf(Y,nmf)
+res["sparse_nmf","f"]    <- frobenius_norm_nmf(Y,sparse_nmf)
+res["flash","f"]         <- frobenius_norm_flash(Y,fit1)
+res["flash_flat","f"]    <- frobenius_norm_flash(Y,fl_flat)
+res["flash_adapt","f"]   <- frobenius_norm_flash(Y,fl_adapt)
+res["flash_sparse","f"]  <- frobenius_norm_flash(Y,fl_sparse)
+res["flash_adapt2","f"]  <- frobenius_norm_flash(Y,fl_adapt2)
+transform(res,f = round(f))
 ```
 
 [swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m

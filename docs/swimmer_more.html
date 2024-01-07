@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-04
+<strong>Last updated:</strong> 2024-01-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree86087980fd1b786d668b7b92ed8862900a26abbatargetblank8608798a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree13e77df5adeff9248cf8e18c164673e7a8f907catargetblank13e77dfa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/86087980fd1b786d668b7b92ed8862900a26abba" target="_blank">8608798</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/13e77df5adeff9248cf8e18c164673e7a8f907ca" target="_blank">13e77df</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree86087980fd1b786d668b7b92ed8862900a26abbatargetblank8608798a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree13e77df5adeff9248cf8e18c164673e7a8f907catargetblank13e77dfa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/86087980fd1b786d668b7b92ed8862900a26abba" target="_blank">8608798</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/13e77df5adeff9248cf8e18c164673e7a8f907ca" target="_blank">13e77df</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -464,7 +464,13 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-working directory clean
+Untracked files:
+    Untracked:  flash_greedy_init_F.txt
+    Untracked:  flash_greedy_init_L.txt
+
+Unstaged changes:
+    Modified:   matlab/swimmer.m
+
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -509,6 +515,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/13e77df5adeff9248cf8e18c164673e7a8f907ca/analysis/swimmer_more.Rmd" target="_blank">13e77df</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-05
+</td>
+<td>
+workflowr::wflow_publish("analysis/swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/f94e6c0c339bde283862b5e3e6253248e525b802/docs/swimmer_more.html" target="_blank">f94e6c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+<td>
+A few small fixes to swimmer_more.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1578,7 +1618,14 @@ for (i in 1:k) {
 }
 # Warning in scale.EF(EF): Fitting stopped after the initialization function
 # failed to find a non-zero factor.
-plot_images(ldf(fl2)$L,nrow = 3,ncol = 8)</code></pre>
+L  &lt;- ldf(fl2)$L
+ks &lt;- which(apply(is.finite(L),2,all))
+L  &lt;- L[,ks]
+write.table(round(L,digits = 6),&quot;flash_greedy_init_L.txt&quot;,
+            row.names = FALSE,col.names = FALSE)
+write.table(round(ldf(fl2)$F[,ks],digits = 6),&quot;flash_greedy_init_F.txt&quot;,
+            row.names = FALSE,col.names = FALSE)
+plot_images(L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/swimmer_more.Rmd/flash-greedy-2-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-greedy-2-1">
@@ -1604,10 +1651,98 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/f94e6c0c339bde283862b5e3e6253248e525b802/docs/figure/swimmer_more.Rmd/flash-greedy-2-1.png" target="_blank">f94e6c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/fe18260c2dab7a0c2b1466353220ce1dcf308471/docs/figure/swimmer_more.Rmd/flash-greedy-2-1.png" target="_blank">fe18260</a>
 </td>
 <td>
 Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>And, indeed, NMF initialized to this greedy initialization finds the
+right solution (see <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/swimmer.m">swimmer.m</a>
+for details):</p>
+<pre class="r"><code>nmf_greedy_init &lt;- readMat(&quot;matlab/swimmer_nmf_greedy_init.mat&quot;)
+plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/fe18260c2dab7a0c2b1466353220ce1dcf308471/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">fe18260</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0210672b3ee4d5e9074a26f26d1bcd1f1f4131f3/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">0210672</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/648fd4ca924f3ac190b61a25f030a6790d00f40b/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">648fd4c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/908883b96a5e8090af254aa8fe0f98e248ae1899/docs/figure/swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">908883b</a>
+</td>
+<td>
+Jason Willwerscheid
 </td>
 <td>
 2024-01-04
