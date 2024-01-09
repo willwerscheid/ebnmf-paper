@@ -49,7 +49,7 @@ Y <- Y - 1
 ```
 
 This is the decomposition produced by "vanilla NMF" with 16
-faactors—by "vanilla", we mean NMF without any penalties on the
+factors—by "vanilla", we mean NMF without any penalties on the
 parameters. See [swimmer.m][swimmer_matlab] for details.
 
 ```{r vanilla-nmf, fig.height=2, fig.width=7}
