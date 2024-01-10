@@ -1,0 +1,55 @@
+---
+title: More NMF analyses of noisy swimmer data
+author: Jason Willwerscheid and Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+ADD TEXT HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed for the
+analyses below.
+
+```{r load-pkgs, message=FALSE}
+library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+source("code/swimmer_functions.R")
+```
+
+Initialize the sequence of pseudorandom numbers.
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the swimmer data set and convert the pixels to binary.
+
+```{r load-swimmer}
+Y <- readMat("data/swimmer.mat")$Y
+Y <- apply(Y,3,as.vector)
+Y <- Y - 1
+Y[Y > 0] <- 1
+```
+
+Add some noise to the images.
+
+```{r add-noise, fig.height=2, fig.width=7}
+Y <- generate_noisy_swimmer_data(Y,0.05)
+plot_images(Y[,1:16],nrow = 2,ncol = 8)
+```
