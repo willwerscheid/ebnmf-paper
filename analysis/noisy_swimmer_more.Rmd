@@ -1,5 +1,5 @@
 ---
-title: More NMF analyses of the noisy swimmer data
+title: Yet more NMF analyses of the (noisy) swimmer data
 author: Jason Willwerscheid and Peter Carbonetto
 output:
   workflowr::wflow_html:
@@ -51,5 +51,45 @@ Add some noise to the images.
 
 ```{r add-noise, fig.height=2, fig.width=7}
 Y <- generate_noisy_swimmer_data(Y,0.05)
+writeMat("noisy_swimmer.mat",Y = Y)
 plot_images(Y[,1:16],nrow = 2,ncol = 8)
 ```
+
+ADD TEXT HERE.
+
+```{r vanilla-nmf, fig.height=2, fig.width=7}
+nmf <- readMat("matlab/noisy_swimmer_nmf.mat")
+plot_images(nmf$W,nrow = 2,ncol = 8)
+```
+
+ADD TEXT HERE.
+
+```{r sparse-nmf, fig.height=3, fig.width=7}
+sparse_nmf <- readMat("matlab/noisy_swimmer_nmf_sW=0.8.mat")
+plot_images(sparse_nmf$W,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
+
+```{r more-sparse-nmf, fig.height=3, fig.width=7}
+more_sparse_nmf <- readMat("matlab/noisy_swimmer_nmf_sW=0.9.mat")
+plot_images(more_sparse_nmf$W,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
+
+```{r compare-sparsity}
+mean(nmf$sp)
+mean(sparse_nmf$sp)
+mean(more_sparse_nmf$sp)
+```
+
+ADD TEXT HERE.
+
+```{r flash, results="hide", fig.height=3, fig.width=7}
+fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
+              backfit = TRUE,var_type = 0)
+plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
+```
+
+ADD TEXT HERE.
