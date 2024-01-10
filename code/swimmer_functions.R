@@ -1,5 +1,5 @@
 # Let 0 < u < 1 be a noise parameter. We simulate values for blank
-# pixels (zeroes) from Beta(u,1), and solid pixels (nonzeros) from
+# pixels (zeroes) from Beta(u,1), and solid pixels (ones) from
 # Beta(1,u). The larger the value of u, the noisier the images.
 generate_noisy_swimmer_data <- function (dat, u) {
   s1  <- ifelse(dat == 0,u,1)
