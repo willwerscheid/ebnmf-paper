@@ -1,3 +1,14 @@
+# Let 0 < u < 1 be a noise parameter. We simulate values for blank
+# pixels (zeroes) from Beta(u,1), and solid pixels (nonzeros) from
+# Beta(1,u). The larger the value of u, the noisier the images.
+generate_noisy_swimmer_data <- function (dat, u) {
+  s1  <- ifelse(dat == 0,u,1)
+  s2  <- ifelse(dat == 0,1,u)
+  out <- rbeta(length(dat),s1,s2)
+  out <- matrix(out,nrow = nrow(dat))
+  return(out)
+}
+
 # TO DO: Explain what this function does, and how to use it.
 frobenius_norm <- function (X, W, H)
   sum((X - W %*% H)^2)

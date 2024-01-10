@@ -1,5 +1,5 @@
 ---
-title: More NMF analyses of noisy swimmer data
+title: More NMF analyses of the noisy swimmer data
 author: Jason Willwerscheid and Peter Carbonetto
 output:
   workflowr::wflow_html:
