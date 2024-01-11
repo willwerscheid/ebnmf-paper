@@ -63,7 +63,7 @@ This is the decomposition produced by "vanilla NMF" with 16 factors—by
 
 ```{r vanilla-nmf, fig.height=2, fig.width=7}
 nmf <- readMat("matlab/noisy_swimmer_nmf.mat")
-plot_images(nmf$W,nrow = 2,ncol = 8)
+plot_images(nmf$W,nrow = 3,ncol = 8)
 ```
 
 This decomposition has trouble distinguishing the torso from the
@@ -105,13 +105,13 @@ mean(sparse_nmf$sp)
 mean(more_sparse_nmf$sp)
 ```
 
-Let's now compare the NMF estimtes to a decomposition-by-parts
-obtained by running flashier with sparse, non-negative priors
-(`ebnm_point_exponential`). Remarkably, running flash with the
+Let's now compare the NMF estimates to a decomposition-by-parts
+obtained by running flashier with sparse, non-negative priors,
+`ebnm_point_exponential`. Remarkably, running flash with the
 point-exponential prior gets the right result, automatically splitting
-the torso and limb positions correctly into 17 factors, and adapting
-the priors to capture the fact that the factors are very sparse (note
-that we did not tell flashier that we wanted exactly 17 factors):
+the torso and limb positions correctly into 17 factors (plus one more
+factor that ends up capturing the noise). Also, flashier *adapts* the
+priors to capture the fact that the factors are very sparse:
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
 fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
@@ -119,6 +119,58 @@ fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
 plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
 ```
 
-ADD TEXT HERE.
+(Note that we needed to tell flashier we wanted at most 18 factors
+otherwise flashier would give us more than 18.)
+
+Let's now look at this remarkable result more closely.
+
+By default, flashier initializes the factors in a "greedy" way, which
+is different from the more typical random initialization in NMF.
+Indeed, [SparseNMF.m][sparsenmf] is initialized at random by
+default. The greedy initialization appears as follows:
+
+```{r flash-greedy, results="hide", fig.height=3, fig.width=7}
+fit_greedyinit <- flash(Y,ebnm_fn = ebnm_point_exponential,
+                        greedy_Kmax = 18,backfit = FALSE,
+						var_type = 0)
+plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)
+```
+
+The greedy initialization appears particularly well suited for the
+swimmer data set (backfitting only needs to clean up the first
+factor). And this seems due in large part to the "greediness" of the
+approach rather than to any sparsity-inducing properties of the
+priors. Indeed, if we simply use flashier's greedy initialization
+function (alternating least-squares) without doing any optimization on
+the initialized factors, we get similar results:
+
+```{r flash-greedy-2, fig.height=3, fig.width=7}
+k <- 18
+fl2 <- flash_init(Y)
+for (i in 1:k) {
+  next_f <- flash_greedy_init_default(flash_fit(fl2),seed = i,
+                                      sign_constraints = c(1,1))
+  next_f <- lapply(next_f,as.matrix,ncol = 1)
+  fl2    <- flash_factors_init(fl2,next_f)
+}
+L  <- ldf(fl2)$L
+ks <- which(apply(is.finite(L),2,all))
+L  <- L[,ks]
+write.table(round(L,digits = 6),"flash_greedy_init_noisy_L.txt",
+            row.names = FALSE,col.names = FALSE)
+write.table(round(ldf(fl2)$F[,ks],digits = 6),"flash_greedy_init_noisy_F.txt",
+            row.names = FALSE,col.names = FALSE)
+plot_images(L,nrow = 3,ncol = 8)
+```
+
+And, indeed, sparse NMF initialized to this greedy initialization
+finds a pretty good solution (see
+[noisy_swimmer.m][noisy_swimmer_matlab] for details):
+
+```{r, fig.height=3, fig.width=7}
+nmf_greedy_init <- readMat("matlab/noisy_swimmer_nmf_greedy_init_sW=0.9.mat")
+plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)
+```
 
 [noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
+[sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
