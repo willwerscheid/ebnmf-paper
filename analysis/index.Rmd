@@ -2,9 +2,19 @@
 title: Sparse EBNMF Data Applications
 author: Jason Willwerscheid
 site: workflowr::wflow_site
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
 ---
 
 * [swimmer dataset, flashier vs. existing (sparse) NMF methods.](swimmer.html)
 
 * [More NMF analyses of the swimmer dataset.](swimmer_more.html)
+
+* ["noisy" swimmer data](noisy_swimmer.html)
+
+* [More analyses of the "noisy" swimmer data](more_noisy_swimmer.html)
