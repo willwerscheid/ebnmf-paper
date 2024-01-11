@@ -12,7 +12,7 @@
 <meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
 
 
-<title>More NMF analyses of noisy swimmer data</title>
+<title>Yet more NMF analyses of the (noisy) swimmer data</title>
 
 <script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -270,8 +270,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">More NMF analyses of noisy swimmer
-data</h1>
+<h1 class="title toc-ignore">Yet more NMF analyses of the (noisy)
+swimmer data</h1>
 <h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
 
 </div>
@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-10
+<strong>Last updated:</strong> 2024-01-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef3427f06c6e378a4f0d7510e9d0daf1f3becd4b5targetblankf3427f0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9915c0ce04bfa1a32006b065a778a4098157d593targetblank9915c0ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f3427f06c6e378a4f0d7510e9d0daf1f3becd4b5" target="_blank">f3427f0</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9915c0ce04bfa1a32006b065a778a4098157d593" target="_blank">9915c0c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef3427f06c6e378a4f0d7510e9d0daf1f3becd4b5targetblankf3427f0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9915c0ce04bfa1a32006b065a778a4098157d593targetblank9915c0ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f3427f06c6e378a4f0d7510e9d0daf1f3becd4b5" target="_blank">f3427f0</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9915c0ce04bfa1a32006b065a778a4098157d593" target="_blank">9915c0c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,12 +467,23 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
+    Ignored:    analysis/figure/
 
 Untracked files:
-    Untracked:  analysis/#noisy_swimmer.Rmd#
+    Untracked:  flash_greedy_init_noisy_F.txt
+    Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  matlab/flash_greedy_init_noisy_F.txt
+    Untracked:  matlab/flash_greedy_init_noisy_L.txt
+    Untracked:  matlab/noisy_swimmer_nmf_greedy_init.mat
+    Untracked:  matlab/noisy_swimmer_nmf_greedy_init_sW=0.9.mat
+    Untracked:  noisy_swimmer.mat
 
 Unstaged changes:
-    Modified:   code/swimmer_functions.R
+    Modified:   matlab/noisy_swimmer.m
+    Modified:   matlab/noisy_swimmer_nmf.mat
+    Modified:   matlab/noisy_swimmer_nmf_sW=0.8.mat
+    Modified:   matlab/noisy_swimmer_nmf_sW=0.9.mat
+    Modified:   matlab/swimmer.m
 
 </code></pre>
 <p>
@@ -523,6 +534,91 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9915c0ce04bfa1a32006b065a778a4098157d593/analysis/noisy_swimmer_more.Rmd" target="_blank">9915c0c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+wflow_publish("analysis/noisy_swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/201ea1ffe7533f5134770d5a02aed50c2789e107/analysis/noisy_swimmer_more.Rmd" target="_blank">201ea1f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+Adding some notes to the noisy_swimmer_more.Rmd analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b05091ccf6b323c302668cf906f56309091baf33/analysis/noisy_swimmer_more.Rmd" target="_blank">b05091c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-10
+</td>
+<td>
+Working on adding additional NMF analyses to noisy_swimmer_more.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/f33a6fcaae934c868f7e86314d085c11d0a5c2de/analysis/noisy_swimmer_more.Rmd" target="_blank">f33a6fc</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-10
+</td>
+<td>
+Added function generate_noisy_swimmer_data to swimmer_functions.R.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/1c9b2b15d9427dd1d4b3786aefaa9999026195e9/docs/noisy_swimmer_more.html" target="_blank">1c9b2b1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-10
+</td>
+<td>
+Started working on the noisy_swimmer_more analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/f3427f06c6e378a4f0d7510e9d0daf1f3becd4b5/analysis/noisy_swimmer_more.Rmd" target="_blank">f3427f0</a>
 </td>
 <td>
@@ -542,7 +638,9 @@ wflow_publish("analysis/noisy_swimmer_more.Rmd", verbose = TRUE)
 </div>
 </div>
 </div>
-<p>ADD TEXT HERE.</p>
+<p>This workflowr page contains some additional explorations of NMF
+methods—including the EBNMF methods implemented in flashier—for learning
+parts from the “noisy” swimmer data.</p>
 <p>First, load the packages and some custom functions needed for the
 analyses below.</p>
 <pre class="r"><code>library(R.matlab)
@@ -563,8 +661,141 @@ Y &lt;- Y - 1
 Y[Y &gt; 0] &lt;- 1</code></pre>
 <p>Add some noise to the images.</p>
 <pre class="r"><code>Y &lt;- generate_noisy_swimmer_data(Y,0.05)
+writeMat(&quot;noisy_swimmer.mat&quot;,Y = Y)
 plot_images(Y[,1:16],nrow = 2,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/add-noise-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-add-noise-1">
+Past versions of add-noise-1.png
+</button>
+</p>
+<div id="fig-add-noise-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/1c9b2b15d9427dd1d4b3786aefaa9999026195e9/docs/figure/noisy_swimmer_more.Rmd/add-noise-1.png" target="_blank">1c9b2b1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-10
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This is the decomposition produced by “vanilla NMF” with 16
+factors—by “vanilla”, we mean NMF without any penalties on the
+parameters. See <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m">noisy_swimmer.m</a>
+for details.</p>
+<pre class="r"><code>nmf &lt;- readMat(&quot;matlab/noisy_swimmer_nmf.mat&quot;)
+plot_images(nmf$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>This decomposition has trouble distinguishing the torso from the
+limbs, and doesn’t always split the limbs into separate factors. Also,
+many of the limbs are quite noisy. Perhaps encouraging the parts to be
+more sparse would address these issues with this. In this second attempt
+(also implemented in <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m">noisy_swimmer.m</a>),
+we forced the average sparsity of the 17 factors to be at least 0.8:</p>
+<pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/noisy_swimmer_nmf_sW=0.8.mat&quot;)
+plot_images(sparse_nmf$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Although not perfect—the factors have captured a lot of background
+noise, and the torso is still included with some of the limbs—this
+sparse NMF decomposition is nonetheless a clear improvement over the
+vanilla NMF result.</p>
+<p>Let’s now see what happens when we force the sparsity to be even
+higher (0.9):</p>
+<pre class="r"><code>more_sparse_nmf &lt;- readMat(&quot;matlab/noisy_swimmer_nmf_sW=0.9.mat&quot;)
+plot_images(more_sparse_nmf$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/more-sparse-nmf-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>The sparser decomposition removes a lot of the background noise in
+the factors, but also introduces some new problems: for example, some of
+the factors are reduced to a single pixel or just a few pixels, and
+other factors now include multiple limbs, which is not right.</p>
+<p>To double-check, here are the average sparsity values from each of
+these NMF decompositions:</p>
+<pre class="r"><code>mean(nmf$sp)
+mean(sparse_nmf$sp)
+mean(more_sparse_nmf$sp)
+# [1] 0.794533
+# [1] 0.8109986
+# [1] 0.9098277</code></pre>
+<p>Let’s now compare the NMF estimates to a decomposition-by-parts
+obtained by running flashier with sparse, non-negative priors,
+<code>ebnm_point_exponential</code>. Remarkably, running flash with the
+point-exponential prior gets the right result, automatically splitting
+the torso and limb positions correctly into 17 factors (plus one more
+factor that ends up capturing the noise). Also, flashier <em>adapts</em>
+the priors to capture the fact that the factors are very sparse:</p>
+<pre class="r"><code>fit1 &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
+              backfit = TRUE,var_type = 0)
+plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/flash-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>(Note that we needed to tell flashier we wanted at most 18 factors
+otherwise flashier would give us more than 18.)</p>
+<p>Let’s now look at this remarkable result more closely.</p>
+<p>By default, flashier initializes the factors in a “greedy” way, which
+is different from the more typical random initialization in NMF. Indeed,
+<a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m">SparseNMF.m</a>
+is initialized at random by default. The greedy initialization appears
+as follows:</p>
+<pre class="r"><code>fit_greedyinit &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+                        greedy_Kmax = 18,backfit = FALSE,
+                        var_type = 0)
+plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/flash-greedy-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>The greedy initialization appears particularly well suited for the
+swimmer data set (backfitting only needs to clean up the first factor).
+And this seems due in large part to the “greediness” of the approach
+rather than to any sparsity-inducing properties of the priors. Indeed,
+if we simply use flashier’s greedy initialization function (alternating
+least-squares) without doing any optimization on the initialized
+factors, we get similar results:</p>
+<pre class="r"><code>k &lt;- 18
+fl2 &lt;- flash_init(Y)
+for (i in 1:k) {
+  next_f &lt;- flash_greedy_init_default(flash_fit(fl2),seed = i,
+                                      sign_constraints = c(1,1))
+  next_f &lt;- lapply(next_f,as.matrix,ncol = 1)
+  fl2    &lt;- flash_factors_init(fl2,next_f)
+}
+L  &lt;- ldf(fl2)$L
+ks &lt;- which(apply(is.finite(L),2,all))
+L  &lt;- L[,ks]
+write.table(round(L,digits = 6),&quot;flash_greedy_init_noisy_L.txt&quot;,
+            row.names = FALSE,col.names = FALSE)
+write.table(round(ldf(fl2)$F[,ks],digits = 6),&quot;flash_greedy_init_noisy_F.txt&quot;,
+            row.names = FALSE,col.names = FALSE)
+plot_images(L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/flash-greedy-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>And, indeed, sparse NMF initialized to this greedy initialization
+finds a pretty good solution (see <a
+href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m">noisy_swimmer.m</a>
+for details):</p>
+<pre class="r"><code>nmf_greedy_init &lt;- readMat(&quot;matlab/noisy_swimmer_nmf_greedy_init_sW=0.9.mat&quot;)
+plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/unnamed-chunk-1-1.png" width="840" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
