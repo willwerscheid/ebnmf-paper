@@ -17,4 +17,4 @@ output:
 
 * ["Noisy" swimmer data.](noisy_swimmer.html)
 
-* [More analyses of the "noisy" swimmer data.](more_noisy_swimmer.html)
+* [More analyses of the "noisy" swimmer data.](noisy_swimmer_more.html)
