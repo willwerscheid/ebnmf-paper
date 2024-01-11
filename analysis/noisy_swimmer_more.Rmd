@@ -78,10 +78,10 @@ sparse_nmf <- readMat("matlab/noisy_swimmer_nmf_sW=0.8.mat")
 plot_images(sparse_nmf$W,nrow = 3,ncol = 8)
 ```
 
-Although not perfect—the factors have captured a lot of background
-noise, and the torso is still included with some of the limbs—this
-sparse NMF decomposition is nonetheless a clear improvement over the
-vanilla NMF result.
+Although far from perfect—the factors have captured a lot of
+background noise, and the torso is still included with some of the
+limbs—this sparse NMF decomposition is an improvement over the vanilla
+NMF result.
 
 Let's now see what happens when we force the sparsity to be even
 higher (0.9):
@@ -92,9 +92,8 @@ plot_images(more_sparse_nmf$W,nrow = 3,ncol = 8)
 ```
 
 The sparser decomposition removes a lot of the background noise in the
-factors, but also introduces some new problems: for example, some of
-the factors are reduced to a single pixel or just a few pixels, and
-other factors now include multiple limbs, which is not right.
+factors, but also introduces some new problems; for example, some of
+the factors now include multiple limbs.
 
 To double-check, here are the average sparsity values from each of
 these NMF decompositions:
@@ -154,12 +153,10 @@ for (i in 1:k) {
   next_f <- lapply(next_f,as.matrix,ncol = 1)
   fl2    <- flash_factors_init(fl2,next_f)
 }
-L  <- ldf(fl2)$L
-ks <- which(apply(is.finite(L),2,all))
-L  <- L[,ks]
+L <- ldf(fl2)$L
 write.table(round(L,digits = 6),"flash_greedy_init_noisy_L.txt",
             row.names = FALSE,col.names = FALSE)
-write.table(round(ldf(fl2)$F[,ks],digits = 6),"flash_greedy_init_noisy_F.txt",
+write.table(round(ldf(fl2)$F,digits = 6),"flash_greedy_init_noisy_F.txt",
             row.names = FALSE,col.names = FALSE)
 plot_images(L,nrow = 3,ncol = 8)
 ```
@@ -173,6 +170,8 @@ removing the noise as flashier (see
 nmf_greedy_init <- readMat("matlab/noisy_swimmer_nmf_greedy_init_sW=0.9.mat")
 plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)
 ```
+
+TO DO NEXT: flashier with random initialization.
 
 [noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
 [sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
