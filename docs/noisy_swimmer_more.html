@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreedbd2b310b6babdffe782061bb0404f19fe2ae3f0targetblankdbd2b31a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebf1ef88f7200035db33bf0a7f933bf017b94bf64targetblankbf1ef88a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/dbd2b310b6babdffe782061bb0404f19fe2ae3f0" target="_blank">dbd2b31</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bf1ef88f7200035db33bf0a7f933bf017b94bf64" target="_blank">bf1ef88</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreedbd2b310b6babdffe782061bb0404f19fe2ae3f0targetblankdbd2b31a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebf1ef88f7200035db33bf0a7f933bf017b94bf64targetblankbf1ef88a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/dbd2b310b6babdffe782061bb0404f19fe2ae3f0" target="_blank">dbd2b31</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bf1ef88f7200035db33bf0a7f933bf017b94bf64" target="_blank">bf1ef88</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,11 +467,6 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
-
-Untracked files:
-    Untracked:  flash_greedy_init_noisy_F.txt
-    Untracked:  flash_greedy_init_noisy_L.txt
-    Untracked:  noisy_swimmer.mat
 
 </code></pre>
 <p>
@@ -517,6 +512,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bf1ef88f7200035db33bf0a7f933bf017b94bf64/analysis/noisy_swimmer_more.Rmd" target="_blank">bf1ef88</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+wflow_publish("analysis/noisy_swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/noisy_swimmer_more.html" target="_blank">0221134</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+Added ‘greedy’ fits to noisy_swimmer_more analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -755,6 +784,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">0221134</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">5ea7ae1</a>
 </td>
 <td>
@@ -802,6 +842,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">0221134</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">5ea7ae1</a>
 </td>
 <td>
@@ -815,10 +866,10 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Although not perfect—the factors have captured a lot of background
-noise, and the torso is still included with some of the limbs—this
-sparse NMF decomposition is nonetheless a clear improvement over the
-vanilla NMF result.</p>
+<p>Although far from perfect—the factors have captured a lot of
+background noise, and the torso is still included with some of the
+limbs—this sparse NMF decomposition is an improvement over the vanilla
+NMF result.</p>
 <p>Let’s now see what happens when we force the sparsity to be even
 higher (0.9):</p>
 <pre class="r"><code>more_sparse_nmf &lt;- readMat(&quot;matlab/noisy_swimmer_nmf_sW=0.9.mat&quot;)
@@ -848,6 +899,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/more-sparse-nmf-1.png" target="_blank">0221134</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/more-sparse-nmf-1.png" target="_blank">5ea7ae1</a>
 </td>
 <td>
@@ -862,16 +924,15 @@ Peter Carbonetto
 </div>
 </div>
 <p>The sparser decomposition removes a lot of the background noise in
-the factors, but also introduces some new problems: for example, some of
-the factors are reduced to a single pixel or just a few pixels, and
-other factors now include multiple limbs, which is not right.</p>
+the factors, but also introduces some new problems; for example, some of
+the factors now include multiple limbs.</p>
 <p>To double-check, here are the average sparsity values from each of
 these NMF decompositions:</p>
 <pre class="r"><code>mean(nmf$sp)
 mean(sparse_nmf$sp)
 mean(more_sparse_nmf$sp)
-# [1] 0.7682572
-# [1] 0.7995866
+# [1] 0.7683536
+# [1] 0.799599
 # [1] 0.8992291</code></pre>
 <p>Let’s now compare the NMF estimates to a decomposition-by-parts
 obtained by running flashier with sparse, non-negative priors,
@@ -988,12 +1049,10 @@ for (i in 1:k) {
   next_f &lt;- lapply(next_f,as.matrix,ncol = 1)
   fl2    &lt;- flash_factors_init(fl2,next_f)
 }
-L  &lt;- ldf(fl2)$L
-ks &lt;- which(apply(is.finite(L),2,all))
-L  &lt;- L[,ks]
+L &lt;- ldf(fl2)$L
 write.table(round(L,digits = 6),&quot;flash_greedy_init_noisy_L.txt&quot;,
             row.names = FALSE,col.names = FALSE)
-write.table(round(ldf(fl2)$F[,ks],digits = 6),&quot;flash_greedy_init_noisy_F.txt&quot;,
+write.table(round(ldf(fl2)$F,digits = 6),&quot;flash_greedy_init_noisy_F.txt&quot;,
             row.names = FALSE,col.names = FALSE)
 plot_images(L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/flash-greedy-2-1.png" width="840" style="display: block; margin: auto;" /></p>
@@ -1079,6 +1138,7 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>TO DO NEXT: flashier with random initialization.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
