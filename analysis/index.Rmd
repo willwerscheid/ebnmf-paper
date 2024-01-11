@@ -11,10 +11,10 @@ output:
     self_contained: no
 ---
 
-* [swimmer dataset, flashier vs. existing (sparse) NMF methods.](swimmer.html)
+* [Swimmer dataset, flashier vs. existing (sparse) NMF methods.](swimmer.html)
 
 * [More NMF analyses of the swimmer dataset.](swimmer_more.html)
 
-* ["noisy" swimmer data](noisy_swimmer.html)
+* ["Noisy" swimmer data.](noisy_swimmer.html)
 
-* [More analyses of the "noisy" swimmer data](more_noisy_swimmer.html)
+* [More analyses of the "noisy" swimmer data.](more_noisy_swimmer.html)
