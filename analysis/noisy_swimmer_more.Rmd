@@ -10,7 +10,9 @@ output:
     self_contained: no
 ---
 
-ADD TEXT HERE.
+This workflowr page contains some additional explorations of NMF
+methods—including the EBNMF methods implemented in flashier---for
+learning parts from the "noisy" swimmer data.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -55,28 +57,47 @@ writeMat("noisy_swimmer.mat",Y = Y)
 plot_images(Y[,1:16],nrow = 2,ncol = 8)
 ```
 
-ADD TEXT HERE.
+This is the decomposition produced by "vanilla NMF" with 16 factors—by
+"vanilla", we mean NMF without any penalties on the parameters. See
+[noisy_swimmer.m][noisy_swimmer_matlab] for details.
 
 ```{r vanilla-nmf, fig.height=2, fig.width=7}
 nmf <- readMat("matlab/noisy_swimmer_nmf.mat")
 plot_images(nmf$W,nrow = 2,ncol = 8)
 ```
 
-ADD TEXT HERE.
+This decomposition has trouble distinguishing the torso from the
+limbs, and doesn't always split the limbs into separate factors. Also,
+many of the limbs are quite noisy. Perhaps encouraging the parts to be
+more sparse would address these issues with this. In this second
+attempt (also implemented in [noisy_swimmer.m][noisy_swimmer_matlab]),
+we forced the average sparsity of the 17 factors to be at least 0.8:
 
 ```{r sparse-nmf, fig.height=3, fig.width=7}
 sparse_nmf <- readMat("matlab/noisy_swimmer_nmf_sW=0.8.mat")
 plot_images(sparse_nmf$W,nrow = 3,ncol = 8)
 ```
 
-ADD TEXT HERE.
+Although not perfect—the factors have captured a lot of background
+noise, and the torso is still included with some of the limbs—this
+sparse NMF decomposition is nonetheless a clear improvement over the
+vanilla NMF result.
+
+Let's now see what happens when we force the sparsity to be even
+higher (0.9):
 
 ```{r more-sparse-nmf, fig.height=3, fig.width=7}
 more_sparse_nmf <- readMat("matlab/noisy_swimmer_nmf_sW=0.9.mat")
 plot_images(more_sparse_nmf$W,nrow = 3,ncol = 8)
 ```
 
-ADD TEXT HERE.
+The sparser decomposition removes a lot of the background noise in the
+factors, but also introduces some new problems: for example, some of
+the factors are reduced to a single pixel or just a few pixels, and
+other factors now include multiple limbs, which is not right.
+
+To double-check, here are the average sparsity values from each of
+these NMF decompositions:
 
 ```{r compare-sparsity}
 mean(nmf$sp)
@@ -84,7 +105,13 @@ mean(sparse_nmf$sp)
 mean(more_sparse_nmf$sp)
 ```
 
-ADD TEXT HERE.
+Let's now compare the NMF estimtes to a decomposition-by-parts
+obtained by running flashier with sparse, non-negative priors
+(`ebnm_point_exponential`). Remarkably, running flash with the
+point-exponential prior gets the right result, automatically splitting
+the torso and limb positions correctly into 17 factors, and adapting
+the priors to capture the fact that the factors are very sparse (note
+that we did not tell flashier that we wanted exactly 17 factors):
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
 fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
@@ -93,3 +120,5 @@ plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
 ```
 
 ADD TEXT HERE.
+
+[noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
