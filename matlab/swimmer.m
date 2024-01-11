@@ -45,7 +45,6 @@ save('swimmer_nmf_sW=0.95.mat','W','H','sp');
 % flash_greedy_init_default() in R.
 k = 17;
 options.sW = 0;
-options.sH = 0;
 options.W = importdata('flash_greedy_init_L.txt');
 options.H = importdata('flash_greedy_init_F.txt')';
 [W,H,e,t] = sparseNMF(Y,k,options);
