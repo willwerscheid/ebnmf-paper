@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebf1ef88f7200035db33bf0a7f933bf017b94bf64targetblankbf1ef88a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa9e3bab0b07688f7ba71abf00b15a6b439f3cc6targetblankfa9e3baa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bf1ef88f7200035db33bf0a7f933bf017b94bf64" target="_blank">bf1ef88</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa9e3bab0b07688f7ba71abf00b15a6b439f3cc6" target="_blank">fa9e3ba</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebf1ef88f7200035db33bf0a7f933bf017b94bf64targetblankbf1ef88a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa9e3bab0b07688f7ba71abf00b15a6b439f3cc6targetblankfa9e3baa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bf1ef88f7200035db33bf0a7f933bf017b94bf64" target="_blank">bf1ef88</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa9e3bab0b07688f7ba71abf00b15a6b439f3cc6" target="_blank">fa9e3ba</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,6 +467,11 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
+
+Untracked files:
+    Untracked:  flash_greedy_init_noisy_F.txt
+    Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  noisy_swimmer.mat
 
 </code></pre>
 <p>
@@ -512,6 +517,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/fa9e3bab0b07688f7ba71abf00b15a6b439f3cc6/analysis/noisy_swimmer_more.Rmd" target="_blank">fa9e3ba</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+wflow_publish("analysis/noisy_swimmer_more.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/2b2b19d2990aecb08a2d9826e7f9bfa91f61bdea/docs/noisy_swimmer_more.html" target="_blank">2b2b19d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+Fixed a few small issues with the code in noisy_swimmer_more.Rmd.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -784,6 +823,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2b2b19d2990aecb08a2d9826e7f9bfa91f61bdea/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">2b2b19d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">0221134</a>
 </td>
 <td>
@@ -840,6 +890,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2b2b19d2990aecb08a2d9826e7f9bfa91f61bdea/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">2b2b19d</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">0221134</a>
@@ -1138,7 +1199,45 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>TO DO NEXT: flashier with random initialization.</p>
+<p>Now let’s see what happens when we randomly initialize flashier
+(instead of the greedy initialization), and we don’t adapt the prior.
+Let’s start with a “flat” prior in which most of the weight is on the
+“slab” and not the “spike”. (Specifically, here we are using a
+point-exponential mixture prior with most of the weight on the
+exponential mixture component.)</p>
+<pre class="r"><code>set.seed(1)
+n &lt;- nrow(Y)
+m &lt;- ncol(Y)
+k &lt;- 18
+fixed_prior &lt;- ebnm_point_exponential(x = rep(1,100))
+fixed_prior$fitted_g$scale &lt;- c(0,1)
+fixed_prior$fitted_g$pi &lt;- c(0.1,0.9)
+ebnm_fixed_prior &lt;- flash_ebnm(prior_family = &quot;point_exponential&quot;,
+                               fix_g = TRUE,g_init = fixed_prior)
+fl_fixed &lt;- flash_init(Y,var_type = 0)
+fl_fixed &lt;- flash_factors_init(fl_fixed,
+                               list(matrix(runif(n*k),n,k),
+                                    matrix(runif(m*k),m,k)),
+                               ebnm_fixed_prior)
+fl_fixed &lt;- flash_backfit(fl_fixed)
+plot_images(ldf(fl_fixed)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/flash-flat-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Even with this “flat”, non-adaptive prior, and with a random
+initialization, flashier did remarkably well in recovering the parts,
+although the factors remain a bit noisy.</p>
+<p>Let’s now see if we can improve this factorization by tuning the
+priors automatically based on the data. Adapting the priors only seems
+to work in this example if we first provide a good initialization:</p>
+<pre class="r"><code>set.seed(1)
+L0 &lt;- ldf(fl_fixed)$L
+F0 &lt;- ldf(fl_fixed)$F
+fl_adapt &lt;- flash_init(Y,var_type = 0)
+fl_adapt &lt;- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
+fl_adapt &lt;- flash_backfit(fl_adapt)
+plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)</code></pre>
+<p><img src="figure/noisy_swimmer_more.Rmd/flash-adapt-prior-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>It is interesting that the 16th factor essentially becomes a “null”
+factor when the prior is adapted.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
