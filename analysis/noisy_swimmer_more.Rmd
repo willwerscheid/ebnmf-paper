@@ -57,11 +57,11 @@ writeMat("noisy_swimmer.mat",Y = Y)
 plot_images(Y[,1:16],nrow = 2,ncol = 8)
 ```
 
-This is the decomposition produced by "vanilla NMF" with 16 factors—by
+This is the decomposition produced by "vanilla NMF" with 17 factors—by
 "vanilla", we mean NMF without any penalties on the parameters. See
 [noisy_swimmer.m][noisy_swimmer_matlab] for details.
 
-```{r vanilla-nmf, fig.height=2, fig.width=7}
+```{r vanilla-nmf, fig.height=3, fig.width=7}
 nmf <- readMat("matlab/noisy_swimmer_nmf.mat")
 plot_images(nmf$W,nrow = 3,ncol = 8)
 ```
@@ -111,7 +111,8 @@ obtained by running flashier with sparse, non-negative priors,
 point-exponential prior gets the right result, automatically splitting
 the torso and limb positions correctly into 17 factors (plus one more
 factor that ends up capturing the noise). Also, flashier *adapts* the
-priors to capture the fact that the factors are very sparse:
+priors to capture the fact that the factors are very sparse, which has
+the effect of greatly reducing the noise in the factors:
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
 fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
@@ -164,7 +165,8 @@ plot_images(L,nrow = 3,ncol = 8)
 ```
 
 And, indeed, sparse NMF initialized to this greedy initialization
-finds a pretty good solution (see
+finds a pretty good solution, although did not do as good a job at
+removing the noise as flashier (see
 [noisy_swimmer.m][noisy_swimmer_matlab] for details):
 
 ```{r, fig.height=3, fig.width=7}
