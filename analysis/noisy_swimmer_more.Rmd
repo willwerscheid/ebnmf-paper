@@ -171,7 +171,52 @@ nmf_greedy_init <- readMat("matlab/noisy_swimmer_nmf_greedy_init_sW=0.9.mat")
 plot_images(nmf_greedy_init$W,nrow = 3,ncol = 8)
 ```
 
-TO DO NEXT: flashier with random initialization.
+Now let's see what happens when we randomly initialize flashier
+(instead of the greedy initialization), and we don't adapt the
+prior. Let's start with a "flat" prior in which most of the weight is
+on the "slab" and not the "spike". (Specifically, here we are using a
+point-exponential mixture prior with most of the weight on the
+exponential mixture component.)
+
+```{r flash-flat, results="hide", fig.height=3, fig.width=7}
+set.seed(1)
+n <- nrow(Y)
+m <- ncol(Y)
+k <- 18
+fixed_prior <- ebnm_point_exponential(x = rep(1,100))
+fixed_prior$fitted_g$scale <- c(0,1)
+fixed_prior$fitted_g$pi <- c(0.1,0.9)
+ebnm_fixed_prior <- flash_ebnm(prior_family = "point_exponential",
+                               fix_g = TRUE,g_init = fixed_prior)
+fl_fixed <- flash_init(Y,var_type = 0)
+fl_fixed <- flash_factors_init(fl_fixed,
+                               list(matrix(runif(n*k),n,k),
+                                    matrix(runif(m*k),m,k)),
+                               ebnm_fixed_prior)
+fl_fixed <- flash_backfit(fl_fixed)
+plot_images(ldf(fl_fixed)$L,nrow = 3,ncol = 8)
+```
+
+Even with this "flat", non-adaptive prior, and with a random
+initialization, flashier did remarkably well in recovering the
+parts, although the factors remain a bit noisy.
+
+Let's now see if we can improve this factorization by tuning the
+priors automatically based on the data. Adapting the priors only seems
+to work in this example if we first provide a good initialization:
+
+```{r flash-adapt-prior, results="hide", fig.height=3, fig.width=7}
+set.seed(1)
+L0 <- ldf(fl_fixed)$L
+F0 <- ldf(fl_fixed)$F
+fl_adapt <- flash_init(Y,var_type = 0)
+fl_adapt <- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
+fl_adapt <- flash_backfit(fl_adapt)
+plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)
+```
+
+It is interesting that the 16th factor essentially becomes a "null"
+factor when the prior is adapted.
 
 [noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
 [sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
