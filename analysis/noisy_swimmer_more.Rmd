@@ -114,9 +114,9 @@ priors to capture the fact that the factors are very sparse, which has
 the effect of greatly reducing the noise in the factors:
 
 ```{r flash, results="hide", fig.height=3, fig.width=7}
-fit1 <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
-              backfit = TRUE,var_type = 0)
-plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)
+fl <- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
+            backfit = TRUE,var_type = 0)
+plot_images(ldf(fl)$L,nrow = 3,ncol = 8)
 ```
 
 (Note that we needed to tell flashier we wanted at most 18 factors
@@ -130,10 +130,10 @@ Indeed, [SparseNMF.m][sparsenmf] is initialized at random by
 default. The greedy initialization appears as follows:
 
 ```{r flash-greedy, results="hide", fig.height=3, fig.width=7}
-fit_greedyinit <- flash(Y,ebnm_fn = ebnm_point_exponential,
+fl_greedy_init <- flash(Y,ebnm_fn = ebnm_point_exponential,
                         greedy_Kmax = 18,backfit = FALSE,
 						var_type = 0)
-plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)
+plot_images(ldf(fl_greedy_init)$L,nrow = 3,ncol = 8)
 ```
 
 The greedy initialization appears particularly well suited for the
@@ -217,6 +217,30 @@ plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)
 
 It is interesting that the 16th factor essentially becomes a "null"
 factor when the prior is adapted.
+
+To summarize, here are the NMF solutions we compared, with the values
+of the Frobenius-norm objective at these solutions (smaller values are
+better):
+
+```{r summary}
+res <- data.frame(f = rep(0,9))
+rownames(res) <- c("nmf","sparse_nmf_sW=0.8","sparse_nmf_sW=0.9",
+                   "nmf_greedy_init","flash","flash_greedy_init",
+				   "flash_greedy_ls","flash_fixed","flash_adapt")
+res["nmf","f"]               <- frobenius_norm_nmf(Y,nmf)
+res["sparse_nmf_sW=0.8","f"] <- frobenius_norm_nmf(Y,sparse_nmf)
+res["sparse_nmf_sW=0.9","f"] <- frobenius_norm_nmf(Y,more_sparse_nmf)
+res["nmf_greedy_init","f"]   <- frobenius_norm_nmf(Y,nmf_greedy_init)
+res["flash","f"]             <- frobenius_norm_flash(Y,fl)
+res["flash_greedy_init","f"] <- frobenius_norm_flash(Y,fl_greedy_init)
+res["flash_greedy_ls","f"]   <- frobenius_norm_flash(Y,fl2)
+res["flash_fixed","f"]       <- frobenius_norm_flash(Y,fl_fixed)
+res["flash_adapt","f"]       <- frobenius_norm_flash(Y,fl_adapt)
+res
+```
+
+The (subjectively) best solutions do not necessarily have the smallest
+norm, suggesting some overfitting here.
 
 [noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
 [sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
