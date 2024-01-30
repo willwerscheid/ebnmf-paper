@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-11
+<strong>Last updated:</strong> 2024-01-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa9e3bab0b07688f7ba71abf00b15a6b439f3cc6targetblankfa9e3baa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9a872be14ff9e450f9414f3df449f668bf108ce4targetblank9a872bea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa9e3bab0b07688f7ba71abf00b15a6b439f3cc6" target="_blank">fa9e3ba</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9a872be14ff9e450f9414f3df449f668bf108ce4" target="_blank">9a872be</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa9e3bab0b07688f7ba71abf00b15a6b439f3cc6targetblankfa9e3baa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9a872be14ff9e450f9414f3df449f668bf108ce4targetblank9a872bea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa9e3bab0b07688f7ba71abf00b15a6b439f3cc6" target="_blank">fa9e3ba</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9a872be14ff9e450f9414f3df449f668bf108ce4" target="_blank">9a872be</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -517,6 +517,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9a872be14ff9e450f9414f3df449f668bf108ce4/analysis/noisy_swimmer_more.Rmd" target="_blank">9a872be</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-30
+</td>
+<td>
+workflowr::wflow_publish("analysis/noisy_swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/a4493ed50f66bab0beec3dd193f88efe7e483e4e/docs/noisy_swimmer_more.html" target="_blank">a4493ed</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+Added the flash fits from the random init to noisy_swimmer_more
+analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1003,9 +1038,9 @@ the torso and limb positions correctly into 17 factors (plus one more
 factor that ends up capturing the noise). Also, flashier <em>adapts</em>
 the priors to capture the fact that the factors are very sparse, which
 has the effect of greatly reducing the noise in the factors:</p>
-<pre class="r"><code>fit1 &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
-              backfit = TRUE,var_type = 0)
-plot_images(ldf(fit1)$L,nrow = 3,ncol = 8)</code></pre>
+<pre class="r"><code>fl &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,greedy_Kmax = 18,
+            backfit = TRUE,var_type = 0)
+plot_images(ldf(fl)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/flash-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-1">
@@ -1053,10 +1088,10 @@ is different from the more typical random initialization in NMF. Indeed,
 href="https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m">SparseNMF.m</a>
 is initialized at random by default. The greedy initialization appears
 as follows:</p>
-<pre class="r"><code>fit_greedyinit &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
+<pre class="r"><code>fl_greedy_init &lt;- flash(Y,ebnm_fn = ebnm_point_exponential,
                         greedy_Kmax = 18,backfit = FALSE,
                         var_type = 0)
-plot_images(ldf(fit_greedyinit)$L,nrow = 3,ncol = 8)</code></pre>
+plot_images(ldf(fl_greedy_init)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/flash-greedy-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-greedy-1">
@@ -1222,6 +1257,43 @@ fl_fixed &lt;- flash_factors_init(fl_fixed,
 fl_fixed &lt;- flash_backfit(fl_fixed)
 plot_images(ldf(fl_fixed)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/flash-flat-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-flat-1">
+Past versions of flash-flat-1.png
+</button>
+</p>
+<div id="fig-flash-flat-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/a4493ed50f66bab0beec3dd193f88efe7e483e4e/docs/figure/noisy_swimmer_more.Rmd/flash-flat-1.png" target="_blank">a4493ed</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Even with this “flat”, non-adaptive prior, and with a random
 initialization, flashier did remarkably well in recovering the parts,
 although the factors remain a bit noisy.</p>
@@ -1236,8 +1308,74 @@ fl_adapt &lt;- flash_factors_init(fl_adapt,list(L0,F0),ebnm_point_exponential)
 fl_adapt &lt;- flash_backfit(fl_adapt)
 plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/flash-adapt-prior-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-flash-adapt-prior-1">
+Past versions of flash-adapt-prior-1.png
+</button>
+</p>
+<div id="fig-flash-adapt-prior-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/a4493ed50f66bab0beec3dd193f88efe7e483e4e/docs/figure/noisy_swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">a4493ed</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>It is interesting that the 16th factor essentially becomes a “null”
 factor when the prior is adapted.</p>
+<p>To summarize, here are the NMF solutions we compared, with the values
+of the Frobenius-norm objective at these solutions (smaller values are
+better):</p>
+<pre class="r"><code>res &lt;- data.frame(f = rep(0,9))
+rownames(res) &lt;- c(&quot;nmf&quot;,&quot;sparse_nmf_sW=0.8&quot;,&quot;sparse_nmf_sW=0.9&quot;,
+                   &quot;nmf_greedy_init&quot;,&quot;flash&quot;,&quot;flash_greedy_init&quot;,
+                   &quot;flash_greedy_ls&quot;,&quot;flash_fixed&quot;,&quot;flash_adapt&quot;)
+res[&quot;nmf&quot;,&quot;f&quot;]               &lt;- frobenius_norm_nmf(Y,nmf)
+res[&quot;sparse_nmf_sW=0.8&quot;,&quot;f&quot;] &lt;- frobenius_norm_nmf(Y,sparse_nmf)
+res[&quot;sparse_nmf_sW=0.9&quot;,&quot;f&quot;] &lt;- frobenius_norm_nmf(Y,more_sparse_nmf)
+res[&quot;nmf_greedy_init&quot;,&quot;f&quot;]   &lt;- frobenius_norm_nmf(Y,nmf_greedy_init)
+res[&quot;flash&quot;,&quot;f&quot;]             &lt;- frobenius_norm_flash(Y,fl)
+res[&quot;flash_greedy_init&quot;,&quot;f&quot;] &lt;- frobenius_norm_flash(Y,fl_greedy_init)
+res[&quot;flash_greedy_ls&quot;,&quot;f&quot;]   &lt;- frobenius_norm_flash(Y,fl2)
+res[&quot;flash_fixed&quot;,&quot;f&quot;]       &lt;- frobenius_norm_flash(Y,fl_fixed)
+res[&quot;flash_adapt&quot;,&quot;f&quot;]       &lt;- frobenius_norm_flash(Y,fl_adapt)
+res
+#                          f
+# nmf               5398.018
+# sparse_nmf_sW=0.8 5402.181
+# sparse_nmf_sW=0.9 5685.019
+# nmf_greedy_init   5511.445
+# flash             5656.683
+# flash_greedy_init 6478.970
+# flash_greedy_ls   6478.932
+# flash_fixed       5535.493
+# flash_adapt       5678.442</code></pre>
+<p>The (subjectively) best solutions do not necessarily have the
+smallest norm, suggesting some overfitting here.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
