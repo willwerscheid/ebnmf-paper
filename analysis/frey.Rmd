@@ -1,0 +1,113 @@
+---
+title: "EBNMF on the Frey faces dataset"
+author: "Jason Willwerscheid"
+date: "2023-02-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data
+
+Load packages:
+
+```{r}
+library(tidyverse)
+library(tictoc)
+library(flashier)
+```
+
+Read in data. The `frey_rawface.mat` dataset was downloaded from Sam Roweis's website. I recode white as 0 and black as 1:
+
+```{r}
+frey <- R.matlab::readMat("./data/frey_rawface.mat")$ff
+frey <- 1 - frey / 255 
+```
+
+## EBNMF (flashier)
+
+I fit EBNMF using feature-specific (pixel-specific) variance with backfitting. Sometimes there is trouble initializing new factors, so when `flashier` fails to find a new factor I do a couple of backfitting iterations and try again:
+
+```{r}
+tic()
+old_nfactors <- 0
+fl <- flash_init(frey, var_type = 1) |>
+  flash_set_verbose(1) |>
+  flash_greedy(Kmax = 40, ebnm_fn = ebnm_point_exponential)
+
+while(fl$n_factors > old_nfactors) {
+  old_nfactors <- fl$n_factors
+  fl <- flash_backfit(fl, maxiter = 2)
+  fl <- fl |>
+    flash_greedy(Kmax = 40 - fl$n_factors, ebnm_fn = ebnm_point_exponential)
+}
+
+flb <- flash_backfit(fl, maxiter = 200, verbose = 1)
+toc()
+```
+
+## Components
+
+The components appear as follows (ordered by decreasing PVE). The `pi0` in the labels refers to the mixture weight placed on the point mass in the estimated point-exponential prior on observations (faces). Components with small pi0 are shared across many faces; those with large pi0 appear in fewer:
+
+```{r}
+fl_reorder <- flb |>
+  flash_factors_reorder(order(flb$pve, decreasing = TRUE))
+
+fitted_L <- ldf(fl_reorder, type = "m")$L
+F_sparsity <- round(sapply(fl_reorder$F_ghat, function(k) k$pi[1]), 2)
+
+n <- 20
+p <- 28
+tib <- as_tibble(fitted_L) |>
+  mutate(
+    row = rep(1:n, times = p),
+    col = rep(1:p, each = n),
+  ) |>
+  pivot_longer(
+    cols = -c(row, col),
+    names_to = "k",
+    values_to = "loading",
+    names_prefix = "V",
+    names_transform = as.numeric
+  ) |>
+  mutate(
+    sparsity = rep(F_sparsity, times = nrow(fitted_L)),
+    label = paste0(formatC(k, width = 2), " (pi0 = ", sparsity, ")")
+  )
+ggplot(tib, aes(x = row, y = col, fill = loading)) +
+  geom_tile() +
+  scale_y_reverse() +
+  scale_fill_gradient(low = "white", high = "black") +
+  facet_wrap(~label) +
+  guides(fill = "none")
+```
+
+## Matching components to samples
+
+To more clearly see what kinds of faces each component is capturing, I extract the face with the largest L1-normalized loading for each component:
+
+```{r}
+fitted_F <- ldf(fl_reorder, type = "m")$F
+typical <- apply(fitted_F, 2, which.max)
+tib <- as_tibble(frey[, typical]) |>
+  mutate(
+    row = rep(1:n, times = p),
+    col = rep(1:p, each = n)
+  ) |>
+  pivot_longer(
+    cols = -c(row, col),
+    names_to = "k",
+    values_to = "loading",
+    names_prefix = "V",
+    names_transform = as.numeric
+  )
+ggplot(tib, aes(x = row, y = col, fill = loading)) +
+  geom_tile() +
+  scale_y_reverse() +
+  scale_fill_gradient(low = "white", high = "black") +
+  facet_wrap(~k) +
+  guides(fill = "none")
+```
