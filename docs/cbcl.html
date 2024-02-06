@@ -378,7 +378,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-02-05
+<strong>Last updated:</strong> 2024-02-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -509,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree1c3438c75fc2a03d3844b519fbb5cd0db925d288targetblank1c3438ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree0ba2b3d72a515abbe633e87a1a1857f9f4bf926atargetblank0ba2b3da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/1c3438c75fc2a03d3844b519fbb5cd0db925d288" target="_blank">1c3438c</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/0ba2b3d72a515abbe633e87a1a1857f9f4bf926a" target="_blank">0ba2b3d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree1c3438c75fc2a03d3844b519fbb5cd0db925d288targetblank1c3438ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree0ba2b3d72a515abbe633e87a1a1857f9f4bf926atargetblank0ba2b3da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/1c3438c75fc2a03d3844b519fbb5cd0db925d288" target="_blank">1c3438c</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/0ba2b3d72a515abbe633e87a1a1857f9f4bf926a" target="_blank">0ba2b3d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -610,6 +610,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0ba2b3d72a515abbe633e87a1a1857f9f4bf926a/analysis/cbcl.Rmd" target="_blank">0ba2b3d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-02-06
+</td>
+<td>
+workflowr::wflow_publish("analysis/cbcl.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/6623aeb48d594f1af3983a2550c165576833bc97/docs/cbcl.html" target="_blank">6623aeb</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-02-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/1c3438c75fc2a03d3844b519fbb5cd0db925d288/analysis/cbcl.Rmd" target="_blank">1c3438c</a>
 </td>
 <td>
@@ -657,19 +691,95 @@ The following object is masked from &#39;package:purrr&#39;:
 The following object is masked from &#39;package:tidyr&#39;:
 
     extract</code></pre>
-<p>Read in data. I re-code white as 0 and black as 1:</p>
-<pre class="r"><code>cbcl &lt;- readRDS(&quot;data/cbcl.rds&quot;)
-cbcl &lt;- 1 - cbcl</code></pre>
+<p>Read in data. <em>Note that the coding matters.</em> The usual coding
+is to set black at 0 and white as 1 (or 255). I think it makes more
+sense to invert it (so, white as 0 and black at 1) but I will look at
+both results.</p>
+<pre class="r"><code>cbcl_black0 &lt;- readRDS(&quot;data/cbcl.rds&quot;)
+cbcl_white0 &lt;- 1 - cbcl_black0</code></pre>
 </div>
 <div id="ebnmf-flashier" class="section level2">
 <h2>EBNMF (flashier)</h2>
 <p>I fit EBNMF using feature-specific (pixel-specific) variance with
 backfitting. Sometimes there is trouble initializing new factors, so
 when <code>flashier</code> fails to find a new factor I do a couple of
-backfitting iterations and try again:</p>
+backfitting iterations and try again.</p>
+<p>Fit with black = 0:</p>
 <pre class="r"><code>tic()
 old_nfactors &lt;- 0
-fl &lt;- flash_init(cbcl, var_type = 1) |&gt;
+fl &lt;- flash_init(cbcl_black0, var_type = 1) |&gt;
+  flash_set_verbose(1) |&gt;
+  flash_greedy(Kmax = 40, ebnm_fn = ebnm_point_exponential)</code></pre>
+<pre><code>Adding factor 1 to flash object...
+Adding factor 2 to flash object...
+Adding factor 3 to flash object...
+Adding factor 4 to flash object...
+Adding factor 5 to flash object...
+Adding factor 6 to flash object...
+Adding factor 7 to flash object...
+Adding factor 8 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.</code></pre>
+<pre class="r"><code>while(fl$n_factors &gt; old_nfactors) {
+  old_nfactors &lt;- fl$n_factors
+  fl &lt;- flash_backfit(fl, maxiter = 2)
+  fl &lt;- fl |&gt;
+    flash_greedy(Kmax = 40 - fl$n_factors, ebnm_fn = ebnm_point_exponential)
+}</code></pre>
+<pre><code>Backfitting 7 factors (tolerance: 1.31e-02)...
+  --Maximum number of iterations reached!
+Wrapping up...
+Done.
+Adding factor 8 to flash object...
+Adding factor 9 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.
+Backfitting 8 factors (tolerance: 1.31e-02)...
+  --Maximum number of iterations reached!
+Wrapping up...
+Done.
+Adding factor 9 to flash object...
+Adding factor 10 to flash object...
+Adding factor 11 to flash object...
+Adding factor 12 to flash object...
+Adding factor 13 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.
+Backfitting 12 factors (tolerance: 1.31e-02)...
+  --Maximum number of iterations reached!
+Wrapping up...
+Done.
+Adding factor 13 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.</code></pre>
+<pre class="r"><code>fl_black0 &lt;- flash_backfit(fl, verbose = 1)</code></pre>
+<pre><code>Backfitting 12 factors (tolerance: 1.31e-02)...
+  Difference between iterations is within 1.0e+03...
+  Difference between iterations is within 1.0e+02...
+  Difference between iterations is within 1.0e+01...
+  Difference between iterations is within 1.0e+00...
+  Difference between iterations is within 1.0e-01...
+  --Maximum number of iterations reached!
+Wrapping up...
+Done.</code></pre>
+<pre class="r"><code>toc()</code></pre>
+<pre><code>69.855 sec elapsed</code></pre>
+<p>Fit with white = 0:</p>
+<pre class="r"><code>tic()
+old_nfactors &lt;- 0
+fl &lt;- flash_init(cbcl_white0, var_type = 1) |&gt;
   flash_set_verbose(1) |&gt;
   flash_greedy(Kmax = 40, ebnm_fn = ebnm_point_exponential)</code></pre>
 <pre><code>Adding factor 1 to flash object...
@@ -700,90 +810,179 @@ failed to find a non-zero factor.</code></pre>
 <pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
 Wrapping up...
 Done.</code></pre>
-<pre class="r"><code>flb &lt;- flash_backfit(fl, maxiter = 200, verbose = 1)</code></pre>
+<pre class="r"><code>fl_white0 &lt;- flash_backfit(fl, verbose = 1)</code></pre>
 <pre><code>Backfitting 6 factors (tolerance: 1.31e-02)...
   Difference between iterations is within 1.0e+04...
   Difference between iterations is within 1.0e+03...
   Difference between iterations is within 1.0e+02...
   Difference between iterations is within 1.0e+01...
   Difference between iterations is within 1.0e+00...
-  --Maximum number of iterations reached!
+  Difference between iterations is within 1.0e-01...
+  Difference between iterations is within 1.0e-02...
 Wrapping up...
 Done.</code></pre>
 <pre class="r"><code>toc()</code></pre>
-<pre><code>16.779 sec elapsed</code></pre>
+<pre><code>22.722 sec elapsed</code></pre>
 </div>
-<div id="components" class="section level2">
-<h2>Components</h2>
-<p>The components appear as follows (ordered by decreasing PVE). The
-<code>pi0</code> in the labels refers to the mixture weight placed on
-the point mass in the estimated point-exponential prior on observations
-(faces). Components with small pi0 are shared across many faces; those
-with large pi0 appear in fewer:</p>
-<pre class="r"><code>fl_reorder &lt;- flb |&gt;
-  flash_factors_reorder(order(flb$pve, decreasing = TRUE))
+<div id="components-black-0" class="section level2">
+<h2>Components (black = 0)</h2>
+<p>The components with black coded as 0 appear as follows (ordered by
+decreasing PVE). The <code>pi0</code> in the labels refers to the
+mixture weight placed on the point mass in the estimated
+point-exponential prior on observations (faces). Components with small
+pi0 are shared across many faces; those with large pi0 appear in
+fewer.</p>
+<pre class="r"><code>plot_faces &lt;- function(fitted_L, comp_labels, black0 = TRUE) {
+  n &lt;- 19
+  p &lt;- 19
+  tib &lt;- as_tibble(fitted_L) |&gt;
+    mutate(
+      col = rep(1:n, times = p),
+      row = rep(1:p, each = n),
+    ) |&gt;
+    pivot_longer(
+      cols = -c(row, col),
+      names_to = &quot;k&quot;,
+      values_to = &quot;loading&quot;,
+      names_prefix = &quot;V&quot;,
+      names_transform = as.numeric
+    ) |&gt;
+    mutate(
+      label = rep(comp_labels, times = n * p)
+    )
+  p &lt;- ggplot(tib, aes(x = row, y = col, fill = loading)) +
+    geom_tile() +
+    scale_y_reverse() +
+    facet_wrap(~label) +
+    guides(fill = &quot;none&quot;)
+  if (black0) {
+    p &lt;- p + scale_fill_gradient(low = &quot;black&quot;, high = &quot;white&quot;)
+  } else {
+    p &lt;- p + scale_fill_gradient(low = &quot;white&quot;, high = &quot;black&quot;)
+  }
+  return(p)
+}
+
+fl_reorder &lt;- fl_black0 |&gt;
+  flash_factors_reorder(order(fl_black0$pve, decreasing = TRUE))
 
 fitted_L &lt;- ldf(fl_reorder, type = &quot;m&quot;)$L
 F_sparsity &lt;- round(sapply(fl_reorder$F_ghat, function(k) k$pi[1]), 2)
+labs &lt;- paste0(formatC(1:ncol(fitted_L), width = 2), &quot; (pi0 = &quot;, F_sparsity, &quot;)&quot;)
 
-n &lt;- 19
-p &lt;- 19
-tib &lt;- as_tibble(fitted_L) |&gt;
-  mutate(
-    col = rep(1:n, times = p),
-    row = rep(1:p, each = n),
-  ) |&gt;
-  pivot_longer(
-    cols = -c(row, col),
-    names_to = &quot;k&quot;,
-    values_to = &quot;loading&quot;,
-    names_prefix = &quot;V&quot;,
-    names_transform = as.numeric
-  ) |&gt;
-  mutate(
-    sparsity = rep(F_sparsity, times = nrow(fitted_L)),
-    label = paste0(formatC(k, width = 2), &quot; (pi0 = &quot;, sparsity, &quot;)&quot;)
-  )</code></pre>
+plot_faces(fitted_L, labs)</code></pre>
 <pre><code>Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
 `.name_repair` is omitted as of tibble 2.0.0.
 ℹ Using compatibility `.name_repair`.
 This warning is displayed once every 8 hours.
 Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 generated.</code></pre>
-<pre class="r"><code>ggplot(tib, aes(x = row, y = col, fill = loading)) +
-  geom_tile() +
-  scale_y_reverse() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;black&quot;) +
-  facet_wrap(~label) +
-  guides(fill = &quot;none&quot;)</code></pre>
-<p><img src="figure/cbcl.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6623aeb48d594f1af3983a2550c165576833bc97/docs/figure/cbcl.Rmd/unnamed-chunk-5-1.png" target="_blank">6623aeb</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2024-02-05
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="matching-components-to-samples" class="section level2">
-<h2>Matching components to samples</h2>
+</div>
 <p>To more clearly see what kinds of faces each component is capturing,
 I extract the face with the largest L1-normalized loading for each
 component:</p>
 <pre class="r"><code>fitted_F &lt;- ldf(fl_reorder, type = &quot;m&quot;)$F
 typical &lt;- apply(fitted_F, 2, which.max)
-tib &lt;- as_tibble(cbcl[, typical]) |&gt;
-  mutate(
-    col = rep(1:n, times = p),
-    row = rep(1:p, each = n)
-  ) |&gt;
-  pivot_longer(
-    cols = -c(row, col),
-    names_to = &quot;k&quot;,
-    values_to = &quot;loading&quot;,
-    names_prefix = &quot;V&quot;,
-    names_transform = as.numeric
-  )
-ggplot(tib, aes(x = row, y = col, fill = loading)) +
-  geom_tile() +
-  scale_y_reverse() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;black&quot;) +
-  facet_wrap(~k) +
-  guides(fill = &quot;none&quot;)</code></pre>
-<p><img src="figure/cbcl.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+plot_faces(cbcl_black0[, typical], 1:ncol(fitted_F))</code></pre>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="components-white-0" class="section level2">
+<h2>Components (white = 0)</h2>
+<p>Components:</p>
+<pre class="r"><code>fl_reorder &lt;- fl_white0 |&gt;
+  flash_factors_reorder(order(fl_white0$pve, decreasing = TRUE))
+
+fitted_L &lt;- ldf(fl_reorder, type = &quot;m&quot;)$L
+F_sparsity &lt;- round(sapply(fl_reorder$F_ghat, function(k) k$pi[1]), 2)
+labs &lt;- paste0(formatC(1:ncol(fitted_L), width = 2), &quot; (pi0 = &quot;, F_sparsity, &quot;)&quot;)
+
+plot_faces(fitted_L, labs, black0 = FALSE)</code></pre>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Representative faces:</p>
+<pre class="r"><code>fitted_F &lt;- ldf(fl_reorder, type = &quot;m&quot;)$F
+typical &lt;- apply(fitted_F, 2, which.max)
+
+plot_faces(cbcl_white0[, typical], 1:ncol(fitted_F), black0 = FALSE)</code></pre>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="nmf-fit-white-0" class="section level2">
+<h2>NMF fit (white = 0)</h2>
+<p>Why does the <code>white0</code> fit only capture six components?
+Let’s compare with: 1. standard NMF; 2. <code>flashier</code> results
+when NMF is used as initialization:</p>
+<pre class="r"><code>nmf_res &lt;- RcppML::nmf(cbcl_white0, k = 40, verbose = FALSE)
+
+fl_nmfinit &lt;- flash_init(cbcl_white0, var_type = 1) |&gt;
+  flash_set_verbose(1) |&gt;
+  flash_factors_init(list(nmf_res$w %*% diag(sqrt(nmf_res$d)),
+                          t(nmf_res$h) %*% diag(sqrt(nmf_res$d))),
+                     ebnm_fn = ebnm_point_exponential) |&gt;
+  flash_backfit() |&gt;
+  flash_nullcheck()</code></pre>
+<pre><code>Backfitting 40 factors (tolerance: 1.31e-02)...
+  Difference between iterations is within 1.0e+03...
+  Difference between iterations is within 1.0e+02...
+  Difference between iterations is within 1.0e+01...
+  Difference between iterations is within 1.0e+00...
+  --Maximum number of iterations reached!
+Wrapping up...
+Done.
+Nullchecking 40 factors...
+Done.</code></pre>
+<p>Note that no components were removed in the flash fit. The NMF
+components appear as follows:</p>
+<pre class="r"><code>nmf_F &lt;- t(t(nmf_res$w) / apply(nmf_res$w, 2, max))
+plot_faces(nmf_F, 1:40, black0 = FALSE)</code></pre>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebnmf-with-nmf-initialization-white-0" class="section level2">
+<h2>EBNMF with NMF initialization (white = 0)</h2>
+<p>The EBNMF components appear as follows (I do not reorder so that they
+can be compared directly with NMF):</p>
+<pre class="r"><code>fitted_L &lt;- ldf(fl_nmfinit, type = &quot;m&quot;)$L
+F_sparsity &lt;- round(sapply(fl_nmfinit$F_ghat, function(k) k$pi[1]), 2)
+labs &lt;- paste0(formatC(1:ncol(fitted_L), width = 2), &quot; (pi0 = &quot;, F_sparsity, &quot;)&quot;)
+
+plot_faces(fitted_L, labs, black0 = FALSE)</code></pre>
+<p><img src="figure/cbcl.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -822,19 +1021,19 @@ loaded via a namespace (and not attached):
  [9] vctrs_0.6.5       tools_4.3.2       ps_1.7.5          generics_0.1.3   
 [13] parallel_4.3.2    fansi_1.0.6       highr_0.10        pkgconfig_2.0.3  
 [17] Matrix_1.6-1.1    SQUAREM_2021.1    lifecycle_1.0.4   truncnorm_1.0-9  
-[21] farver_2.1.1      compiler_4.3.2    git2r_0.33.0      munsell_0.5.0    
-[25] getPass_0.2-4     httpuv_1.6.13     snow_0.4-4        htmltools_0.5.7  
-[29] sass_0.4.8        yaml_2.3.8        crayon_1.5.2      later_1.3.2      
-[33] pillar_1.9.0      jquerylib_0.1.4   whisker_0.4.1     cachem_1.0.8     
-[37] trust_0.1-8       tidyselect_1.2.0  digest_0.6.34     stringi_1.8.3    
-[41] ashr_2.2-63       labeling_0.4.3    splines_4.3.2     rprojroot_2.0.4  
-[45] fastmap_1.1.1     grid_4.3.2        colorspace_2.1-0  cli_3.6.2        
-[49] invgamma_1.1      utf8_1.2.4        withr_2.5.2       scales_1.3.0     
-[53] promises_1.2.1    horseshoe_0.2.0   timechange_0.2.0  rmarkdown_2.25   
-[57] httr_1.4.7        deconvolveR_1.2-1 hms_1.1.3         evaluate_0.23    
-[61] knitr_1.45        irlba_2.3.5.1     rlang_1.1.3       Rcpp_1.0.12      
-[65] mixsqp_0.3-54     glue_1.7.0        rstudioapi_0.15.0 jsonlite_1.8.8   
-[69] R6_2.5.1          fs_1.6.3         </code></pre>
+[21] farver_2.1.1      compiler_4.3.2    git2r_0.33.0      RcppML_0.3.7     
+[25] munsell_0.5.0     getPass_0.2-4     httpuv_1.6.13     snow_0.4-4       
+[29] htmltools_0.5.7   sass_0.4.8        yaml_2.3.8        crayon_1.5.2     
+[33] later_1.3.2       pillar_1.9.0      jquerylib_0.1.4   whisker_0.4.1    
+[37] cachem_1.0.8      trust_0.1-8       tidyselect_1.2.0  digest_0.6.34    
+[41] stringi_1.8.3     ashr_2.2-63       labeling_0.4.3    splines_4.3.2    
+[45] rprojroot_2.0.4   fastmap_1.1.1     grid_4.3.2        colorspace_2.1-0 
+[49] cli_3.6.2         invgamma_1.1      utf8_1.2.4        withr_2.5.2      
+[53] scales_1.3.0      promises_1.2.1    horseshoe_0.2.0   timechange_0.2.0 
+[57] rmarkdown_2.25    httr_1.4.7        deconvolveR_1.2-1 hms_1.1.3        
+[61] evaluate_0.23     knitr_1.45        irlba_2.3.5.1     rlang_1.1.3      
+[65] Rcpp_1.0.12       mixsqp_0.3-54     glue_1.7.0        rstudioapi_0.15.0
+[69] jsonlite_1.8.8    R6_2.5.1          fs_1.6.3         </code></pre>
 </div>
 </div>
 
