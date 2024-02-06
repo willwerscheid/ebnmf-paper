@@ -9,15 +9,18 @@ generate_noisy_swimmer_data <- function (dat, u) {
   return(out)
 }
 
-# TO DO: Explain what this function does, and how to use it.
+# Compute the Frobenius norm objective for data matrix X and matrix
+# factorization W*H.
 frobenius_norm <- function (X, W, H)
   sum((X - W %*% H)^2)
 
-# TO DO: Explain what this function does, and how to use it.
+# Compute the Frobenius norm objective for data matrix X and NMF
+# result fit$W * fit$H.
 frobenius_norm_nmf <- function (X, fit)
   frobenius_norm(X,fit$W,fit$H)
 
-# TO DO: Explain what this function does, and how to use it.
+# Compute the Frobenius norm objective for data matrix X and flashier
+# output "fit".
 frobenius_norm_flash <- function (X, fit)
   frobenius_norm(X,fit$L_pm,t(fit$F_pm))
 
