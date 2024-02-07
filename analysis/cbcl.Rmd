@@ -26,49 +26,59 @@ cbcl_black0 <- readRDS("data/cbcl.rds")
 cbcl_white0 <- 1 - cbcl_black0
 ```
 
-## EBNMF (flashier)
+## Fitting EBNMF
 
-I fit EBNMF using feature-specific (pixel-specific) variance with backfitting. Sometimes there is trouble initializing new factors, so when `flashier` fails to find a new factor I do a couple of backfitting iterations and try again.
+I fit EBNMF using feature-specific (pixel-specific) variance with backfitting. The greedy approach can have a lot of trouble with initialization, so: 1. I use a custom initialization function that takes the best factor out of 10 attempts (for now, requires installing `flashier` from the `init-with-restarts` branch); 2. I backfit after each 10 factors added.
 
 Fit with black = 0:
 
 ```{r}
 tic()
-old_nfactors <- 0
-fl <- flash_init(cbcl_black0, var_type = 1) |>
-  flash_set_verbose(1) |>
-  flash_greedy(Kmax = 40, ebnm_fn = ebnm_point_exponential)
 
-while(fl$n_factors > old_nfactors) {
-  old_nfactors <- fl$n_factors
-  fl <- flash_backfit(fl, maxiter = 2)
-  fl <- fl |>
-    flash_greedy(Kmax = 40 - fl$n_factors, ebnm_fn = ebnm_point_exponential)
+my_init <- function(f) {
+  flash_greedy_init_default(
+    f,
+    sign_constraints = c(1, 1),
+    n_trials = 10
+  )
 }
 
-fl_black0 <- flash_backfit(fl, verbose = 1)
+fl_black0 <- flash_init(cbcl_black0, var_type = 1) 
+
+for (i in 1:5) {
+  fl_black0 <- fl_black0 |>
+    flash_greedy(
+      Kmax = min(10, 40 - fl_black0$n_factors), 
+      ebnm_fn = ebnm_point_exponential,
+      init_fn = my_init
+    ) |>
+    flash_backfit(maxiter = 100)
+}
+
 toc()
 ```
+
+Using these tricks EBNMF fits the maximum number of factors (40). The final fit is fairly loose, with the difference between iterations pretty far from the default tolerance, but it should still give us a good idea of what kind of fit the greedy approach will produce.
 
 Fit with white = 0:
 
 ```{r}
 tic()
-old_nfactors <- 0
-fl <- flash_init(cbcl_white0, var_type = 1) |>
-  flash_set_verbose(1) |>
-  flash_greedy(Kmax = 40, ebnm_fn = ebnm_point_exponential)
+fl_white0 <- flash_init(cbcl_white0, var_type = 1) 
 
-while(fl$n_factors > old_nfactors) {
-  old_nfactors <- fl$n_factors
-  fl <- flash_backfit(fl, maxiter = 2)
-  fl <- fl |>
-    flash_greedy(Kmax = 40 - fl$n_factors, ebnm_fn = ebnm_point_exponential)
+for (i in 1:5) {
+  fl_white0 <- fl_white0 |>
+    flash_greedy(
+      Kmax = min(10, 40 - fl_white0$n_factors), 
+      ebnm_fn = ebnm_point_exponential,
+      init_fn = my_init
+    ) |>
+    flash_backfit(maxiter = 100)
 }
-
-fl_white0 <- flash_backfit(fl, verbose = 1)
 toc()
 ```
+
+EBNMF is able to find 40 factors in the white = 0 case as well. Note that without using these tricks, only six factors were found.
 
 ## Components (black = 0)
 
@@ -125,6 +135,8 @@ typical <- apply(fitted_F, 2, which.max)
 plot_faces(cbcl_black0[, typical], 1:ncol(fitted_F))
 ```
 
+The above representation looks very "parts-based" to me (component 17 even gives us a mustache!). Maybe we can do even better by increasing the number of components $K$.
+
 ## Components (white = 0)
 
 Components:
@@ -149,11 +161,19 @@ typical <- apply(fitted_F, 2, which.max)
 plot_faces(cbcl_white0[, typical], 1:ncol(fitted_F), black0 = FALSE)
 ```
 
-## NMF fit (white = 0)
-
-Why does the `white0` fit only capture six components? Let's compare with: 1. standard NMF; 2. `flashier` results when NMF is used as initialization:
+These results look different, but I'm not sure it makes much of a difference. Factors have similar sparsity:
 
 ```{r}
+mean(sapply(fl_black0$L_ghat, function(k) k$pi[1]))
+mean(sapply(fl_white0$L_ghat, function(k) k$pi[1]))
+```
+
+
+## NMF initialization (white = 0)
+
+```{r}
+tic()
+
 nmf_res <- RcppML::nmf(cbcl_white0, k = 40, verbose = FALSE)
 
 fl_nmfinit <- flash_init(cbcl_white0, var_type = 1) |>
@@ -161,8 +181,10 @@ fl_nmfinit <- flash_init(cbcl_white0, var_type = 1) |>
   flash_factors_init(list(nmf_res$w %*% diag(sqrt(nmf_res$d)),
                           t(nmf_res$h) %*% diag(sqrt(nmf_res$d))),
                      ebnm_fn = ebnm_point_exponential) |>
-  flash_backfit() |>
+  flash_backfit(maxiter = 500) |>
   flash_nullcheck()
+
+toc()
 ```
 
 Note that no components were removed in the flash fit. The NMF components appear as follows:
@@ -182,5 +204,16 @@ F_sparsity <- round(sapply(fl_nmfinit$F_ghat, function(k) k$pi[1]), 2)
 labs <- paste0(formatC(1:ncol(fitted_L), width = 2), " (pi0 = ", F_sparsity, ")")
 
 plot_faces(fitted_L, labs, black0 = FALSE)
+```
+
+## ELBO comparisons
+
+Of all three fits, the greedy algorithm gives the best elbo:
+
+```{r}
+fl_black0$elbo
+
+fl_white0$elbo
+fl_nmfinit$elbo
 ```
 
