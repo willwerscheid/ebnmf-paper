@@ -242,5 +242,21 @@ res
 The (subjectively) best solutions do not necessarily have the smallest
 norm, suggesting some overfitting here.
 
+```{r generate-plots-for-paper, echo=FALSE}
+p1 <- plot_images(Y[,1:9],nrow = 1,ncol = 9)
+p2 <- plot_images(nmf$W,nrow = 2,ncol = 9)
+p3 <- plot_images(sparse_nmf$W,nrow = 2,ncol = 9)
+p4 <- plot_images(ldf(fl_fixed)$L,nrow = 2,ncol = 9)
+p5 <- plot_images(ldf(fl_adapt)$L,nrow = 2,ncol = 9)
+ggsave("noisy_swimmer_more.pdf",
+       plot_grid(p1,p2,p3,p4,p5,
+                 nrow = 5,ncol = 1,rel_heights = c(1.2,2,2,2,2),
+                 labels = c("data","NMF","sparse NMF, sW = 0.8",
+	                        "EBNMF with fixed prior",
+				            "EBNMF with adapted prior"),
+               	            label_size = 10,label_fontface = "plain"),
+	   height = 6.25,width = 4)
+```
+
 [noisy_swimmer_matlab]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/noisy_swimmer.m
 [sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
