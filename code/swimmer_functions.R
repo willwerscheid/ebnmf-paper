@@ -1,3 +1,24 @@
+# Ad hoc method to extract the true factors from the (non-noisy)
+# swimmer data set.
+#
+# Note that Y should be loaded into R by taking the following steps:
+#
+#   Y <- readMat("data/swimmer.mat")$Y
+#   Y <- apply(Y,3,as.vector)
+#   Y <- Y - 1
+#
+extract_true_swimmer_factors <- function (Y) {
+  Y <- Y + 0.0001  
+  fit <- flash(Y,ebnm_fn = ebnm_point_exponential,
+               backfit = FALSE,var_type = 0)
+  L <- ldf(fit)$L
+  a <- as.numeric(rowSums(L[,-1]) < 0.01)
+  L[,1] <- a * L[,1]
+  L <- (L > 0.1)
+  mode(L) <- "numeric"
+  return(L)
+}
+
 # Let 0 < u < 1 be a noise parameter. We simulate values for blank
 # pixels (zeroes) from Beta(u,1), and solid pixels (ones) from
 # Beta(1,u). The larger the value of u, the noisier the images.
