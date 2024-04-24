@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec6518a4650cec9f01b55811bdf0bc624143cc896targetblankc6518a4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2acfcf5da4a059df66f8cd4e64f387e941b45159targetblank2acfcf5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c6518a4650cec9f01b55811bdf0bc624143cc896" target="_blank">c6518a4</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2acfcf5da4a059df66f8cd4e64f387e941b45159" target="_blank">2acfcf5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec6518a4650cec9f01b55811bdf0bc624143cc896targetblankc6518a4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2acfcf5da4a059df66f8cd4e64f387e941b45159targetblank2acfcf5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c6518a4650cec9f01b55811bdf0bc624143cc896" target="_blank">c6518a4</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2acfcf5da4a059df66f8cd4e64f387e941b45159" target="_blank">2acfcf5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -473,6 +473,9 @@ Untracked files:
     Untracked:  flash_greedy_init_noisy_L.txt
     Untracked:  noisy_swimmer.mat
     Untracked:  noisy_swimmer_more.pdf
+
+Unstaged changes:
+    Modified:   code/swimmer_functions.R
 
 </code></pre>
 <p>
@@ -518,6 +521,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2acfcf5da4a059df66f8cd4e64f387e941b45159/analysis/noisy_swimmer_more.Rmd" target="_blank">2acfcf5</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+<td>
+wflow_publish("analysis/noisy_swimmer_more.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/noisy_swimmer_more.html" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+<td>
+Added generate-plots-for-paper chunk (hidden) to noisy_swimmer_more
+analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -819,6 +857,7 @@ source(&quot;code/swimmer_functions.R&quot;)</code></pre>
 <pre class="r"><code>Y &lt;- readMat(&quot;data/swimmer.mat&quot;)$Y
 Y &lt;- apply(Y,3,as.vector)
 Y &lt;- Y - 1
+Y_not_noisy &lt;- Y
 Y[Y &gt; 0] &lt;- 1</code></pre>
 <p>Add some noise to the images.</p>
 <pre class="r"><code>Y &lt;- generate_noisy_swimmer_data(Y,0.05)
@@ -852,6 +891,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/add-noise-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/1c9b2b15d9427dd1d4b3786aefaa9999026195e9/docs/figure/noisy_swimmer_more.Rmd/add-noise-1.png" target="_blank">1c9b2b1</a>
@@ -897,6 +947,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/2b2b19d2990aecb08a2d9826e7f9bfa91f61bdea/docs/figure/noisy_swimmer_more.Rmd/vanilla-nmf-1.png" target="_blank">2b2b19d</a>
@@ -968,6 +1029,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/2b2b19d2990aecb08a2d9826e7f9bfa91f61bdea/docs/figure/noisy_swimmer_more.Rmd/sparse-nmf-1.png" target="_blank">2b2b19d</a>
 </td>
 <td>
@@ -1034,6 +1106,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/more-sparse-nmf-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/0221134e49d90f673d18a9c8a40ac6639595f7cc/docs/figure/noisy_swimmer_more.Rmd/more-sparse-nmf-1.png" target="_blank">0221134</a>
@@ -1107,6 +1190,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/flash-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/flash-1.png" target="_blank">5ea7ae1</a>
 </td>
 <td>
@@ -1156,6 +1250,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/flash-greedy-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/flash-greedy-1.png" target="_blank">5ea7ae1</a>
@@ -1217,6 +1322,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/flash-greedy-2-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/flash-greedy-2-1.png" target="_blank">5ea7ae1</a>
 </td>
 <td>
@@ -1260,6 +1376,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/5ea7ae16fa8a3b3cef9e322e269181b539c9846e/docs/figure/noisy_swimmer_more.Rmd/unnamed-chunk-1-1.png" target="_blank">5ea7ae1</a>
@@ -1322,6 +1449,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/flash-flat-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/a4493ed50f66bab0beec3dd193f88efe7e483e4e/docs/figure/noisy_swimmer_more.Rmd/flash-flat-1.png" target="_blank">a4493ed</a>
 </td>
 <td>
@@ -1371,6 +1509,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/2fa1f046b4d28bc257b9ea7639d4666e95cb11db/docs/figure/noisy_swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">2fa1f04</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/a4493ed50f66bab0beec3dd193f88efe7e483e4e/docs/figure/noisy_swimmer_more.Rmd/flash-adapt-prior-1.png" target="_blank">a4493ed</a>
