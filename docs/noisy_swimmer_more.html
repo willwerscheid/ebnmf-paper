@@ -14,7 +14,7 @@
 
 <title>Yet more NMF analyses of the (noisy) swimmer data</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-30
+<strong>Last updated:</strong> 2024-04-24
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -319,7 +319,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.0.5). The <em>Checks</em> tab describes the reproducibility checks
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9a872be14ff9e450f9414f3df449f668bf108ce4targetblank9a872bea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec6518a4650cec9f01b55811bdf0bc624143cc896targetblankc6518a4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9a872be14ff9e450f9414f3df449f668bf108ce4" target="_blank">9a872be</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c6518a4650cec9f01b55811bdf0bc624143cc896" target="_blank">c6518a4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9a872be14ff9e450f9414f3df449f668bf108ce4targetblank9a872bea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec6518a4650cec9f01b55811bdf0bc624143cc896targetblankc6518a4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9a872be14ff9e450f9414f3df449f668bf108ce4" target="_blank">9a872be</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c6518a4650cec9f01b55811bdf0bc624143cc896" target="_blank">c6518a4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -472,6 +472,7 @@ Untracked files:
     Untracked:  flash_greedy_init_noisy_F.txt
     Untracked:  flash_greedy_init_noisy_L.txt
     Untracked:  noisy_swimmer.mat
+    Untracked:  noisy_swimmer_more.pdf
 
 </code></pre>
 <p>
@@ -517,6 +518,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c6518a4650cec9f01b55811bdf0bc624143cc896/analysis/noisy_swimmer_more.Rmd" target="_blank">c6518a4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-04-24
+</td>
+<td>
+workflowr::wflow_publish("analysis/noisy_swimmer_more.Rmd", verbose =
+TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/26bf2287b8e4b82cce7f225b267e0283e44a912a/docs/noisy_swimmer_more.html" target="_blank">26bf228</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-30
+</td>
+<td>
+Added fnorm calculations to the end of the noisy_swimmer_more analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -787,7 +823,12 @@ Y[Y &gt; 0] &lt;- 1</code></pre>
 <p>Add some noise to the images.</p>
 <pre class="r"><code>Y &lt;- generate_noisy_swimmer_data(Y,0.05)
 writeMat(&quot;noisy_swimmer.mat&quot;,Y = Y)
-plot_images(Y[,1:16],nrow = 2,ncol = 8)</code></pre>
+plot_images(Y[,1:16],nrow = 2,ncol = 8)
+# Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+# ℹ Please use the `linewidth` argument instead.
+# This warning is displayed once every 8 hours.
+# Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+# generated.</code></pre>
 <p><img src="figure/noisy_swimmer_more.Rmd/add-noise-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-add-noise-1">
@@ -1385,45 +1426,52 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()
-# R version 3.6.2 (2019-12-12)
-# Platform: x86_64-apple-darwin15.6.0 (64-bit)
-# Running under: macOS Catalina 10.15.7
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS Sonoma 14.4.1
 # 
 # Matrix products: default
-# BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
-# LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
 # 
 # locale:
 # [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
 # 
 # attached base packages:
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-#  [1] flashier_1.0.20   magrittr_2.0.1    ebnm_1.1-3        cowplot_1.1.1    
-#  [5] ggplot2_3.3.6     tidyr_1.1.3       dplyr_1.0.7       tibble_3.1.3     
-#  [9] R.matlab_3.6.2    workflowr_1.7.0.5
+#  [1] flashier_1.0.27 magrittr_2.0.3  ebnm_1.1-25     cowplot_1.1.3  
+#  [5] ggplot2_3.5.0   tidyr_1.3.1     dplyr_1.1.4     tibble_3.2.1   
+#  [9] R.matlab_3.7.0  workflowr_1.7.1
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_1.0.8        horseshoe_0.2.0   invgamma_1.1      lattice_0.20-38  
-#  [5] getPass_0.2-2     ps_1.6.0          assertthat_0.2.1  rprojroot_2.0.3  
-#  [9] digest_0.6.23     utf8_1.1.4        truncnorm_1.0-8   R6_2.4.1         
-# [13] evaluate_0.14     highr_0.8         httr_1.4.2        pillar_1.6.2     
-# [17] rlang_1.0.6       irlba_2.3.3       rstudioapi_0.13   whisker_0.4      
-# [21] callr_3.7.0       jquerylib_0.1.4   R.utils_2.11.0    R.oo_1.24.0      
-# [25] Matrix_1.3-4      rmarkdown_2.21    labeling_0.3      splines_3.6.2    
-# [29] stringr_1.4.0     munsell_0.5.0     mixsqp_0.3-48     compiler_3.6.2   
-# [33] httpuv_1.5.2      xfun_0.36         pkgconfig_2.0.3   SQUAREM_2017.10-1
-# [37] htmltools_0.5.4   tidyselect_1.1.1  fansi_0.4.0       crayon_1.4.1     
-# [41] withr_2.5.0       later_1.0.0       R.methodsS3_1.8.1 grid_3.6.2       
-# [45] jsonlite_1.7.2    gtable_0.3.0      lifecycle_1.0.3   DBI_1.1.0        
-# [49] git2r_0.29.0      scales_1.1.0      cli_3.5.0         stringi_1.4.3    
-# [53] farver_2.0.1      fs_1.5.2          promises_1.1.0    bslib_0.3.1      
-# [57] ellipsis_0.3.2    generics_0.0.2    vctrs_0.3.8       trust_0.1-8      
-# [61] tools_3.6.2       softImpute_1.4    glue_1.4.2        purrr_0.3.4      
-# [65] parallel_3.6.2    processx_3.5.2    fastmap_1.1.0     yaml_2.2.0       
-# [69] colorspace_1.4-1  ashr_2.2-57       deconvolveR_1.2-1 knitr_1.37       
-# [73] sass_0.4.0</code></pre>
+#  [1] tidyselect_1.2.0   viridisLite_0.4.2  farver_2.1.1       R.utils_2.12.3    
+#  [5] fastmap_1.1.1      lazyeval_0.2.2     promises_1.2.1     digest_0.6.34     
+#  [9] lifecycle_1.0.4    processx_3.8.3     invgamma_1.1       compiler_4.3.3    
+# [13] rlang_1.1.3        sass_0.4.8         progress_1.2.3     tools_4.3.3       
+# [17] utf8_1.2.4         yaml_2.3.8         data.table_1.15.2  knitr_1.45        
+# [21] labeling_0.4.3     prettyunits_1.2.0  htmlwidgets_1.6.4  Rtsne_0.17        
+# [25] withr_3.0.0        purrr_1.0.2        R.oo_1.26.0        grid_4.3.3        
+# [29] fansi_1.0.6        git2r_0.33.0       fastTopics_0.6-165 colorspace_2.1-0  
+# [33] scales_1.3.0       gtools_3.9.5       cli_3.6.2          rmarkdown_2.26    
+# [37] crayon_1.5.2       ragg_1.2.7         generics_0.1.3     RcppParallel_5.1.7
+# [41] rstudioapi_0.15.0  httr_1.4.7         pbapply_1.7-2      cachem_1.0.8      
+# [45] stringr_1.5.1      splines_4.3.3      parallel_4.3.3     softImpute_1.4-1  
+# [49] vctrs_0.6.5        Matrix_1.6-5       jsonlite_1.8.8     callr_3.7.5       
+# [53] hms_1.1.3          mixsqp_0.3-54      ggrepel_0.9.5      irlba_2.3.5.1     
+# [57] horseshoe_0.2.0    systemfonts_1.0.6  trust_0.1-8        plotly_4.10.4     
+# [61] jquerylib_0.1.4    glue_1.7.0         ps_1.7.6           uwot_0.1.16       
+# [65] stringi_1.8.3      gtable_0.3.4       later_1.3.2        quadprog_1.5-8    
+# [69] munsell_0.5.0      pillar_1.9.0       htmltools_0.5.7    truncnorm_1.0-9   
+# [73] R6_2.5.1           textshaping_0.3.7  rprojroot_2.0.4    evaluate_0.23     
+# [77] lattice_0.22-5     highr_0.10         R.methodsS3_1.8.2  SQUAREM_2021.1    
+# [81] ashr_2.2-64        httpuv_1.6.14      bslib_0.6.1        Rcpp_1.0.12       
+# [85] deconvolveR_1.2-1  whisker_0.4.1      xfun_0.42          fs_1.6.3          
+# [89] getPass_0.2-4      pkgconfig_2.0.3</code></pre>
 </div>
 
 
