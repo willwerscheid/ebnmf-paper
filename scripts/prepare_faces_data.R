@@ -1,0 +1,11 @@
+# TO DO: Explain here what this script is for, and how to use it.
+#
+# The CBCL faces data set was downloaded from here:
+# http://www.ai.mit.edu/courses/6.899/lectures/faces.tar.gz
+#
+# In each file, the first line contains the number of examples (6,977
+# training, 24,045 test), the second line contains the number of
+# dimensions (19x19 = 361). Each additional line consists of a single
+# image, histogram equalized and normalized so that all pixel values
+# are between 0 and 1, followed by a 1 for a face or a -1 for a
+# non-face.
