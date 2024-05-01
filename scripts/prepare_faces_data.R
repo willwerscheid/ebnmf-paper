@@ -10,7 +10,7 @@
 # are between 0 and 1, followed by a 1 for a face or a -1 for a
 # non-face.
 library(tools)
-source("../code/faces.R")
+source("../code/faces_functions.R")
 faces_train <- read_faces_data("svm.train.normgrey")
 faces_test <- read_faces_data("svm.test.normgrey")
 save(list = c("faces_train","faces_test"),
