@@ -21,7 +21,7 @@ hist(faces_test,n = 64)
 
 # Plot a sampling of the faces.
 n <- nrow(faces_train)
-i <- sample(n,32)
-print(plot_faces(faces_train[,i],nrow = 4,ncol = 8))
+i <- sample(n,49)
+print(plot_faces(faces_train[,i]))
 
 # Lee & Seung (2001) used K = 49.
