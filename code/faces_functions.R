@@ -33,6 +33,7 @@ read_faces_data <- function (filename) {
 # n images, where m = n^2. Note that nrow*ncol >= k is expected.
 plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10) {
   k <- ncol(W)
+  W <- apply(W,2,function (x) x/max(x))
   colnames(W) <- paste0("V",1:k)
   dat <- as_tibble(W)
   dat <- mutate(dat,

@@ -6,7 +6,6 @@ library(ggplot2)
 library(cowplot)
 library(NNLM)
 library(flashier)
-# TO DO: Install latest version of flashier.
 source("code/faces_functions.R")
 load("data/faces.RData")
 set.seed(1)
@@ -25,3 +24,7 @@ i <- sample(n,49)
 print(plot_faces(faces_train[,i]))
 
 # Lee & Seung (2001) used K = 49.
+nmf <- nnmf(faces_train,k = 49,method = "scd",
+            max.iter = 200,rel.tol = 1e-8,
+            n.threads = 4,verbose = 2)
+print(plot_faces(nmf$W))
