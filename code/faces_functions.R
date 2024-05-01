@@ -29,7 +29,8 @@ read_faces_data <- function (filename) {
   return(X[,image_labels == 1])
 }
 
-# TO DO: Explain here what this function does, and how to use it.
+# This takes the m x k matrix of feature weights and plots them as n x
+# n images, where m = n^2. Note that nrow*ncol >= k is expected.
 plot_faces <- function (W, n = 19, font_size = 9, nrow = 4, ncol = 4) {
   k <- ncol(W)
   colnames(W) <- paste0("V",1:k)
@@ -43,7 +44,8 @@ plot_faces <- function (W, n = 19, font_size = 9, nrow = 4, ncol = 4) {
   dat$k <- factor(dat$k,1:k)
   return(ggplot(dat,aes(x = row,y = col,fill = loading)) +
     geom_tile() +
-    scale_y_reverse() +
+    coord_flip() +
+    scale_x_reverse() +
     scale_fill_gradient(low = "white",high = "black") +
     facet_wrap(~k,nrow = nrow,ncol = ncol) +
     guides(fill = "none",x = "none",y = "none") +
