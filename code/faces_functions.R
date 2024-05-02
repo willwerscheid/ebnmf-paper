@@ -1,3 +1,8 @@
+# Normalize the columns of W so that the maximum value in each column
+# is 1.
+normalize.cols <- function (W)
+  W <- apply(W,2,function (x) x/max(x))
+
 # This function reads the data from svm.train.normgrey or
 # svm.test.normgrey and outputs an m x n matrix, where n is the number
 # of pixels and m is the number of faces.
@@ -33,7 +38,7 @@ read_faces_data <- function (filename) {
 # n images, where m = n^2. Note that nrow*ncol >= k is expected.
 plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10) {
   k <- ncol(W)
-  W <- apply(W,2,function (x) x/max(x))
+  W <- normalize.cols(W)
   colnames(W) <- paste0("V",1:k)
   dat <- as_tibble(W)
   dat <- mutate(dat,
