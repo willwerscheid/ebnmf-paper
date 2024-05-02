@@ -3,6 +3,11 @@
 normalize.cols <- function (W)
   W <- apply(W,2,function (x) x/max(x))
 
+# Compute the Frobenius norm objective for data matrix X and matrix
+# factorization W*H.
+frobenius_norm <- function (X, W, H)
+  sum((X - W %*% H)^2)
+
 # This function reads the data from svm.train.normgrey or
 # svm.test.normgrey and outputs an m x n matrix, where n is the number
 # of pixels and m is the number of faces.
