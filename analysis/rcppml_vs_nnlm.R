@@ -6,7 +6,7 @@ set.seed(1)
 faces <- 1 - faces_train
 set.seed(1)
 
-# RcppML, 200 iterations.
+# RcppML.
 setRcppMLthreads(4)
 t0 <- proc.time()
 fit1 <- RcppML::nmf(faces,k = 49,maxit = 150,tol = 1e-8,diag = FALSE,
