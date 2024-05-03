@@ -23,6 +23,11 @@ n <- nrow(faces_train)
 i <- sample(n,49)
 print(plot_faces(faces_train[,i]))
 
+# TO DO:
+#
+# Try with k = 100.
+#
+
 # Lee & Seung (2001) used K = 49.
 set.seed(1)
 nmf <- nnmf(faces_train,k = 49,method = "scd",
@@ -30,20 +35,31 @@ nmf <- nnmf(faces_train,k = 49,method = "scd",
             n.threads = 4,verbose = 2)
 print(plot_faces(nmf$W))
 
+stop()
 
+# flashier with "flat" prior.
+k <- 49
+set.seed(1)
+nmf0 <- nnmf(faces_train,k = 49,method = "scd",
+            max.iter = 10,rel.tol = 1e-8,
+            n.threads = 4,verbose = 2)
+flat_prior <- ebnm_point_exponential(x = rep(1,100))
+flat_prior$fitted_g$scale <- c(0,1)
+flat_prior$fitted_g$pi <- c(0.9999,0.0001)
+ebnm_flat_prior <- flash_ebnm(prior_family = "point_exponential",
+                              fix_g = TRUE,g_init = flat_prior)
+fit_flat <- flash_init(faces_train,var_type = 0)
+fit_flat <- flash_factors_init(fit_flat,
+                               list(nmf0$W,t(nmf0$H)),
+                               c(ebnm_flat_prior,ebnm_point_exponential))
+fit_flat <- flash_backfit(fit_flat,maxiter = 200,verbose = 2)
 
-# flashier with fixed prior.
-k <- 25
-fixed_prior <- ebnm_point_exponential(x = rep(1,100))
-fixed_prior$fitted_g$scale <- c(0,1)
-fixed_prior$fitted_g$pi <- c(0.1,0.9)
-ebnm_fixed_prior <- flash_ebnm(prior_family = "point_exponential",
-                               fix_g = TRUE,g_init = fixed_prior)
-fit_fixed <- flash_init(faces_train,var_type = 0)
-fit_fixed <- flash_factors_init(fit_fixed,
-                                list(nmf$W,t(nmf$H)),
-                                ebnm_fixed_prior)
-fit_fixed <- flash_backfit(fit_fixed,maxiter = 100,verbose = 2)
+plot(normalize.cols(nmf$W),normalize.cols(fit_flat$L_pm),pch = 20)
+
+W <- normalize.cols(nmf$W)
+L <- normalize.cols(ldf(fit_flat,type = "i")$L)
+print(plot_faces(W))
+print(plot_faces(L))
 
 # flashier with adaptive prior.
 # set.seed(1)
