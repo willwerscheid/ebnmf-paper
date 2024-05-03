@@ -27,6 +27,8 @@ print(plot_faces(faces_train[,i]))
 #
 # Try with k = 98.
 #
+# Use some of the test data for training.
+#
 
 # Lee & Seung (2001) used K = 49.
 set.seed(1)
