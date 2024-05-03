@@ -25,7 +25,7 @@ print(plot_faces(faces_train[,i]))
 
 # TO DO:
 #
-# Try with k = 100.
+# Try with k = 98.
 #
 
 # Lee & Seung (2001) used K = 49.
