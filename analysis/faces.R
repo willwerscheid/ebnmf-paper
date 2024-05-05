@@ -25,9 +25,8 @@ print(plot_faces(faces_train[,i]))
 
 # TO DO:
 #
-# Try with k = 98.
-#
-# Use some of the test data for training.
+# Try with k > 49, and try with (fixed) priors in which some priors
+# are sparse, and others are not.
 #
 
 # Lee & Seung (2001) used K = 49.
