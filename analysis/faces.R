@@ -23,12 +23,6 @@ n <- nrow(faces_train)
 i <- sample(n,49)
 print(plot_faces(faces_train[,i]))
 
-# TO DO:
-#
-# Try with k > 49, and try with (fixed) priors in which some priors
-# are sparse, and others are not.
-#
-
 # Lee & Seung (2001) used K = 49.
 set.seed(1)
 nmf <- nnmf(faces_train,k = 49,method = "scd",
@@ -36,58 +30,36 @@ nmf <- nnmf(faces_train,k = 49,method = "scd",
             n.threads = 4,verbose = 2)
 print(plot_faces(nmf$W))
 
-stop()
-
-# flashier with "flat" prior.
+# flashier with sparse prior.
 k <- 49
 set.seed(1)
-nmf0 <- nnmf(faces_train,k = 49,method = "scd",
-            max.iter = 10,rel.tol = 1e-8,
-            n.threads = 4,verbose = 2)
-flat_prior <- ebnm_point_exponential(x = rep(1,100))
-flat_prior$fitted_g$scale <- c(0,1)
-flat_prior$fitted_g$pi <- c(0.9999,0.0001)
-ebnm_flat_prior <- flash_ebnm(prior_family = "point_exponential",
-                              fix_g = TRUE,g_init = flat_prior)
-fit_flat <- flash_init(faces_train,var_type = 0)
-fit_flat <- flash_factors_init(fit_flat,
-                               list(nmf0$W,t(nmf0$H)),
-                               c(ebnm_flat_prior,ebnm_point_exponential))
-fit_flat <- flash_backfit(fit_flat,maxiter = 200,verbose = 2)
-
-plot(normalize.cols(nmf$W),normalize.cols(fit_flat$L_pm),pch = 20)
+fit_sparse <- flash(faces_train,greedy_Kmax = 1,
+                    ebnm_fn = ebnm_normal)
+nmf0 <- nnmf(faces_train,k = 48,method = "scd",
+             max.iter = 4,rel.tol = 1e-8,
+             n.threads = 4,verbose = 2)
+sparse_prior <- ebnm_point_exponential(x = rep(1,100))
+sparse_prior$fitted_g$scale <- c(0,1)
+sparse_prior$fitted_g$pi <- c(0.9999,0.0001)
+ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
+                                fix_g = TRUE,g_init = sparse_prior)
+fit_sparse <- flash_factors_init(fit_sparse,
+                                 list(nmf0$W,t(nmf0$H)),
+                                 c(ebnm_sparse_prior,ebnm_point_exponential))
+fit_sparse <- flash_backfit(fit_sparse,maxiter = 1000,verbose = 2)
 
 W <- normalize.cols(nmf$W)
-L <- normalize.cols(ldf(fit_flat,type = "i")$L)
-print(plot_faces(W))
-print(plot_faces(L))
+L <- ldf(fit_sparse,type = "i")$L
+L[L < 0] <- 0
+L <- normalize.cols(L)
+i <- order(colSums(W),decreasing = TRUE)
+j <- order(colSums(L),decreasing = TRUE)
+print(plot_faces(W[,i]))
+print(plot_faces(L[,j]))
 
-# flashier with adaptive prior.
-# set.seed(1)
-# nmf_init <- nnmf(faces_train,k = 64,method = "scd",max.iter = 10)
-fit_adapt <- flash_init(faces_train,var_type = 0)
-fit_adapt <- flash_factors_init(fit_adapt,
-                                list(nmf$W,t(nmf$H)),
-                              # list(fit_fixed$L_pm,fit_fixed$F_pm),
-                                ebnm_point_exponential)
-fit_adapt <- flash_backfit(fit_adapt,maxiter = 200,verbose = 2)
+x <- quantile(W,seq(0,1,0.01))
+y <- quantile(L[,-1],seq(0,1,0.01))
+plot(x,y,pch = 20,xlab = "NMF",ylab = "flashier")
+abline(a = 0,b = 1,col = "magenta",lty = "dotted")
 
-L  <- ldf(fit_adapt,type = "i")$L
-p1 <- plot_faces(nmf$W,nrow = 8,ncol = 8) + ggtitle("NMF")
-p2 <- plot_faces(L,nrow = 8,ncol = 8) + ggtitle("flashier")
-
-# Project the training samples.
-H_nmf   <- nnlm(nmf$W,faces_train,method = "scd")$coefficients
-H_adapt <- nnlm(L,faces_train,method = "scd")$coefficients
-
-# Compute the Frobenius norm on the training data.
-cat("nmf:     ",frobenius_norm(faces_train,nmf$W,H_nmf),"\n")
-cat("flashier:",frobenius_norm(faces_train,L,H_adapt),"\n")
-
-# Project the test samples.
-H_nmf   <- nnlm(nmf$W,faces_test,method = "scd")$coefficients
-H_adapt <- nnlm(L,faces_test,method = "scd")$coefficients
-
-# Compute the Frobenius norm on the test data.
-cat("nmf:     ",frobenius_norm(faces_test,nmf$W,H_nmf),"\n")
-cat("flashier:",frobenius_norm(faces_test,L,H_adapt),"\n")
+# TO DO NEXT: Try NMF with Hoyer sparsity penalty.
