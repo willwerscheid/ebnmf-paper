@@ -1,5 +1,5 @@
 # This is my first (rough) analysis of the faces data. If the results
-# look interesting, I will put this together into a workflowr analysis.
+# look compelling, I will put this together into a workflowr analysis.
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -20,15 +20,28 @@ hist(faces_test,n = 64)
 
 # Plot a sampling of the faces.
 n <- nrow(faces_train)
+m <- ncol(faces_train)
 i <- sample(n,49)
 print(plot_faces(faces_train[,i]))
 
+# First learn a "baseline" factor using flashier.
+fl_baseline <- flash(faces_train,greedy_Kmax = 1,ebnm_fn = ebnm_normal,
+                     var_type = 0,verbose = 0)
+
+# NMF initialized with "baseline" factor.
 # Lee & Seung (2001) used K = 49.
 set.seed(1)
-nmf <- nnmf(faces_train,k = 49,method = "scd",
-            max.iter = 200,rel.tol = 1e-8,
-            n.threads = 4,verbose = 2)
+k <- 49
+W0 <- fl_baseline$L_pm
+nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),
+             method = "scd",max.iter = 4,rel.tol = 1e-8,
+             n.threads = 4,verbose = 2)
+nmf0 <- nnmf(faces_train,k = k + 1,init = list(W = nmf0$W,H = nmf0$H),
+             method = "scd",max.iter = 100,rel.tol = 1e-8,
+             n.threads = 4,verbose = 2)
 print(plot_faces(nmf$W))
+
+stop()
 
 # flashier with sparse prior.
 k <- 49
