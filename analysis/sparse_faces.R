@@ -41,29 +41,28 @@ print(plot_faces(nmf$W))
 # flashier with sparse point-exponential prior.
 set.seed(1)
 nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),
-             method = "scd",max.iter = 10,rel.tol = 1e-8,
+             method = "scd",max.iter = 40,rel.tol = 1e-8,
              n.threads = 4,verbose = 2)
-nmf0$W <- nmf0$W + 0.0001
-nmf0$H <- nmf0$H + 0.0001
 pe_prior <- ebnm_point_exponential(x = rep(1,100))
-pe_prior$fitted_g$scale <- c(0,1)
-pe_prior$fitted_g$pi <- c(0.9999,0.0001)
+pe_prior$fitted_g$scale <- c(0,10)
+pe_prior$fitted_g$pi <- c(0.99,0.01)
 ebnm_pe_prior <- flash_ebnm(prior_family = "point_exponential",
                             fix_g = TRUE,g_init = pe_prior)
-fl_pe <- flash_init(faces_train,var_type = 0,S = 0.01)
+fl_pe <- flash_init(faces_train,var_type = 0)
 fl_pe <- flash_factors_init(fl_pe,
-                            list(nmf0$W[,k + 1,drop = FALSE],
-                                 t(nmf0$H[k + 1,,drop = FALSE])),
-                            ebnm_normal)
-fl_pe <- flash_factors_init(fl_pe,
-                            list(nmf0$W[,1:k],
-                                 t(nmf0$H[1:k,])),
-                            ebnm_pe_prior)
-fl_pe <- flash_backfit(fl_pe,maxiter = 100,verbose = 3)
+                            list(nmf0$W,t(nmf0$H)),
+                            c(ebnm_pe_prior,ebnm_point_exponential))
+fl_pe <- flash_backfit(fl_pe,maxiter = 30,verbose = 3)
 L <- ldf(fl_pe,type = "i")$L
 print(plot_faces(L))
 
 # flashier with sparse truncated normal prior.
+set.seed(1)
+nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),
+             method = "scd",max.iter = 10,rel.tol = 1e-8,
+             n.threads = 4,verbose = 2)
+nmf0$W <- nmf0$W + 0.01
+nmf0$H <- nmf0$H + 0.01
 tn_prior <- ebnm_generalized_binary(x = rep(1,100),mode = 0.01,scale = 100)
 tn_prior$fitted_g$pi <- c(0.99,0.01)
 ebnm_tn_prior <- flash_ebnm(prior_family = "generalized_binary",
@@ -72,14 +71,14 @@ fl_tn <- flash_init(faces_train,var_type = 0,S = 0.01)
 fl_tn <- flash_factors_init(fl_tn,
                             list(nmf0$W[,k + 1,drop = FALSE],
                                  t(nmf0$H[k + 1,,drop = FALSE])),
-                            ebnm_normal)
+                            c(ebnm_normal,ebnm_point_exponential))
 fl_tn <- flash_factors_init(fl_tn,
                             list(nmf0$W[,1:k],
                                  t(nmf0$H[1:k,])),
-                            ebnm_tn_prior)
+                            c(ebnm_tn_prior,ebnm_point_exponential))
 fl_tn <- flash_backfit(fl_tn,maxiter = 100,verbose = 3)
 L <- ldf(fl_tn,type = "i")$L
-print(plot_faces(L))
+print(plot_faces(L[,-1]))
 
 stop()
 
