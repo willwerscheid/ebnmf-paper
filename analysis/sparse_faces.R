@@ -42,7 +42,7 @@ nmf <- nnmf(faces_train,k = k + 1,
                         nmf_fixed_baseline$H),
             method = "scd",max.iter = 200,rel.tol = 1e-8,
             n.threads = 4,verbose = 2)
-print(plot_faces(nmf0$W,title = "NMF"))
+print(plot_faces(nmf$W,title = "NMF"))
 
 # flashier with point-exponential prior.
 set.seed(1)
