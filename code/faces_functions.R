@@ -41,10 +41,12 @@ read_faces_data <- function (filename) {
 
 # This takes the m x k matrix of feature weights and plots them as n x
 # n images, where m = n^2. Note that nrow*ncol >= k is expected.
-plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10,
-                        title = "") {
+plot_faces <- function (W, n = 19, order_by_sparsity = FALSE, zero = 0.01,
+                        font_size = 9, nrow = 5, ncol = 10, title = "") {
   k <- ncol(W)
   W <- normalize.cols(W)
+  if (order_by_sparsity)
+    W  <- W[,order(colSums(W > zero))]
   colnames(W) <- paste0("V",1:k)
   dat <- as_tibble(W)
   dat <- mutate(dat,

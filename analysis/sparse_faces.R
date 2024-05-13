@@ -34,37 +34,45 @@ set.seed(1)
 k <- 49
 W0 <- fl_baseline$L_pm
 nmf_fixed_baseline <-
-  nnmf(faces_train,k = k,init = list(W0 = W0),
-       method = "scd",max.iter = 100,rel.tol = 1e-8,
-       n.threads = 4,verbose = 2)
-nmf <- nnmf(faces_train,k = k + 1,
-            init = list(nmf_fixed_baseline$W,
-                        nmf_fixed_baseline$H),
-            method = "scd",max.iter = 200,rel.tol = 1e-8,
+  nnmf(faces_train,k = k,init = list(W0 = W0),method = "scd",max.iter = 4)
+nmf0 <- nnmf(faces_train,k = k + 1,init = list(W = nmf_fixed_baseline$W),
+             method = "scd",max.iter = 20)
+nmf <- nnmf(faces_train,k = k,method = "scd",max.iter = 200,rel.tol = 1e-8,
+            init = list(W0 = nmf0$W[,k + 1]),
             n.threads = 4,verbose = 2)
-print(plot_faces(nmf$W,title = "NMF"))
+print(plot_faces(nmf$W,title = "NMF",order_by_sparsity = TRUE))
 
 # flashier with point-exponential prior.
 set.seed(1)
 W0 <- nmf$W[,k + 1]
 nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),method = "scd",
              max.iter = 10,rel.tol = 1e-8)
-fl_pe <- flash_init(faces_train,var_type = 0)
-fl_pe <- flash_factors_init(fl_pe,
-                            list(nmf0$W,t(nmf0$H)),
-                            ebnm_point_exponential)
-fl_pe <- flash_factors_fix(fl_pe,kset = k + 1,which_dim = "loadings")
-fl_pe <- flash_backfit(fl_pe,maxiter = 200,extrapolate = FALSE,verbose = 2)
-print(plot_faces(fl_pe$L_pm,title = "flashier"))
-# plot(sort(colMeans(normalize.cols(nmf$W) > 0.001)),
-#      sort(colMeans(normalize.cols(fl_pe$L_pm) > 0.001)),
-#      pch = 20)
-# abline(a = 0,b = 1,col = "magenta",lty = "dotted")
+fl <- flash_init(faces_train,var_type = 0)
+fl <- flash_factors_init(fl,
+                         list(nmf0$W,t(nmf0$H)),
+                         ebnm_point_exponential)
+fl <- flash_factors_fix(fl,kset = k + 1,which_dim = "loadings")
+fl <- flash_backfit(fl,maxiter = 100,extrapolate = FALSE,verbose = 2)
+fl <- flash_backfit(fl,maxiter = 100,extrapolate = TRUE,verbose = 3)
+print(plot_faces(fl$L_pm,title = "flashier",order_by_sparsity = TRUE))
+
+# Compare sparsity of NMF and flashier solutions.
+plot(sort(colMeans(normalize.cols(nmf$W) > 0.001)),
+     sort(colMeans(normalize.cols(fl$L_pm) > 0.001)),
+     pch = 20)
+abline(a = 0,b = 1,col = "magenta",lty = "dotted")
+
+# TO DO NEXT:
+#
+#   + Try NMF with Hoyer sparsity penalty.
+#  
+#   + Assess fit in the test set.
+#
 
 stop()
 
-fl_pe <- flash(faces_train,greedy_Kmax = 1,
-                    ebnm_fn = ebnm_normal)
+fl <- flash(faces_train,greedy_Kmax = 1,
+            ebnm_fn = ebnm_normal)
 nmf0 <- nnmf(faces_train,k = 48,method = "scd",
              max.iter = 4,rel.tol = 1e-8,
              n.threads = 4,verbose = 2)
@@ -91,5 +99,3 @@ x <- quantile(W,seq(0,1,0.01))
 y <- quantile(L[,-1],seq(0,1,0.01))
 plot(x,y,pch = 20,xlab = "NMF",ylab = "flashier")
 abline(a = 0,b = 1,col = "magenta",lty = "dotted")
-
-# TO DO NEXT: Try NMF with Hoyer sparsity penalty.
