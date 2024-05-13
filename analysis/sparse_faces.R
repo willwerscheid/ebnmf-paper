@@ -68,34 +68,3 @@ abline(a = 0,b = 1,col = "magenta",lty = "dotted")
 #  
 #   + Assess fit in the test set.
 #
-
-stop()
-
-fl <- flash(faces_train,greedy_Kmax = 1,
-            ebnm_fn = ebnm_normal)
-nmf0 <- nnmf(faces_train,k = 48,method = "scd",
-             max.iter = 4,rel.tol = 1e-8,
-             n.threads = 4,verbose = 2)
-sparse_prior <- ebnm_point_exponential(x = rep(1,100))
-sparse_prior$fitted_g$scale <- c(0,1)
-sparse_prior$fitted_g$pi <- c(0.9999,0.0001)
-ebnm_sparse_prior <- flash_ebnm(prior_family = "point_exponential",
-                                fix_g = TRUE,g_init = sparse_prior)
-fit_sparse <- flash_factors_init(fit_sparse,
-                                 list(nmf0$W,t(nmf0$H)),
-                                 c(ebnm_sparse_prior,ebnm_point_exponential))
-fit_sparse <- flash_backfit(fit_sparse,maxiter = 1000,verbose = 2)
-
-W <- normalize.cols(nmf$W)
-L <- ldf(fit_sparse,type = "i")$L
-L[L < 0] <- 0
-L <- normalize.cols(L)
-i <- order(colSums(W),decreasing = TRUE)
-j <- order(colSums(L),decreasing = TRUE)
-print(plot_faces(W[,i]))
-print(plot_faces(L[,j]))
-
-x <- quantile(W,seq(0,1,0.01))
-y <- quantile(L[,-1],seq(0,1,0.01))
-plot(x,y,pch = 20,xlab = "NMF",ylab = "flashier")
-abline(a = 0,b = 1,col = "magenta",lty = "dotted")
