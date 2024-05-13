@@ -29,7 +29,7 @@ fl_baseline <- flash(faces_train,greedy_Kmax = 1,ebnm_fn = ebnm_normal,
                      var_type = 0,verbose = 0)
 
 # NMF initialized with "baseline" factor.
-# Lee & Seung (2001) used K = 49.
+# Lee & Seung (2001) used k = 49.
 set.seed(1)
 k <- 49
 W0 <- fl_baseline$L_pm
@@ -40,53 +40,26 @@ nmf_fixed_baseline <-
 nmf <- nnmf(faces_train,k = k + 1,
             init = list(nmf_fixed_baseline$W,
                         nmf_fixed_baseline$H),
-            method = "scd",max.iter = 100,rel.tol = 1e-8,
+            method = "scd",max.iter = 200,rel.tol = 1e-8,
             n.threads = 4,verbose = 2)
-print(plot_faces(nmf$W))
+print(plot_faces(nmf0$W,title = "NMF"))
 
-stop()
-
-# flashier with sparse point-exponential prior.
+# flashier with point-exponential prior.
 set.seed(1)
-nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),
-             method = "scd",max.iter = 40,rel.tol = 1e-8,
-             n.threads = 4,verbose = 2)
-pe_prior <- ebnm_point_exponential(x = rep(1,100))
-pe_prior$fitted_g$scale <- c(0,10)
-pe_prior$fitted_g$pi <- c(0.99,0.01)
-ebnm_pe_prior <- flash_ebnm(prior_family = "point_exponential",
-                            fix_g = TRUE,g_init = pe_prior)
+W0 <- nmf$W[,k + 1]
+nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),method = "scd",
+             max.iter = 10,rel.tol = 1e-8)
 fl_pe <- flash_init(faces_train,var_type = 0)
 fl_pe <- flash_factors_init(fl_pe,
                             list(nmf0$W,t(nmf0$H)),
-                            c(ebnm_pe_prior,ebnm_point_exponential))
-fl_pe <- flash_backfit(fl_pe,maxiter = 30,verbose = 3)
-L <- ldf(fl_pe,type = "i")$L
-print(plot_faces(L))
-
-# flashier with sparse truncated normal prior.
-set.seed(1)
-nmf0 <- nnmf(faces_train,k = k,init = list(W0 = W0),
-             method = "scd",max.iter = 10,rel.tol = 1e-8,
-             n.threads = 4,verbose = 2)
-nmf0$W <- nmf0$W + 0.01
-nmf0$H <- nmf0$H + 0.01
-tn_prior <- ebnm_generalized_binary(x = rep(1,100),mode = 0.01,scale = 100)
-tn_prior$fitted_g$pi <- c(0.99,0.01)
-ebnm_tn_prior <- flash_ebnm(prior_family = "generalized_binary",
-                            fix_g = TRUE,g_init = tn_prior)
-fl_tn <- flash_init(faces_train,var_type = 0,S = 0.01)
-fl_tn <- flash_factors_init(fl_tn,
-                            list(nmf0$W[,k + 1,drop = FALSE],
-                                 t(nmf0$H[k + 1,,drop = FALSE])),
-                            c(ebnm_normal,ebnm_point_exponential))
-fl_tn <- flash_factors_init(fl_tn,
-                            list(nmf0$W[,1:k],
-                                 t(nmf0$H[1:k,])),
-                            c(ebnm_tn_prior,ebnm_point_exponential))
-fl_tn <- flash_backfit(fl_tn,maxiter = 100,verbose = 3)
-L <- ldf(fl_tn,type = "i")$L
-print(plot_faces(L[,-1]))
+                            ebnm_point_exponential)
+fl_pe <- flash_factors_fix(fl_pe,kset = k + 1,which_dim = "loadings")
+fl_pe <- flash_backfit(fl_pe,maxiter = 200,extrapolate = FALSE,verbose = 2)
+print(plot_faces(fl_pe$L_pm,title = "flashier"))
+# plot(sort(colMeans(normalize.cols(nmf$W) > 0.001)),
+#      sort(colMeans(normalize.cols(fl_pe$L_pm) > 0.001)),
+#      pch = 20)
+# abline(a = 0,b = 1,col = "magenta",lty = "dotted")
 
 stop()
 

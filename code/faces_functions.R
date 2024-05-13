@@ -41,7 +41,8 @@ read_faces_data <- function (filename) {
 
 # This takes the m x k matrix of feature weights and plots them as n x
 # n images, where m = n^2. Note that nrow*ncol >= k is expected.
-plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10) {
+plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10,
+                        title = "") {
   k <- ncol(W)
   W <- normalize.cols(W)
   colnames(W) <- paste0("V",1:k)
@@ -60,8 +61,9 @@ plot_faces <- function (W, n = 19, font_size = 9, nrow = 5, ncol = 10) {
     scale_fill_gradient(low = "white",high = "black") +
     facet_wrap(~k,nrow = nrow,ncol = ncol) +
     guides(fill = "none",x = "none",y = "none") +
-    labs(x = "",y = "") +
+    labs(x = "",y = "",title = title) +
     theme_cowplot(font_size = font_size) +
     theme(strip.background = element_blank(),
-          panel.border = element_rect(color = "black",size = 0.5)))
+          panel.border = element_rect(color = "black",size = 0.5),
+          plot.title = element_text(size = font_size,face = "plain")))
 }
