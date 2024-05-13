@@ -67,7 +67,7 @@ print(plot_faces(fl$L_pm,title = "flashier",order_by_sparsity = TRUE))
 cat(sprintf("NMF:      %0.4f\n",fl_nmf$elbo))
 cat(sprintf("flashier: %0.4f\n",fl$elbo))
 
-# Compare sparsity of NMF and flashier-NMF solutions.
+# Compare sparsity of NMF and flashier/NMF solutions.
 zero <- 0.001
 pdat <-
   data.frame(nmf      = sort(colMeans(normalize.cols(nmf$W) > zero)),
@@ -86,3 +86,14 @@ p2 <- ggplot(pdat,aes(x = nmf,y = flashier)) +
   geom_point() +
   geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
   theme_cowplot(font_size = 12)
+
+# Compare the (Frobenius) NMF objective.
+set.seed(1)
+fl_nmf_train <- nnmf(faces_train,k = k + 1,
+                  init = list(W0 = fl_nmf$L_pm),
+                  method = "scd",max.iter = 40,n.threads = 4,verbose = 0)
+fl_train <- nnmf(faces_train,k = k + 1,
+                 init = list(W0 = fl$L_pm),
+                 method = "scd",max.iter = 40,n.threads = 4,verbose = 0)
+print(frobenius_norm(faces_train,fl_nmf_train$W,fl_nmf_train$H))
+print(frobenius_norm(faces_train,fl_train$W,fl_train$H))
