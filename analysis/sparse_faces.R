@@ -33,10 +33,18 @@ fl_baseline <- flash(faces_train,greedy_Kmax = 1,ebnm_fn = ebnm_normal,
 set.seed(1)
 k <- 49
 W0 <- fl_baseline$L_pm
-nmf <- nnmf(faces_train,k = k,init = list(W0 = W0),
+nmf_fixed_baseline <-
+  nnmf(faces_train,k = k,init = list(W0 = W0),
+       method = "scd",max.iter = 100,rel.tol = 1e-8,
+       n.threads = 4,verbose = 2)
+nmf <- nnmf(faces_train,k = k + 1,
+            init = list(nmf_fixed_baseline$W,
+                        nmf_fixed_baseline$H),
             method = "scd",max.iter = 100,rel.tol = 1e-8,
             n.threads = 4,verbose = 2)
 print(plot_faces(nmf$W))
+
+stop()
 
 # flashier with sparse point-exponential prior.
 set.seed(1)
