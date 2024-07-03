@@ -431,15 +431,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec0daa948618ae8d57fbae2ba8153a84602179fe5targetblankc0daa94a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef95a3d11dd93b701d8b02fbb394b064590d6f25dtargetblankf95a3d1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c0daa948618ae8d57fbae2ba8153a84602179fe5" target="_blank">c0daa94</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f95a3d11dd93b701d8b02fbb394b064590d6f25d" target="_blank">f95a3d1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec0daa948618ae8d57fbae2ba8153a84602179fe5targetblankc0daa94a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef95a3d11dd93b701d8b02fbb394b064590d6f25dtargetblankf95a3d1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -449,7 +449,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c0daa948618ae8d57fbae2ba8153a84602179fe5" target="_blank">c0daa94</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f95a3d11dd93b701d8b02fbb394b064590d6f25d" target="_blank">f95a3d1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -474,10 +474,6 @@ Untracked files:
     Untracked:  noisy_swimmer_more.pdf
     Untracked:  scripts/svm.test.normgrey.gz
     Untracked:  scripts/svm.train.normgrey.gz
-
-Unstaged changes:
-    Modified:   analysis/sparse_faces.R
-    Modified:   code/faces_functions.R
 
 </code></pre>
 <p>
@@ -523,6 +519,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/f95a3d11dd93b701d8b02fbb394b064590d6f25d/analysis/sparse_faces.Rmd" target="_blank">f95a3d1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+workflowr::wflow_publish("analysis/sparse_faces.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/sparse_faces.html" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+I have a first draft of the sparse_faces workflowr analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -587,17 +617,86 @@ evenly distributed between 0 and 1.</p>
 <pre class="r"><code>par(mar = c(5,4,2,2))
 hist(faces,n = 64,main = &quot;&quot;)</code></pre>
 <p><img src="figure/sparse_faces.Rmd/faces-hist-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-faces-hist-1">
+Past versions of faces-hist-1.png
+</button>
+</p>
+<div id="fig-faces-hist-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/faces-hist-1.png" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Plot a sampling of the faces.</p>
 <pre class="r"><code>n &lt;- nrow(faces)
 m &lt;- ncol(faces)
 i &lt;- sample(n,49)
-plot_faces(faces[,i])
-# Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
-# ℹ Please use the `linewidth` argument instead.
-# This warning is displayed once every 8 hours.
-# Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-# generated.</code></pre>
+plot_faces(faces[,i])</code></pre>
 <p><img src="figure/sparse_faces.Rmd/plot-faces-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-faces-1">
+Past versions of plot-faces-1.png
+</button>
+</p>
+<div id="fig-plot-faces-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/plot-faces-1.png" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Let’s begin with the standard NMF method. Lee &amp; Seung (2001) used
 k = 49.</p>
 <pre class="r"><code>set.seed(1)
@@ -636,10 +735,84 @@ the first flashier run (theo ne with a good NMF initialization):</p>
 k_set &lt;- order(colSums(W &gt; zero))
 plot_faces(L_flnmf[,k_set],title = &quot;flashier with good NMF init&quot;)</code></pre>
 <p><img src="figure/sparse_faces.Rmd/view-parts-1-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-view-parts-1-1">
+Past versions of view-parts-1-1.png
+</button>
+</p>
+<div id="fig-view-parts-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/view-parts-1-1.png" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>And these are the parts learned by the second flashier run (the one
 with a rough NMF initialization):</p>
 <pre class="r"><code>plot_faces(L_fl[,k_set],title = &quot;flashier with rough NMF init&quot;)</code></pre>
 <p><img src="figure/sparse_faces.Rmd/plot-parts-2-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-parts-2-1">
+Past versions of plot-parts-2-1.png
+</button>
+</p>
+<div id="fig-plot-parts-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/plot-parts-2-1.png" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Because the second run of flashier had more room to adapt its priors,
 it learned considerably different parts than the NMF-like flashier
 solution. This is reflected in the greater variation in the sparsity of
@@ -660,317 +833,47 @@ p1 &lt;- ggplot(pdat,aes(x = nmf,y = flashier1)) +
 p2 &lt;- ggplot(pdat,aes(x = nmf,y = flashier2)) +
   geom_point() +
   geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,lty = &quot;dotted&quot;) +
-  labs(x = &quot;NMF&quot;)
+  labs(x = &quot;NMF&quot;,y = &quot;flashier (rough NMF init)&quot;) +
   theme_cowplot(font_size = 12)
 plot_grid(p1,p2)</code></pre>
 <p><img src="figure/sparse_faces.Rmd/compare-sparsity-of-parts-1.png" width="600" style="display: block; margin: auto;" /></p>
-<pre><code># List of 136
-#  $ line                            :List of 6
-#   ..$ colour       : chr &quot;black&quot;
-#   ..$ linewidth    : num 0.5
-#   ..$ linetype     : num 1
-#   ..$ lineend      : chr &quot;butt&quot;
-#   ..$ arrow        : logi FALSE
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-#  $ rect                            :List of 5
-#   ..$ fill         : logi NA
-#   ..$ colour       : logi NA
-#   ..$ linewidth    : num 0.5
-#   ..$ linetype     : num 1
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
-#  $ text                            :List of 11
-#   ..$ family       : chr &quot;&quot;
-#   ..$ face         : chr &quot;plain&quot;
-#   ..$ colour       : chr &quot;black&quot;
-#   ..$ size         : num 12
-#   ..$ hjust        : num 0.5
-#   ..$ vjust        : num 0.5
-#   ..$ angle        : num 0
-#   ..$ lineheight   : num 0.9
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : logi FALSE
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ title                           : NULL
-#  $ aspect.ratio                    : NULL
-#  $ axis.title                      : NULL
-#  $ axis.title.x                    :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 1
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 3points 0points 0points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.title.x.top                :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 0
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 3points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.title.x.bottom             : NULL
-#  $ axis.title.y                    :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 1
-#   ..$ angle        : num 90
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 3points 0points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.title.y.left               : NULL
-#  $ axis.title.y.right              :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 0
-#   ..$ angle        : num -90
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 3points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text                       :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : chr &quot;black&quot;
-#   ..$ size         : num 10.3
-#   ..$ hjust        : NULL
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : NULL
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text.x                     :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 1
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 2.57points 0points 0points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text.x.top                 :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : NULL
-#   ..$ vjust        : num 0
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.57points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text.x.bottom              : NULL
-#  $ axis.text.y                     :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : num 1
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.57points 0points 0points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text.y.left                : NULL
-#  $ axis.text.y.right               :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : num 0
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.57points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.text.theta                 : NULL
-#  $ axis.text.r                     :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : num 0.5
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.4points 0points 2.4points
-#   .. ..- attr(*, &quot;unit&quot;)= int 8
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ axis.ticks                      :List of 6
-#   ..$ colour       : chr &quot;black&quot;
-#   ..$ linewidth    : num 0.5
-#   ..$ linetype     : NULL
-#   ..$ lineend      : NULL
-#   ..$ arrow        : logi FALSE
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-#  $ axis.ticks.x                    : NULL
-#  $ axis.ticks.x.top                : NULL
-#  $ axis.ticks.x.bottom             : NULL
-#  $ axis.ticks.y                    : NULL
-#  $ axis.ticks.y.left               : NULL
-#  $ axis.ticks.y.right              : NULL
-#  $ axis.ticks.theta                : NULL
-#  $ axis.ticks.r                    : NULL
-#  $ axis.minor.ticks.x.top          : NULL
-#  $ axis.minor.ticks.x.bottom       : NULL
-#  $ axis.minor.ticks.y.left         : NULL
-#  $ axis.minor.ticks.y.right        : NULL
-#  $ axis.minor.ticks.theta          : NULL
-#  $ axis.minor.ticks.r              : NULL
-#  $ axis.ticks.length               : &#39;simpleUnit&#39; num 3points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ axis.ticks.length.x             : NULL
-#  $ axis.ticks.length.x.top         : NULL
-#  $ axis.ticks.length.x.bottom      : NULL
-#  $ axis.ticks.length.y             : NULL
-#  $ axis.ticks.length.y.left        : NULL
-#  $ axis.ticks.length.y.right       : NULL
-#  $ axis.ticks.length.theta         : NULL
-#  $ axis.ticks.length.r             : NULL
-#  $ axis.minor.ticks.length         : &#39;rel&#39; num 0.75
-#  $ axis.minor.ticks.length.x       : NULL
-#  $ axis.minor.ticks.length.x.top   : NULL
-#  $ axis.minor.ticks.length.x.bottom: NULL
-#  $ axis.minor.ticks.length.y       : NULL
-#  $ axis.minor.ticks.length.y.left  : NULL
-#  $ axis.minor.ticks.length.y.right : NULL
-#  $ axis.minor.ticks.length.theta   : NULL
-#  $ axis.minor.ticks.length.r       : NULL
-#  $ axis.line                       :List of 6
-#   ..$ colour       : chr &quot;black&quot;
-#   ..$ linewidth    : num 0.5
-#   ..$ linetype     : NULL
-#   ..$ lineend      : chr &quot;square&quot;
-#   ..$ arrow        : logi FALSE
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
-#  $ axis.line.x                     : NULL
-#  $ axis.line.x.top                 : NULL
-#  $ axis.line.x.bottom              : NULL
-#  $ axis.line.y                     : NULL
-#  $ axis.line.y.left                : NULL
-#  $ axis.line.y.right               : NULL
-#  $ axis.line.theta                 : NULL
-#  $ axis.line.r                     : NULL
-#  $ legend.background               : list()
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
-#  $ legend.margin                   : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ legend.spacing                  : &#39;simpleUnit&#39; num 12points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ legend.spacing.x                : NULL
-#  $ legend.spacing.y                : NULL
-#  $ legend.key                      : list()
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
-#  $ legend.key.size                 : &#39;simpleUnit&#39; num 13.2points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ legend.key.height               : NULL
-#  $ legend.key.width                : NULL
-#  $ legend.key.spacing              : &#39;simpleUnit&#39; num 6points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ legend.key.spacing.x            : NULL
-#  $ legend.key.spacing.y            : NULL
-#  $ legend.frame                    : NULL
-#  $ legend.ticks                    : NULL
-#  $ legend.ticks.length             : &#39;rel&#39; num 0.2
-#  $ legend.axis.line                : NULL
-#  $ legend.text                     :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : &#39;rel&#39; num 0.857
-#   ..$ hjust        : NULL
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : NULL
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ legend.text.position            : NULL
-#  $ legend.title                    :List of 11
-#   ..$ family       : NULL
-#   ..$ face         : NULL
-#   ..$ colour       : NULL
-#   ..$ size         : NULL
-#   ..$ hjust        : num 0
-#   ..$ vjust        : NULL
-#   ..$ angle        : NULL
-#   ..$ lineheight   : NULL
-#   ..$ margin       : NULL
-#   ..$ debug        : NULL
-#   ..$ inherit.blank: logi TRUE
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
-#  $ legend.title.position           : NULL
-#  $ legend.position                 : chr &quot;right&quot;
-#  $ legend.position.inside          : NULL
-#  $ legend.direction                : NULL
-#  $ legend.byrow                    : NULL
-#  $ legend.justification            : chr [1:2] &quot;left&quot; &quot;center&quot;
-#  $ legend.justification.top        : NULL
-#  $ legend.justification.bottom     : NULL
-#  $ legend.justification.left       : NULL
-#  $ legend.justification.right      : NULL
-#  $ legend.justification.inside     : NULL
-#  $ legend.location                 : NULL
-#  $ legend.box                      : NULL
-#  $ legend.box.just                 : NULL
-#  $ legend.box.margin               : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#  $ legend.box.background           : list()
-#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
-#  $ legend.box.spacing              : &#39;simpleUnit&#39; num 12points
-#   ..- attr(*, &quot;unit&quot;)= int 8
-#   [list output truncated]
-#  - attr(*, &quot;class&quot;)= chr [1:2] &quot;theme&quot; &quot;gg&quot;
-#  - attr(*, &quot;complete&quot;)= logi TRUE
-#  - attr(*, &quot;validate&quot;)= logi TRUE</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-compare-sparsity-of-parts-1">
+Past versions of compare-sparsity-of-parts-1.png
+</button>
+</p>
+<div id="fig-compare-sparsity-of-parts-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/compare-sparsity-of-parts-1.png" target="_blank">459e8e3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>This illustrates that NMF with adaptive sparsity produces different
 decompositions by parts than regular NMF.</p>
 <br>
