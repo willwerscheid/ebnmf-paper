@@ -219,6 +219,23 @@ plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)
 It is interesting that the 16th factor essentially becomes a "null"
 factor when the prior is adapted.
 
+To understand what is happening, let's look at the estimates of
+$\pi_1$ for each column of the F matrix. This parameter controls the
+weight on the nonzero ("slab") component of the point-exponential
+prior.
+
+```{r flash-adapt-prior-2, fig.height=2.5, fig.width=2.5}
+pi1 <- sapply(fl_adapt$F_ghat,function (x) x$pi[2])
+pdat <- data.frame(k = 1:k,pi1 = pi1)
+ggplot(pdat,aes(x = k,y = pi1)) +
+  geom_point() +
+  scale_x_continuous(breaks = 1:k) +
+  theme_cowplot(font_size = 10)
+```
+
+Notice that this weight goes to zero for the "null factor" (factor 16)
+and goes to one for the torso factor.
+
 To summarize, here are the NMF solutions we compared, with the values
 of the Frobenius-norm objective at these solutions (smaller values are
 better):
