@@ -145,7 +145,7 @@ p1 <- ggplot(pdat,aes(x = nmf,y = flashier1)) +
 p2 <- ggplot(pdat,aes(x = nmf,y = flashier2)) +
   geom_point() +
   geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
-  labs(x = "NMF")
+  labs(x = "NMF",y = "flashier (rough NMF init)") +
   theme_cowplot(font_size = 12)
 plot_grid(p1,p2)
 ```
