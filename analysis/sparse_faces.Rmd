@@ -127,7 +127,7 @@ For a better comparison, let's plot the parts again next to each
 other. In this figure, the second flashier run is in every second row
 from the top:
 
-```{r plot-parts-3, fig.height=6, fig.width=3.5}
+```{r plot-parts-3, fig.height=5.5, fig.width=3.5}
 L_combined <- cbind(L_flnmf[,k_set],L_fl[,k_set],0)
 L_combined <-
   L_combined[,c(1:10,50:59,11:20,60:69,21:30,70:79,31:40,80:89,41:49,99,90:99)]
