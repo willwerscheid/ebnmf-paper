@@ -431,15 +431,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef95a3d11dd93b701d8b02fbb394b064590d6f25dtargetblankf95a3d1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7f8b1ecaceae9fd7403d408e4874713957fb02c3targetblank7f8b1eca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f95a3d11dd93b701d8b02fbb394b064590d6f25d" target="_blank">f95a3d1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7f8b1ecaceae9fd7403d408e4874713957fb02c3" target="_blank">7f8b1ec</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef95a3d11dd93b701d8b02fbb394b064590d6f25dtargetblankf95a3d1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree7f8b1ecaceae9fd7403d408e4874713957fb02c3targetblank7f8b1eca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -449,7 +449,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f95a3d11dd93b701d8b02fbb394b064590d6f25d" target="_blank">f95a3d1</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/7f8b1ecaceae9fd7403d408e4874713957fb02c3" target="_blank">7f8b1ec</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -519,6 +519,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/7f8b1ecaceae9fd7403d408e4874713957fb02c3/analysis/sparse_faces.Rmd" target="_blank">7f8b1ec</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+workflowr::wflow_publish("analysis/sparse_faces.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/b3f8b0e9ceecd606d68f80e8cab97d4cf1a0c8d8/docs/sparse_faces.html" target="_blank">b3f8b0e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -813,6 +847,14 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>For a better comparison, let’s plot the parts again next to each
+other. In this figure, the second flashier run is in every second row
+from the top:</p>
+<pre class="r"><code>L_combined &lt;- cbind(L_flnmf[,k_set],L_fl[,k_set],0)
+L_combined &lt;-
+  L_combined[,c(1:10,50:59,11:20,60:69,21:30,70:79,31:40,80:89,41:49,99,90:99)]
+plot_faces(L_combined,nrow = 10,ncol = 10)</code></pre>
+<p><img src="figure/sparse_faces.Rmd/plot-parts-3-1.png" width="420" style="display: block; margin: auto;" /></p>
 <p>Because the second run of flashier had more room to adapt its priors,
 it learned considerably different parts than the NMF-like flashier
 solution. This is reflected in the greater variation in the sparsity of
@@ -859,6 +901,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/b3f8b0e9ceecd606d68f80e8cab97d4cf1a0c8d8/docs/figure/sparse_faces.Rmd/compare-sparsity-of-parts-1.png" target="_blank">b3f8b0e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/459e8e3f106d4c118724010de4c1b5c6ecc25fd7/docs/figure/sparse_faces.Rmd/compare-sparsity-of-parts-1.png" target="_blank">459e8e3</a>
