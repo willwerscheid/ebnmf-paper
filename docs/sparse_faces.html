@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Peter Carbonetto and Jason Willwerscheid" />
+
+
+<title>EBNMF analysis of the faces data</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ebnmf-paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/ebnmf-paper">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">EBNMF analysis of the faces data</h1>
+<h4 class="author">Peter Carbonetto and Jason Willwerscheid</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-07-03
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20231214code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20231214)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20231214code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20231214)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec0daa948618ae8d57fbae2ba8153a84602179fe5targetblankc0daa94a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c0daa948618ae8d57fbae2ba8153a84602179fe5" target="_blank">c0daa94</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec0daa948618ae8d57fbae2ba8153a84602179fe5targetblankc0daa94a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c0daa948618ae8d57fbae2ba8153a84602179fe5" target="_blank">c0daa94</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    analysis/.DS_Store
+
+Untracked files:
+    Untracked:  flash_greedy_init_noisy_F.txt
+    Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  noisy_swimmer.mat
+    Untracked:  noisy_swimmer_more.pdf
+    Untracked:  scripts/svm.test.normgrey.gz
+    Untracked:  scripts/svm.train.normgrey.gz
+
+Unstaged changes:
+    Modified:   analysis/sparse_faces.R
+    Modified:   code/faces_functions.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/sparse_faces.Rmd</code>) and HTML
+(<code>docs/sparse_faces.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c0daa948618ae8d57fbae2ba8153a84602179fe5/analysis/sparse_faces.Rmd" target="_blank">c0daa94</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+workflowr::wflow_publish("analysis/sparse_faces.Rmd", verbose = TRUE,
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/7fb737edaf9f26d1a774c8c1f28278e497f1825f/analysis/sparse_faces.Rmd" target="_blank">7fb737e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+Made a few improvements to the sparse_faces.R draft script.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>We will use the classic CBCL faces data set to illustrate how NMF
+with adaptive sparsity produces different decompositions by parts than
+standard NMF.</p>
+<p>First, load the packages and some custom functions needed for the
+analyses below.</p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(NNLM)
+library(flashier)
+source(&quot;code/faces_functions.R&quot;)</code></pre>
+<p>Load the faces data, which were downloaded from <a
+href="http://www.ai.mit.edu/courses/6.899/lectures/faces.tar.gz">here</a>.</p>
+<pre class="r"><code>load(&quot;data/faces.RData&quot;)
+faces &lt;- 1 - faces_train</code></pre>
+<p>Initialize the sequence of pseudorandom numbers.</p>
+<pre class="r"><code>set.seed(1)</code></pre>
+<p>It is interesting that the pixel values in the faces data are very
+evenly distributed between 0 and 1.</p>
+<pre class="r"><code>par(mar = c(5,4,2,2))
+hist(faces,n = 64,main = &quot;&quot;)</code></pre>
+<p><img src="figure/sparse_faces.Rmd/faces-hist-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>Plot a sampling of the faces.</p>
+<pre class="r"><code>n &lt;- nrow(faces)
+m &lt;- ncol(faces)
+i &lt;- sample(n,49)
+plot_faces(faces[,i])
+# Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+# ℹ Please use the `linewidth` argument instead.
+# This warning is displayed once every 8 hours.
+# Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+# generated.</code></pre>
+<p><img src="figure/sparse_faces.Rmd/plot-faces-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>Let’s begin with the standard NMF method. Lee &amp; Seung (2001) used
+k = 49.</p>
+<pre class="r"><code>set.seed(1)
+k &lt;- 49
+nmf &lt;- nnmf(faces,k = k,method = &quot;scd&quot;,max.iter = 200,rel.tol = 1e-8,
+            n.threads = 4,verbose = 0)</code></pre>
+<p>Next let’s use flashier (with point-expoential priors) to refine the
+NMF estimates.</p>
+<pre class="r"><code>fl_nmf &lt;- flash_init(faces,var_type = 0)
+fl_nmf &lt;- flash_factors_init(fl_nmf,
+                             list(nmf$W,t(nmf$H)),
+                             ebnm_point_exponential)
+fl_nmf &lt;- flash_backfit(fl_nmf,maxiter = 100,extrapolate = FALSE,verbose = 0)
+fl_nmf &lt;- flash_backfit(fl_nmf,maxiter = 100,extrapolate = TRUE,verbose = 0)</code></pre>
+<p>Run flashier again, but this time with more wiggle room by only
+running a few updates of the NMF algorithm.</p>
+<pre class="r"><code>set.seed(1)
+nmf0 &lt;- nnmf(faces,k = k,method = &quot;scd&quot;,max.iter = 20,verbose = 0)
+fl &lt;- flash_init(faces,var_type = 0)
+fl &lt;- flash_factors_init(fl,list(nmf0$W,t(nmf0$H)),ebnm_point_exponential)
+fl &lt;- flash_backfit(fl,maxiter = 100,extrapolate = FALSE,verbose = 0)
+fl &lt;- flash_backfit(fl,maxiter = 100,extrapolate = TRUE,verbose = 0)</code></pre>
+<p>The first run of flashier didn’t change the NMF estimates that
+much:</p>
+<pre class="r"><code>W       &lt;- normalize.cols(nmf$W)
+L_flnmf &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+L_fl    &lt;- ldf(fl,type = &quot;i&quot;)$L
+cor(as.vector(W),as.vector(L_flnmf))
+cor(as.vector(W),as.vector(L_fl))
+# [1] 0.9767108
+# [1] 0.7186576</code></pre>
+<p>So let’s focus our attention on the “parts” learned by the two
+different flashier matrix factorizations. These are the parts learned by
+the first flashier run (theo ne with a good NMF initialization):</p>
+<pre class="r"><code>zero &lt;- 0.001
+k_set &lt;- order(colSums(W &gt; zero))
+plot_faces(L_flnmf[,k_set],title = &quot;flashier with good NMF init&quot;)</code></pre>
+<p><img src="figure/sparse_faces.Rmd/view-parts-1-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>And these are the parts learned by the second flashier run (the one
+with a rough NMF initialization):</p>
+<pre class="r"><code>plot_faces(L_fl[,k_set],title = &quot;flashier with rough NMF init&quot;)</code></pre>
+<p><img src="figure/sparse_faces.Rmd/plot-parts-2-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>Because the second run of flashier had more room to adapt its priors,
+it learned considerably different parts than the NMF-like flashier
+solution. This is reflected in the greater variation in the sparsity of
+the parts—it learned that many parts are very sparse, while another good
+fraction of the faces are less sparse. To show this, we plot the
+sparsity—more precisely,the proportion of pixels that are zero—for each
+of the factors, then order the factors by the sparsity:</p>
+<pre class="r"><code>pdat &lt;-
+  data.frame(
+    nmf       = sort(colMeans(normalize.cols(W) &lt; zero)),
+    flashier1 = sort(colMeans(normalize.cols(L_flnmf) &lt; zero)),
+    flashier2 = sort(colMeans(normalize.cols(L_fl) &lt; zero)))
+p1 &lt;- ggplot(pdat,aes(x = nmf,y = flashier1)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,lty = &quot;dotted&quot;) +
+  labs(x = &quot;NMF&quot;,y = &quot;flashier (good NMF init)&quot;) +
+  theme_cowplot(font_size = 12)
+p2 &lt;- ggplot(pdat,aes(x = nmf,y = flashier2)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,lty = &quot;dotted&quot;) +
+  labs(x = &quot;NMF&quot;)
+  theme_cowplot(font_size = 12)
+plot_grid(p1,p2)</code></pre>
+<p><img src="figure/sparse_faces.Rmd/compare-sparsity-of-parts-1.png" width="600" style="display: block; margin: auto;" /></p>
+<pre><code># List of 136
+#  $ line                            :List of 6
+#   ..$ colour       : chr &quot;black&quot;
+#   ..$ linewidth    : num 0.5
+#   ..$ linetype     : num 1
+#   ..$ lineend      : chr &quot;butt&quot;
+#   ..$ arrow        : logi FALSE
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+#  $ rect                            :List of 5
+#   ..$ fill         : logi NA
+#   ..$ colour       : logi NA
+#   ..$ linewidth    : num 0.5
+#   ..$ linetype     : num 1
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_rect&quot; &quot;element&quot;
+#  $ text                            :List of 11
+#   ..$ family       : chr &quot;&quot;
+#   ..$ face         : chr &quot;plain&quot;
+#   ..$ colour       : chr &quot;black&quot;
+#   ..$ size         : num 12
+#   ..$ hjust        : num 0.5
+#   ..$ vjust        : num 0.5
+#   ..$ angle        : num 0
+#   ..$ lineheight   : num 0.9
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : logi FALSE
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ title                           : NULL
+#  $ aspect.ratio                    : NULL
+#  $ axis.title                      : NULL
+#  $ axis.title.x                    :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 1
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 3points 0points 0points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.title.x.top                :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 0
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 3points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.title.x.bottom             : NULL
+#  $ axis.title.y                    :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 1
+#   ..$ angle        : num 90
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 3points 0points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.title.y.left               : NULL
+#  $ axis.title.y.right              :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 0
+#   ..$ angle        : num -90
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 3points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text                       :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : chr &quot;black&quot;
+#   ..$ size         : num 10.3
+#   ..$ hjust        : NULL
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : NULL
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text.x                     :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 1
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 2.57points 0points 0points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text.x.top                 :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : NULL
+#   ..$ vjust        : num 0
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 2.57points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text.x.bottom              : NULL
+#  $ axis.text.y                     :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : num 1
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.57points 0points 0points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text.y.left                : NULL
+#  $ axis.text.y.right               :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : num 0
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 0points 0points 2.57points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.text.theta                 : NULL
+#  $ axis.text.r                     :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : num 0.5
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : &#39;margin&#39; num [1:4] 0points 2.4points 0points 2.4points
+#   .. ..- attr(*, &quot;unit&quot;)= int 8
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ axis.ticks                      :List of 6
+#   ..$ colour       : chr &quot;black&quot;
+#   ..$ linewidth    : num 0.5
+#   ..$ linetype     : NULL
+#   ..$ lineend      : NULL
+#   ..$ arrow        : logi FALSE
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+#  $ axis.ticks.x                    : NULL
+#  $ axis.ticks.x.top                : NULL
+#  $ axis.ticks.x.bottom             : NULL
+#  $ axis.ticks.y                    : NULL
+#  $ axis.ticks.y.left               : NULL
+#  $ axis.ticks.y.right              : NULL
+#  $ axis.ticks.theta                : NULL
+#  $ axis.ticks.r                    : NULL
+#  $ axis.minor.ticks.x.top          : NULL
+#  $ axis.minor.ticks.x.bottom       : NULL
+#  $ axis.minor.ticks.y.left         : NULL
+#  $ axis.minor.ticks.y.right        : NULL
+#  $ axis.minor.ticks.theta          : NULL
+#  $ axis.minor.ticks.r              : NULL
+#  $ axis.ticks.length               : &#39;simpleUnit&#39; num 3points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ axis.ticks.length.x             : NULL
+#  $ axis.ticks.length.x.top         : NULL
+#  $ axis.ticks.length.x.bottom      : NULL
+#  $ axis.ticks.length.y             : NULL
+#  $ axis.ticks.length.y.left        : NULL
+#  $ axis.ticks.length.y.right       : NULL
+#  $ axis.ticks.length.theta         : NULL
+#  $ axis.ticks.length.r             : NULL
+#  $ axis.minor.ticks.length         : &#39;rel&#39; num 0.75
+#  $ axis.minor.ticks.length.x       : NULL
+#  $ axis.minor.ticks.length.x.top   : NULL
+#  $ axis.minor.ticks.length.x.bottom: NULL
+#  $ axis.minor.ticks.length.y       : NULL
+#  $ axis.minor.ticks.length.y.left  : NULL
+#  $ axis.minor.ticks.length.y.right : NULL
+#  $ axis.minor.ticks.length.theta   : NULL
+#  $ axis.minor.ticks.length.r       : NULL
+#  $ axis.line                       :List of 6
+#   ..$ colour       : chr &quot;black&quot;
+#   ..$ linewidth    : num 0.5
+#   ..$ linetype     : NULL
+#   ..$ lineend      : chr &quot;square&quot;
+#   ..$ arrow        : logi FALSE
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_line&quot; &quot;element&quot;
+#  $ axis.line.x                     : NULL
+#  $ axis.line.x.top                 : NULL
+#  $ axis.line.x.bottom              : NULL
+#  $ axis.line.y                     : NULL
+#  $ axis.line.y.left                : NULL
+#  $ axis.line.y.right               : NULL
+#  $ axis.line.theta                 : NULL
+#  $ axis.line.r                     : NULL
+#  $ legend.background               : list()
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+#  $ legend.margin                   : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ legend.spacing                  : &#39;simpleUnit&#39; num 12points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ legend.spacing.x                : NULL
+#  $ legend.spacing.y                : NULL
+#  $ legend.key                      : list()
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+#  $ legend.key.size                 : &#39;simpleUnit&#39; num 13.2points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ legend.key.height               : NULL
+#  $ legend.key.width                : NULL
+#  $ legend.key.spacing              : &#39;simpleUnit&#39; num 6points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ legend.key.spacing.x            : NULL
+#  $ legend.key.spacing.y            : NULL
+#  $ legend.frame                    : NULL
+#  $ legend.ticks                    : NULL
+#  $ legend.ticks.length             : &#39;rel&#39; num 0.2
+#  $ legend.axis.line                : NULL
+#  $ legend.text                     :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : &#39;rel&#39; num 0.857
+#   ..$ hjust        : NULL
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : NULL
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ legend.text.position            : NULL
+#  $ legend.title                    :List of 11
+#   ..$ family       : NULL
+#   ..$ face         : NULL
+#   ..$ colour       : NULL
+#   ..$ size         : NULL
+#   ..$ hjust        : num 0
+#   ..$ vjust        : NULL
+#   ..$ angle        : NULL
+#   ..$ lineheight   : NULL
+#   ..$ margin       : NULL
+#   ..$ debug        : NULL
+#   ..$ inherit.blank: logi TRUE
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_text&quot; &quot;element&quot;
+#  $ legend.title.position           : NULL
+#  $ legend.position                 : chr &quot;right&quot;
+#  $ legend.position.inside          : NULL
+#  $ legend.direction                : NULL
+#  $ legend.byrow                    : NULL
+#  $ legend.justification            : chr [1:2] &quot;left&quot; &quot;center&quot;
+#  $ legend.justification.top        : NULL
+#  $ legend.justification.bottom     : NULL
+#  $ legend.justification.left       : NULL
+#  $ legend.justification.right      : NULL
+#  $ legend.justification.inside     : NULL
+#  $ legend.location                 : NULL
+#  $ legend.box                      : NULL
+#  $ legend.box.just                 : NULL
+#  $ legend.box.margin               : &#39;margin&#39; num [1:4] 0points 0points 0points 0points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#  $ legend.box.background           : list()
+#   ..- attr(*, &quot;class&quot;)= chr [1:2] &quot;element_blank&quot; &quot;element&quot;
+#  $ legend.box.spacing              : &#39;simpleUnit&#39; num 12points
+#   ..- attr(*, &quot;unit&quot;)= int 8
+#   [list output truncated]
+#  - attr(*, &quot;class&quot;)= chr [1:2] &quot;theme&quot; &quot;gg&quot;
+#  - attr(*, &quot;complete&quot;)= logi TRUE
+#  - attr(*, &quot;validate&quot;)= logi TRUE</code></pre>
+<p>This illustrates that NMF with adaptive sparsity produces different
+decompositions by parts than regular NMF.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS Sonoma 14.5
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+# [1] flashier_1.0.53 ebnm_1.1-34     NNLM_0.4.4      cowplot_1.1.3  
+# [5] ggplot2_3.5.0   tidyr_1.3.1     dplyr_1.1.4     workflowr_1.7.1
+# 
+# loaded via a namespace (and not attached):
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
+#  [4] fastmap_1.1.1        lazyeval_0.2.2       promises_1.2.1      
+#  [7] digest_0.6.34        lifecycle_1.0.4      processx_3.8.3      
+# [10] invgamma_1.1         magrittr_2.0.3       compiler_4.3.3      
+# [13] rlang_1.1.3          sass_0.4.8           progress_1.2.3      
+# [16] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
+# [19] data.table_1.15.2    knitr_1.45           labeling_0.4.3      
+# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
+# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.0         
+# [28] purrr_1.0.2          grid_4.3.3           fansi_1.0.6         
+# [31] git2r_0.33.0         fastTopics_0.6-184   colorspace_2.1-0    
+# [34] scales_1.3.0         gtools_3.9.5         cli_3.6.2           
+# [37] rmarkdown_2.26       crayon_1.5.2         generics_0.1.3      
+# [40] RcppParallel_5.1.7   rstudioapi_0.15.0    httr_1.4.7          
+# [43] pbapply_1.7-2        cachem_1.0.8         stringr_1.5.1       
+# [46] splines_4.3.3        parallel_4.3.3       softImpute_1.4-1    
+# [49] vctrs_0.6.5          Matrix_1.6-5         jsonlite_1.8.8      
+# [52] callr_3.7.5          hms_1.1.3            mixsqp_0.3-54       
+# [55] ggrepel_0.9.5        irlba_2.3.5.1        horseshoe_0.2.0     
+# [58] trust_0.1-8          plotly_4.10.4        jquerylib_0.1.4     
+# [61] glue_1.7.0           ps_1.7.6             uwot_0.1.16         
+# [64] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
+# [67] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
+# [70] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.7     
+# [73] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
+# [76] evaluate_0.23        lattice_0.22-5       highr_0.10          
+# [79] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-66         
+# [82] httpuv_1.6.14        bslib_0.6.1          Rcpp_1.0.12         
+# [85] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.42           
+# [88] fs_1.6.3             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
