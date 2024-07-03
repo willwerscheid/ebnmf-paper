@@ -1,89 +1,29 @@
-# This is my first (rough) analysis of the faces data. If the results
-# look compelling, I will put this together into a workflowr analysis.
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(cowplot)
-library(NNLM)
-library(flashier)
-source("code/faces_functions.R")
-load("data/faces.RData")
-set.seed(1)
+W       <- normalize.cols(nmf$W)
+L_flnmf <- ldf(fl_nmf,type = "i")$L
+L_fl    <- ldf(fl,type = "i")$L
+cor(c(W),c(L_flnmf))
+cor(c(W),c(L_fl))
 
-faces_train <- 1 - faces_train
-faces_test  <- 1 - faces_test
-
-# It is interesting that the pixel values are very evenly distributed
-# between 0 and 1.
-hist(faces_train,n = 64)
-hist(faces_test,n = 64)
-
-# Plot a sampling of the faces.
-n <- nrow(faces_train)
-m <- ncol(faces_train)
-i <- sample(n,49)
-print(plot_faces(faces_train[,i]))
-
-# First learn a "baseline" factor using flashier.
-fl_baseline <- flash(faces_train,greedy_Kmax = 1,ebnm_fn = ebnm_normal,
-                     var_type = 0,verbose = 0)
-
-# NMF initialized with "baseline" factor.
-# Lee & Seung (2001) used k = 49.
-set.seed(1)
-k <- 49
-W0 <- fl_baseline$L_pm
-nmf_fixed_baseline <-
-  nnmf(faces_train,k = k,init = list(W0 = W0),method = "scd",max.iter = 4,
-       verbose = 0)
-nmf0 <- nnmf(faces_train,k = k + 1,init = list(W = nmf_fixed_baseline$W),
-             method = "scd",max.iter = 20,verbose = 0)
-nmf <- nnmf(faces_train,k = k,method = "scd",max.iter = 200,rel.tol = 1e-8,
-            init = list(W0 = nmf0$W[,k + 1]),n.threads = 4,verbose = 2)
-
-# flashier refinement of NMF solution.
-fl_nmf <- flash_init(faces_train,var_type = 0)
-fl_nmf <- flash_factors_init(fl_nmf,
-                             list(nmf$W,t(nmf$H)),
-                             ebnm_point_exponential)
-fl_nmf <- flash_backfit(fl_nmf,maxiter = 100,extrapolate = FALSE,verbose = 2)
-fl_nmf <- flash_backfit(fl_nmf,maxiter = 100,extrapolate = TRUE,verbose = 3)
-zero <- 0.001
-print(plot_faces(ldf(fl_nmf,type = "i")$L,
-                 title = "flashier1",
-                 order_by_sparsity = TRUE,
-                 zero = 0.001))
-
-# flashier initialized to NMF, but with more wiggle room.
-set.seed(1)
-fl <- flash_init(faces_train,var_type = 0)
-fl <- flash_factors_init(fl,list(nmf0$W,t(nmf0$H)),ebnm_point_exponential)
-fl <- flash_backfit(fl,maxiter = 100,extrapolate = FALSE,verbose = 2)
-fl <- flash_backfit(fl,maxiter = 100,extrapolate = TRUE,verbose = 3)
-print(plot_faces(ldf(fl,type = "i")$L,
-                 title = "flashier2",
-                 order_by_sparsity = TRUE,
-                 zero = 0.001))
+zero    <- 0.001
+k_set   <- order(colSums(W > zero))
+W       <- W[,k_set]
+L_flnmf <- L_flnmf[,k_set]
+L_fl    <- L_fl[,k_set]
+plot_faces(L_flnmf,title = "flashier with good NMF init")
+plot_faces(L_fl,title = "flashier with rough NMF init")
 
 # Compare sparsity of the solutions.
-# zero <- 0.001
-# pdat <-
-#   data.frame(
-#     nmf       = sort(colMeans(normalize.cols(nmf$W) > zero)),
-#     flashier1 = sort(colMeans(normalize.cols(fl_nmf$L_pm) > zero)),
-#     flashier2 = sort(colMeans(normalize.cols(fl$L_pm) > zero)))
-# p1 <- ggplot(pdat,aes(x = nmf,y = flashier1)) +
-#   geom_point() +
-#   geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
-#   theme_cowplot(font_size = 12)
-# p2 <- ggplot(pdat,aes(x = nmf,y = flashier2)) +
-#   geom_point() +
-#   geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
-#   theme_cowplot(font_size = 12)
-# plot_grid(p1,p2)
-
-# Compare sparsity of the solutions.
-pi1 <- sapply(fl_nmf$F_ghat,function (x) x$pi[2])
-pi2 <- sapply(fl$F_ghat,function (x) x$pi[2])
-plot(sort(pi1),sort(pi2),pch = 20)
-abline(a = 0,b = 1,lty = "dotted",col = "magenta")
+pdat <-
+  data.frame(
+    nmf       = sort(colMeans(normalize.cols(W) > zero)),
+    flashier1 = sort(colMeans(normalize.cols(L_flnmf) > zero)),
+    flashier2 = sort(colMeans(normalize.cols(L_fl) > zero)))
+p1 <- ggplot(pdat,aes(x = nmf,y = flashier1)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
+  theme_cowplot(font_size = 12)
+p2 <- ggplot(pdat,aes(x = nmf,y = flashier2)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
+  theme_cowplot(font_size = 12)
+plot_grid(p1,p2)
