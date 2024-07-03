@@ -1,0 +1,18 @@
+---
+title: EBNMF analysis of the faces data
+author: Peter Carbonetto and Jason Willwerscheid
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+ADD SUMMARY HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
