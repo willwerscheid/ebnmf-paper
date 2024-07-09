@@ -1,0 +1,187 @@
+---
+title: NMF analyses of simulated data
+author: Jason Willwerscheid and Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+This workflowr page contains some additional explorations of NMF
+methods—including the EBNMF methods implemented in flashier---for
+learning parts from a simulated dataset.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed for the
+analyses below.
+
+```{r load-pkgs, message=FALSE}
+library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+source("code/swimmer_functions.R")
+```
+
+First I simulate the data. I simulate a rank-5 matrix of log1p means, which corresponds to five different "cell types": one abundant type; one rare type; one continuous (non-binary) type; and two types that share a common factor (hierarchical structure). I add Poisson noise and then use a log1p transformation to obtain the data matrix:
+
+```{r sim-data}
+n <- 1000
+p <- 500
+k <- 7
+
+set.seed(1)
+L <- matrix(0, nrow = n, ncol = k)
+F <- matrix(0, nrow = p, ncol = k)
+
+# Loadings (cell types):
+L[, 1] <- 1 # baseline factor
+L[1:700, 2] <- 1 # abundant cell type
+L[701:900, 3] <- 1 # two cell types related hierarchically
+L[701:800, 4] <- 1
+L[801:900, 5] <- 1
+L[901:980, 6] <- seq(1/80, 1, length.out = 80) # non-binary cell type
+L[981:1000, 7] <- 1 # rare cell type
+
+# Factors (genes); the "gene modules" overlap to some extent:
+F[, 1] <- rexp(100) * 2
+F[1:100, 2] <- rexp(100)
+F[c(1:10, 101:150), 3] <- rexp(60) * 2
+F[151:200, 4] <- rexp(50)
+F[201:250, 5] <- rexp(50)
+F[c(11:20, 251:280), 6] <- rexp(40) * 2
+F[c(21:30, 281:310), 7] <- rexp(40)
+
+mu <- expm1(L %*% t(F))
+X <- matrix(rpois(n * p, mu), nrow = n, ncol = p)
+
+Y <- log1p(X)
+F <- F[apply(Y, 2, sum) > 0, ]
+Y <- Y[, apply(Y, 2, sum) > 0]
+rownames(Y) <- paste0("sample", 1:nrow(Y))
+colnames(Y) <- paste0("feature", 1:ncol(Y))
+
+writeMat("matlab/simdata2.mat", Y = Y)
+```
+
+The "true" loadings matrix $L$ appears as follows:
+
+```{r true-f, fig.height=3, fig.width=7}
+plot_fl <- function(fl, which = "loadings") {
+  if (which == "loadings") {
+    n <- nrow(fl$L_pm)
+  } else {
+    n <- nrow(fl$F_pm)
+  }
+  flash_plot_heatmap(
+    fl, 
+    kset = rev(order(fl$pve)), 
+    pm_which = which, 
+    loadings_order = rev(1:n)
+  )
+}
+plot_nmf <- function(res, which = "loadings") {
+  fl <- flash_init(Y) |> 
+    flash_factors_init(
+      list(res$W, t(res$H)), 
+      ebnm_fn = ebnm_point_exponential
+    )
+  plot_fl(fl, which)
+}
+true_fl <- flash_init(Y) |>
+  flash_factors_init(list(L, F))
+plot_fl(true_fl)
+```
+
+The "true" factors $F$ appear as follows:
+
+```{r}
+plot_fl(true_fl, which = "factors")
+```
+
+Note that the first component is a "background" factor that sets the baseline level of expression for each feature.
+
+Next I show the decomposition produced by "vanilla NMF" with $K = 12$. Components are sorted by the proportion of variance explained:
+
+```{r vanilla-nmf, fig.height=3, fig.width=7}
+nmf_res <- readMat("matlab/simdata2_nmf_vanilla.mat")
+plot_nmf(nmf_res)
+```
+
+The four cell types are visible but the hierarchical structure is not at all apparent. Indeed, the "background" factor is distributed among all components; as a result, the factors are not at all sparse:
+
+```{r vanilla-nmf-f, fig.height=3, fig.width=7}
+plot_nmf(nmf_res, which = "factors")
+```
+
+To make the hierarchical structure more apparent we need to constrain both loadings and factors. It is however very difficult to manually find the "correct" settings. Setting the "sparseness" of loadings to be 0.6 and that of factors to be 0.8 does very well (this setting was found via trial and error):
+
+```{r sparse-nmf, fig.height=3, fig.width=7}
+sparse_nmf <- readMat("matlab/simdata2_nmf_sW=0.6.mat")
+plot_nmf(sparse_nmf)
+plot_nmf(sparse_nmf, which = "factors")
+```
+
+Can we do better? Let's run flashier using the greedy algorithm:
+
+```{r}
+fl <- flash(Y, greedy_Kmax = 12, ebnm_fn = ebnm_point_exponential)
+plot_fl(fl)
+plot_fl(fl, which = "factors")
+```
+
+If we backfit, re-run the greedy algorithm, and backfit again, the hierarchical structure appears. *This result appears to depend on the common factor being found before either of the subtype factors.* As we reduce the PVE for the common factor, it becomes less likely that we will detect this hierarchical structure. 
+
+```{r}
+fl_b <- fl |> 
+  flash_backfit() |>
+  flash_greedy(ebnm_fn = ebnm_point_exponential, Kmax = 7) |>
+  flash_backfit() |>
+  flash_nullcheck()
+plot_fl(fl_b)
+plot_fl(fl_b, which = "factors")
+```
+
+Note that a number of unwanted noisy components are also introduced: If we instead use column-wise residual variances, we get the correct number of factors (we again need to iterate the greedy + backfitting algorithm):
+
+```{r}
+fl_colwise <- flash(Y, greedy_Kmax = 12, ebnm_fn = ebnm_point_exponential, var_type = 2, backfit = TRUE) |>
+  flash_greedy(ebnm_point_exponential, Kmax = 9) |>
+  flash_backfit() |>
+  flash_greedy(ebnm_point_exponential, Kmax = 7) |>
+  flash_backfit()
+plot_fl(fl_colwise)
+plot_fl(fl_colwise, which = "factors")
+```
+Is the greedy approach required here? Let's see what happens when we initialize flashier at the vanilla NMF solution:
+
+```{r flash-nmf, results="hide", fig.height=3, fig.width=7}
+fl_nmf <- flash_init(Y, var_type = 2) |>
+  flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_point_exponential) |>
+  flash_backfit(maxiter = 1000) |>
+  flash_nullcheck()
+plot_fl(fl_nmf)
+```
+
+It appears to be moving towards a better solution, but progress is very slow (note that the maximum number of iterations were reached). I ran for an additional 6000 iterations (not shown here) and it still did not converge at the default tolerance setting. (The solution continued to improve however.) The greedy approach again turns out to be crucial, but for a somewhat different reason than we have seen in other analyses.
+
+Here (as expected) the ELBO is much better using the greedy + backfit approach:
+
+```{r}
+paste("greedy init:", round(fl_colwise$elbo, 2))
+paste("NMF init:", round(fl_nmf$elbo, 2))
+```
+
+
+[sparsenmf]: https://github.com/willwerscheid/ebnmf-paper/blob/master/matlab/sparseNMF.m
