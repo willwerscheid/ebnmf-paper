@@ -14,7 +14,7 @@
 
 <title>Sparse EBNMF Data Applications</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -300,7 +300,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-01-11
+<strong>Last updated:</strong> 2024-07-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -318,7 +318,7 @@ title="This is the local directory in which the code in this file was executed."
 This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
   href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.0.5). The <em>Checks</em> tab describes the reproducibility checks
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -347,15 +347,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree165a51c2d21a076586320527d2f6ba2f565e00b7targetblank165a51ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreece3821bfb68c675e839a2550b24f2a0d632d0e5dtargetblankce3821ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/165a51c2d21a076586320527d2f6ba2f565e00b7" target="_blank">165a51c</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ce3821bfb68c675e839a2550b24f2a0d632d0e5d" target="_blank">ce3821b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree165a51c2d21a076586320527d2f6ba2f565e00b7targetblank165a51ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreece3821bfb68c675e839a2550b24f2a0d632d0e5dtargetblankce3821ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -365,7 +365,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/165a51c2d21a076586320527d2f6ba2f565e00b7" target="_blank">165a51c</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ce3821bfb68c675e839a2550b24f2a0d632d0e5d" target="_blank">ce3821b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -384,10 +384,17 @@ Ignored files:
     Ignored:    analysis/.DS_Store
 
 Untracked files:
+    Untracked:  flash_greedy_init_noisy_F.txt
+    Untracked:  flash_greedy_init_noisy_L.txt
     Untracked:  noisy_swimmer.mat
+    Untracked:  noisy_swimmer_more.pdf
+    Untracked:  scripts/svm.test.normgrey.gz
+    Untracked:  scripts/svm.train.normgrey.gz
 
 Unstaged changes:
-    Modified:   analysis/noisy_swimmer_more.Rmd
+    Modified:   analysis/sparse_faces.R
+    Modified:   analysis/sparse_faces.Rmd
+    Modified:   code/faces_functions.R
 
 </code></pre>
 <p>
@@ -432,6 +439,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ce3821bfb68c675e839a2550b24f2a0d632d0e5d/analysis/index.Rmd" target="_blank">ce3821b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-07-03
+</td>
+<td>
+workflowr::wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/c14b5625af88cda9104af2ee250dc2c9de430d12/docs/index.html" target="_blank">c14b562</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2024-01-11
+</td>
+<td>
+Fixed a link.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -634,6 +675,8 @@ dataset.</a></p></li>
 <li><p><a href="noisy_swimmer.html">“Noisy” swimmer data.</a></p></li>
 <li><p><a href="noisy_swimmer_more.html">More analyses of the “noisy”
 swimmer data.</a></p></li>
+<li><p><a href="sparse_faces.html">EBNMF analysis of the faces
+data</a></p></li>
 </ul>
 
 

@@ -1,0 +1,167 @@
+---
+title: EBNMF analysis of the faces data
+author: Peter Carbonetto and Jason Willwerscheid
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+We will use the classic CBCL faces data set to illustrate how NMF with
+adaptive sparsity produces different decompositions by parts than
+standard NMF.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed for the
+analyses below.
+
+```{r load-pkgs, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(NNLM)
+library(flashier)
+source("code/faces_functions.R")
+```
+
+Load the faces data, which were downloaded from [here][faces].
+
+```{r load-faces}
+load("data/faces.RData")
+faces <- 1 - faces_train
+```
+
+Initialize the sequence of pseudorandom numbers.
+
+```{r set-seed}
+set.seed(1)
+```
+
+It is interesting that the pixel values in the faces data are very
+evenly distributed between 0 and 1.
+
+```{r faces-hist, fig.height=2.5, fig.width=3}
+par(mar = c(5,4,2,2))
+hist(faces,n = 64,main = "")
+```
+
+Plot a sampling of the faces.
+
+```{r plot-faces, fig.height=3, fig.width=3.5}
+n <- nrow(faces)
+m <- ncol(faces)
+i <- sample(n,49)
+plot_faces(faces[,i])
+```
+
+Let's begin with the standard NMF method. Lee & Seung (2001) used k
+= 49.
+
+```{r nmf, warning=FALSE}
+set.seed(1)
+k <- 49
+nmf <- nnmf(faces,k = k,method = "scd",max.iter = 200,rel.tol = 1e-8,
+            n.threads = 4,verbose = 0)
+```
+
+Next let's use flashier (with point-expoential priors) to refine the
+NMF estimates.
+
+```{r flash-nmf, warning=FALSE}
+fl_nmf <- flash_init(faces,var_type = 0)
+fl_nmf <- flash_factors_init(fl_nmf,
+                             list(nmf$W,t(nmf$H)),
+                             ebnm_point_exponential)
+fl_nmf <- flash_backfit(fl_nmf,maxiter = 100,extrapolate = FALSE,verbose = 0)
+fl_nmf <- flash_backfit(fl_nmf,maxiter = 100,extrapolate = TRUE,verbose = 0)
+```
+
+Run flashier again, but this time with more wiggle room by only
+running a few updates of the NMF algorithm.
+
+```{r flash-again, warning=FALSE}
+set.seed(1)
+nmf0 <- nnmf(faces,k = k,method = "scd",max.iter = 20,verbose = 0)
+fl <- flash_init(faces,var_type = 0)
+fl <- flash_factors_init(fl,list(nmf0$W,t(nmf0$H)),ebnm_point_exponential)
+fl <- flash_backfit(fl,maxiter = 100,extrapolate = FALSE,verbose = 0)
+fl <- flash_backfit(fl,maxiter = 100,extrapolate = TRUE,verbose = 0)
+```
+
+The first run of flashier didn't change the NMF estimates that much:
+
+```{r compare-parts}
+W       <- normalize.cols(nmf$W)
+L_flnmf <- ldf(fl_nmf,type = "i")$L
+L_fl    <- ldf(fl,type = "i")$L
+cor(as.vector(W),as.vector(L_flnmf))
+cor(as.vector(W),as.vector(L_fl))
+```
+
+So let's focus our attention on the "parts" learned by the two
+different flashier matrix factorizations. These are the parts learned
+by the first flashier run (theo ne with a good NMF initialization):
+
+```{r view-parts-1, fig.height=3, fig.width=3.5}
+zero <- 0.001
+k_set <- order(colSums(W > zero))
+plot_faces(L_flnmf[,k_set],title = "flashier with good NMF init")
+```
+
+And these are the parts learned by the second flashier run (the one
+with a rough NMF initialization):
+
+```{r plot-parts-2, fig.height=3, fig.width=3.5}
+plot_faces(L_fl[,k_set],title = "flashier with rough NMF init")
+```
+
+For a better comparison, let's plot the parts again next to each
+other. In this figure, the second flashier run is in every second row
+from the top:
+
+```{r plot-parts-3, fig.height=5.5, fig.width=3.5}
+L_combined <- cbind(L_flnmf[,k_set],L_fl[,k_set],0)
+L_combined <-
+  L_combined[,c(1:10,50:59,11:20,60:69,21:30,70:79,31:40,80:89,41:49,99,90:99)]
+plot_faces(L_combined,nrow = 10,ncol = 10)
+```
+
+Because the second run of flashier had more room to adapt its priors,
+it learned considerably different parts than the NMF-like flashier
+solution. This is reflected in the greater variation in the sparsity
+of the parts—it learned that many parts are very sparse, while another
+good fraction of the faces are less sparse. To show this, we plot the
+sparsity—more precisely,the proportion of pixels that are zero—for
+each of the factors, then order the factors by the sparsity:
+
+```{r compare-sparsity-of-parts, fig.height=2.5, fig.width=5}
+pdat <-
+  data.frame(
+    nmf       = sort(colMeans(normalize.cols(W) < zero)),
+    flashier1 = sort(colMeans(normalize.cols(L_flnmf) < zero)),
+    flashier2 = sort(colMeans(normalize.cols(L_fl) < zero)))
+p1 <- ggplot(pdat,aes(x = nmf,y = flashier1)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
+  labs(x = "NMF",y = "flashier (good NMF init)") +
+  theme_cowplot(font_size = 12)
+p2 <- ggplot(pdat,aes(x = nmf,y = flashier2)) +
+  geom_point() +
+  geom_abline(intercept = 0,slope = 1,color = "magenta",lty = "dotted") +
+  labs(x = "NMF",y = "flashier (rough NMF init)") +
+  theme_cowplot(font_size = 12)
+plot_grid(p1,p2)
+```
+
+This illustrates that NMF with adaptive sparsity produces different
+decompositions by parts than regular NMF.
+
+[faces]: http://www.ai.mit.edu/courses/6.899/lectures/faces.tar.gz
