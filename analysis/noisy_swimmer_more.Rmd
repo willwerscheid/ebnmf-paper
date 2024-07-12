@@ -219,18 +219,26 @@ plot_images(ldf(fl_adapt)$L,nrow = 3,ncol = 8)
 It is interesting that the 16th factor essentially becomes a "null"
 factor when the prior is adapted.
 
-To understand what is happening, let's look at the estimates of
-$\pi_1$ for each column of the F matrix. This parameter controls the
-weight on the nonzero ("slab") component of the point-exponential
-prior.
+To understand what is happening, let's look more closely at the
+estimates of $\pi_1$ for each column of the L matrix and the F
+matrix. This parameter controls the weight on the nonzero ("slab")
+component of the point-exponential prior.
 
-```{r flash-adapt-prior-2, fig.height=2.5, fig.width=2.5}
-pi1 <- sapply(fl_adapt$F_ghat,function (x) x$pi[2])
-pdat <- data.frame(k = 1:k,pi1 = pi1)
-ggplot(pdat,aes(x = k,y = pi1)) +
+```{r flash-adapt-prior-2, fig.height=2.5, fig.width=5}
+pi1l <- sapply(fl_adapt$L_ghat,function (x) x$pi[2])
+pi1f <- sapply(fl_adapt$F_ghat,function (x) x$pi[2])
+pdat <- data.frame(k = 1:k,pi1f = pi1f,pi1l = pi1l)
+p1 <- ggplot(pdat,aes(x = k,y = pi1f)) +
   geom_point() +
   scale_x_continuous(breaks = 1:k) +
+  ggtitle("Prior on F") +
   theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = k,y = pi1l)) +
+  geom_point() +
+  scale_x_continuous(breaks = 1:k) +
+  ggtitle("Prior on L") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2)
 ```
 
 Notice that this weight goes to zero for the "null factor" (factor 16)
