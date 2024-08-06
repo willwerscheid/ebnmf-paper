@@ -1,5 +1,5 @@
 ---
-title: Introducing the birds data set
+title: Birds data
 author: Peter Carbonetto
 output:
   workflowr::wflow_html:
@@ -9,3 +9,41 @@ output:
     lib_dir: site_libs
     self_contained: no
 ---
+
+Here we introduce the "birds" data set. 
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed to generate
+and plot the birds data set.
+
+```{r load-pkgs, message=FALSE}
+library(ggplot2)
+library(cowplot)
+library(tibble)
+library(dplyr)
+library(tidyr)
+source("code/birds_functions.R")
+```
+
+Load the bird limbs.
+
+```{r load-bird-limbs}
+limbs <- read_bird_limbs("data/birds.csv")
+```
+
+Plot the bird limbs.
+
+```{r plot-bird-limbs, fig.height=2.25, fig.width=1.9}
+plot_images(limbs,nrow = 3,ncol = 3)
+```
+
+Generate the birds from all possible combinations of the limbs.
+
+```{r generate-birds, fig.height=5, fig.width=6.5}
+birds <- generate_all_birds(limbs)
+plot_images(birds,nrow = 7,ncol = 12)
+```
