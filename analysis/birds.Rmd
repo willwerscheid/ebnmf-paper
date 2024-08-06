@@ -1,0 +1,11 @@
+---
+title: Introducing the birds data set
+author: Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
