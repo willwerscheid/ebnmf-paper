@@ -1,0 +1,44 @@
+library(ggplot2)
+library(cowplot)
+library(tibble)
+library(dplyr)
+library(tidyr)
+
+out <- read.csv("data/birds.csv",comment.char = "#",header = FALSE)
+out <- as.matrix(out)
+d   <- 15
+n   <- nrow(out)/d
+birds <- matrix(0,d*d,n)
+rows <- 1:d
+for (i in 1:n) {
+  birds[,i] <- out[rows,]
+  rows <- rows + d
+}
+
+# This takes the m x k matrix of feature weights and plots them as n x
+# n images, where m = n^2. Note that nrow*ncol >= k is expected.
+plot_images <- function (W, n = 15, font_size = 9, nrow = 4, ncol = 4) {
+  k <- ncol(W)
+  colnames(W) <- paste0("V",1:k)
+  dat <- as_tibble(W)
+  dat <- mutate(dat,
+                row = rep(1:n,each = n),
+                col = rep(1:n,times = n)) 
+  dat <- pivot_longer(dat,cols = -c(row,col),names_to = "k",
+                      values_to = "loading",names_prefix = "V",
+                      names_transform = as.numeric)
+  dat$k <- factor(dat$k,1:k)
+  return(ggplot(dat,aes(x = row,y = col,fill = loading)) +
+    geom_tile() +
+    scale_y_reverse() +
+    scale_fill_gradient(low = "white",high = "black") +
+    facet_wrap(~k,nrow = nrow,ncol = ncol) +
+    guides(fill = "none",x = "none",y = "none") +
+    labs(x = "",y = "") +
+    theme_cowplot(font_size = font_size) +
+    theme(strip.background = element_blank(),
+          panel.border = element_rect(color = "black",size = 0.5)))
+}
+
+# Plot the features.
+plot_images(birds)
