@@ -1,0 +1,36 @@
+---
+title: EBNMF analysis of the LPS data set---failure of greedy initialization?
+author: Peter Carbonetto and Jason Willwerscheid
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+See
+[here](https://stephenslab.github.io/single-cell-jamboree/lps.html)
+for some background on the LPS data set, as well as the steps taken to
+prepare the (bulk) RNA-seq counts for analysis with flashier.
+
+Load the packages used in the code below.
+
+```{r load-pkgs, message=FALSE}
+library(flashier)
+library(ggplot2)
+library(cowplot)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the LPS data:
+
+```{r load-data}
+load("data/lps.RData")
+```
