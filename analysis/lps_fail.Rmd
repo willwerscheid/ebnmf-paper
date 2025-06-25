@@ -18,7 +18,9 @@ prepare the (bulk) RNA-seq counts for analysis with flashier.
 Load the packages used in the code below.
 
 ```{r load-pkgs, message=FALSE}
+library(ebnm)
 library(flashier)
+library(fastTopics)
 library(ggplot2)
 library(cowplot)
 ```
@@ -33,4 +35,46 @@ Load the LPS data:
 
 ```{r load-data}
 load("data/lps.RData")
+dim(counts)
 ```
+
+Compute the shifted log counts:
+
+```{r shifted-log-counts}
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+shifted_log_counts <- log1p(counts/(a*s))
+```
+
+Let's first try running EBNMF using the "greedy"
+initialization:
+
+```{r flashier-greedy, cache=TRUE}
+n  <- nrow(shifted_log_counts)
+x  <- rpois(1e7,1/n)
+s1 <- sd(log(x + 1))
+fl_greedy <- flash(shifted_log_counts,var_type = 2,S = s1,
+                   ebnm_fn = ebnm_point_exponential,backfit = TRUE,
+                   verbose = 2)
+```
+
+How many factors were added using the greedy initialization?
+
+```{r flashier-greedy-k}
+fl_greedy$n_factors
+```
+
+Structure plot comparing the factors to the organ types:
+
+```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
+rows <- order(samples$timepoint)
+L <- ldf(fl_greedy,type = "i")$L
+p<-structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
+heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
+SI = small intestine; SK = skin; SP = spleen; TH = thymus.
