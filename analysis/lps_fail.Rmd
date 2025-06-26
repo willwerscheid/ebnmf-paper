@@ -1,6 +1,6 @@
 ---
-title: EBNMF analysis of the LPS data set---failure of greedy initialization?
-author: Peter Carbonetto and Jason Willwerscheid
+title: "EBNMF analysis of the LPS data set: failure of greedy initialization?"
+author: Peter Carbonetto
 output:
   workflowr::wflow_html:
     toc: no
@@ -15,10 +15,16 @@ See
 for some background on the LPS data set, as well as the steps taken to
 prepare the (bulk) RNA-seq counts for analysis with flashier.
 
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
 Load the packages used in the code below.
 
 ```{r load-pkgs, message=FALSE}
 library(ebnm)
+library(NNLM)
 library(flashier)
 library(fastTopics)
 library(ggplot2)
@@ -45,10 +51,10 @@ a <- 1
 s <- rowSums(counts)
 s <- s/mean(s)
 shifted_log_counts <- log1p(counts/(a*s))
+rm(counts)
 ```
 
-Let's first try running EBNMF using the "greedy"
-initialization:
+Let's first try running EBNMF using the "greedy" initialization:
 
 ```{r flashier-greedy, cache=TRUE}
 n  <- nrow(shifted_log_counts)
@@ -56,7 +62,7 @@ x  <- rpois(1e7,1/n)
 s1 <- sd(log(x + 1))
 fl_greedy <- flash(shifted_log_counts,var_type = 2,S = s1,
                    ebnm_fn = ebnm_point_exponential,backfit = TRUE,
-                   verbose = 2)
+                   verbose = 0)
 ```
 
 How many factors were added using the greedy initialization?
@@ -65,12 +71,13 @@ How many factors were added using the greedy initialization?
 fl_greedy$n_factors
 ```
 
-Structure plot comparing the factors to the organ types:
+Let's now compare the factors against the organ types in a Structure
+plot:
 
-```{r structure-plot-flashier-nmf, fig.height=2, fig.width=7}
+```{r structure-plot-flashier-greedy, fig.height=1.75, fig.width=7.5}
 rows <- order(samples$timepoint)
 L <- ldf(fl_greedy,type = "i")$L
-p<-structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
   labs(fill = "",y = "membership") +
   theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
 ```
@@ -78,3 +85,52 @@ p<-structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
 Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
 heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung;
 SI = small intestine; SK = skin; SP = spleen; TH = thymus.
+
+A couple of observations about this result: first, some of the tissue
+types are not separated (e.g., colon and small intestine); second,
+there is no factor that captures the response to LPS (which is what we
+would expect, or at least hope for).
+
+Next, wnstead of the greedy initialization, let's try initializing
+flashier to the factors obtained by a short run of the SCD algorithm
+from the NNLM package. Here we set $K = 15$. My code here is a bit
+convoluted---and perhaps more complicated than needed---because I took
+care to first estimate a "baseline" factor. (It's not clear if that
+step is actually needed, but I figured it might be a good idea.)
+
+```{r nnlm, cache=TRUE}
+k <- 15
+n <- nrow(shifted_log_counts)
+m <- ncol(shifted_log_counts)
+nmf0 <- nnmf(shifted_log_counts,k = 1,loss = "mse",method = "scd",
+             max.iter = 10,verbose = 0,n.threads = 4)
+W0 <- nmf0$W
+H0 <- nmf0$H
+W0 <- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+H0 <- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+nmf <- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
+            loss = "mse",method = "scd",max.iter = 10,
+            verbose = 0,n.threads = 8)
+fl_nmf <- flash_init(shifted_log_counts,var_type = 2,S = s1)
+fl_nmf <- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
+                             ebnm_point_exponential)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 0)
+fl_nmf <- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 0)
+```
+
+Let's now compare the factors against the organ types in a Structure
+plot:
+
+```{r structure-plot-flashier-nmf, fig.height=1.75, fig.width=7.5}
+L <- ldf(fl_nmf,type = "i")$L
+structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
+
+There are two striking differences between this result and the above
+result with the greedy initialization: a separate factor is identified
+for each tissue type (except for the spleen and inguinal lymph node);
+there is a very clear factor (k8) that is shared by all the samples
+from all tissues, and suggests some sort of common LPS response
+pathway.
