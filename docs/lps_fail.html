@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Peter Carbonetto and Jason Willwerscheid" />
+<meta name="author" content="Peter Carbonetto" />
 
 
-<title>EBNMF analysis of the LPS data set—failure of greedy initialization?</title>
+<title>EBNMF analysis of the LPS data set: failure of greedy initialization?</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -270,9 +270,9 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">EBNMF analysis of the LPS data set—failure
+<h1 class="title toc-ignore">EBNMF analysis of the LPS data set: failure
 of greedy initialization?</h1>
-<h4 class="author">Peter Carbonetto and Jason Willwerscheid</h4>
+<h4 class="author">Peter Carbonetto</h4>
 
 </div>
 
@@ -280,7 +280,7 @@ of greedy initialization?</h1>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -291,8 +291,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -301,13 +301,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-06-25
+<strong>Last updated:</strong> 2025-06-26
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
@@ -401,16 +401,27 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 </p>
 </div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be
-confident that you successfully produced the results during this
-run.</p>
+The following chunks had caches available:
+<ul>
+<li>
+flashier-greedy
+</li>
+<li>
+nnlm
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>lps_fail_cache</code> and re-run the analysis. To have workflowr
+automatically delete the cache directory prior to building the file, set
+<code>delete_cache = TRUE</code> when running <code>wflow_build()</code>
+or <code>wflow_publish()</code>.</p>
 </div>
 </div>
 </div>
@@ -432,15 +443,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef136ae704c744b379a6756d89ddeda4e5ed99eedtargetblankf136ae7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree352924bf934306816d6037aae7b5ee0b27feac00targetblank352924ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f136ae704c744b379a6756d89ddeda4e5ed99eed" target="_blank">f136ae7</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/352924bf934306816d6037aae7b5ee0b27feac00" target="_blank">352924b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreef136ae704c744b379a6756d89ddeda4e5ed99eedtargetblankf136ae7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree352924bf934306816d6037aae7b5ee0b27feac00targetblank352924ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +461,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/f136ae704c744b379a6756d89ddeda4e5ed99eed" target="_blank">f136ae7</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/352924bf934306816d6037aae7b5ee0b27feac00" target="_blank">352924b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,6 +478,7 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
+    Ignored:    analysis/lps_fail_cache/
     Ignored:    data/birds.csv~
 
 Untracked files:
@@ -526,6 +538,58 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/352924bf934306816d6037aae7b5ee0b27feac00/analysis/lps_fail.Rmd" target="_blank">352924b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-26
+</td>
+<td>
+wflow_publish("analysis/lps_fail.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6d52a82682a1f3d71e08f9a1092b699ffdd27612/analysis/lps_fail.Rmd" target="_blank">6d52a82</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-25
+</td>
+<td>
+Added code to run flashier with greedy initialization in lps_fail
+analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/bf62694cda394beaa36566f020e3d757de9efbab/docs/lps_fail.html" target="_blank">bf62694</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-06-25
+</td>
+<td>
+First build of lps_fail analysis; added lps data set (lps.RData).
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/f136ae704c744b379a6756d89ddeda4e5ed99eed/analysis/lps_fail.Rmd" target="_blank">f136ae7</a>
 </td>
 <td>
@@ -550,13 +614,123 @@ href="https://stephenslab.github.io/single-cell-jamboree/lps.html">here</a>
 for some background on the LPS data set, as well as the steps taken to
 prepare the (bulk) RNA-seq counts for analysis with flashier.</p>
 <p>Load the packages used in the code below.</p>
-<pre class="r"><code>library(flashier)
+<pre class="r"><code>library(ebnm)
+library(NNLM)
+library(flashier)
+library(fastTopics)
 library(ggplot2)
 library(cowplot)</code></pre>
 <p>Set the seed for reproducibility:</p>
 <pre class="r"><code>set.seed(1)</code></pre>
 <p>Load the LPS data:</p>
-<pre class="r"><code>load(&quot;data/lps.RData&quot;)</code></pre>
+<pre class="r"><code>load(&quot;data/lps.RData&quot;)
+dim(counts)
+# [1]   363 33533</code></pre>
+<p>Compute the shifted log counts:</p>
+<pre class="r"><code>a &lt;- 1
+s &lt;- rowSums(counts)
+s &lt;- s/mean(s)
+shifted_log_counts &lt;- log1p(counts/(a*s))
+rm(counts)</code></pre>
+<p>Let’s first try running EBNMF using the “greedy” initialization:</p>
+<pre class="r"><code>n  &lt;- nrow(shifted_log_counts)
+x  &lt;- rpois(1e7,1/n)
+s1 &lt;- sd(log(x + 1))
+fl_greedy &lt;- flash(shifted_log_counts,var_type = 2,S = s1,
+                   ebnm_fn = ebnm_point_exponential,backfit = TRUE,
+                   verbose = 0)
+# Warning in scale.EF(EF): Fitting stopped after the initialization function
+# failed to find a non-zero factor.
+# Warning in report.maxiter.reached(verbose.lvl): Maximum number of iterations
+# reached.</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>How many factors were added using the greedy initialization?</p>
+<pre class="r"><code>fl_greedy$n_factors
+# [1] 9</code></pre>
+<p>Let’s now compare the factors against the organ types in a Structure
+plot:</p>
+<pre class="r"><code>rows &lt;- order(samples$timepoint)
+L &lt;- ldf(fl_greedy,type = &quot;i&quot;)$L
+structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+  labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))</code></pre>
+<p><img src="figure/lps_fail.Rmd/structure-plot-flashier-greedy-1.png" width="900" style="display: block; margin: auto;" /></p>
+<p>Abbreviations used: BM = bone marrow; BR = brain; CO = colon; HE =
+heart; iLN = inguinal lymph node; KI = kidney; LI = liver; LU = lung; SI
+= small intestine; SK = skin; SP = spleen; TH = thymus.</p>
+<p>A couple of observations about this result: first, some of the tissue
+types are not separated (e.g., colon and small intestine); second, there
+is no factor that captures the response to LPS (which is what we would
+expect, or at least hope for).</p>
+<p>Next, wnstead of the greedy initialization, let’s try initializing
+flashier to the factors obtained by a short run of the SCD algorithm
+from the NNLM package. Here we set <span class="math inline">\(K =
+15\)</span>. My code here is a bit convoluted—and perhaps more
+complicated than needed—because I took care to first estimate a
+“baseline” factor. (It’s not clear if that step is actually needed, but
+I figured it might be a good idea.)</p>
+<pre class="r"><code>k &lt;- 15
+n &lt;- nrow(shifted_log_counts)
+m &lt;- ncol(shifted_log_counts)
+nmf0 &lt;- nnmf(shifted_log_counts,k = 1,loss = &quot;mse&quot;,method = &quot;scd&quot;,
+             max.iter = 10,verbose = 0,n.threads = 4)
+W0 &lt;- nmf0$W
+H0 &lt;- nmf0$H
+W0 &lt;- cbind(W0,matrix(runif(n*(k-1)),n,k-1))
+H0 &lt;- rbind(H0,matrix(runif(m*(k-1)),k-1,m))
+nmf &lt;- nnmf(shifted_log_counts,k,init = list(W = W0,H = H0),
+            loss = &quot;mse&quot;,method = &quot;scd&quot;,max.iter = 10,
+            verbose = 0,n.threads = 8)
+# Warning in c_nnmf(A, as.integer(k), init.mask$Wi, init.mask$Hi, init.mask$Wm, :
+# Target tolerance not reached. Try a larger max.iter.
+fl_nmf &lt;- flash_init(shifted_log_counts,var_type = 2,S = s1)
+fl_nmf &lt;- flash_factors_init(fl_nmf,list(nmf$W,t(nmf$H)),
+                             ebnm_point_exponential)
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = FALSE,maxiter = 100,verbose = 0)
+# Warning in report.maxiter.reached(verbose.lvl): Maximum number of iterations
+# reached.
+fl_nmf &lt;- flash_backfit(fl_nmf,extrapolate = TRUE,maxiter = 100,verbose = 0)
+# Warning in report.maxiter.reached(verbose.lvl): Maximum number of iterations
+# reached.</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Let’s now compare the factors against the organ types in a Structure
+plot:</p>
+<pre class="r"><code>L &lt;- ldf(fl_nmf,type = &quot;i&quot;)$L
+structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+  labs(fill = &quot;&quot;,y = &quot;membership&quot;) +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))</code></pre>
+<p><img src="figure/lps_fail.Rmd/structure-plot-flashier-nmf-1.png" width="900" style="display: block; margin: auto;" /></p>
+<p>There are two striking differences between this result and the above
+result with the greedy initialization: a separate factor is identified
+for each tissue type (except for the spleen and inguinal lymph node);
+there is a very clear factor (k8) that is shared by all the samples from
+all tissues, and suggests some sort of common LPS response pathway.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -565,60 +739,60 @@ Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
-<pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.3.3 (2024-02-29)
-Platform: aarch64-apple-darwin20 (64-bit)
-Running under: macOS 15.5
-
-Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
-LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
-
-locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-
-time zone: America/Chicago
-tzcode source: internal
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
-[1] cowplot_1.1.3   ggplot2_3.5.0   flashier_1.0.55 ebnm_1.1-34    
-[5] workflowr_1.7.1
-
-loaded via a namespace (and not attached):
- [1] tidyselect_1.2.1     viridisLite_0.4.2    dplyr_1.1.4         
- [4] fastmap_1.1.1        lazyeval_0.2.2       promises_1.2.1      
- [7] digest_0.6.34        lifecycle_1.0.4      processx_3.8.3      
-[10] invgamma_1.1         magrittr_2.0.3       compiler_4.3.3      
-[13] rlang_1.1.5          sass_0.4.9           progress_1.2.3      
-[16] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
-[19] data.table_1.17.4    knitr_1.45           prettyunits_1.2.0   
-[22] htmlwidgets_1.6.4    scatterplot3d_0.3-44 plyr_1.8.9          
-[25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
-[28] purrr_1.0.2          grid_4.3.3           fansi_1.0.6         
-[31] git2r_0.33.0         fastTopics_0.7-25    colorspace_2.1-0    
-[34] scales_1.3.0         gtools_3.9.5         cli_3.6.4           
-[37] rmarkdown_2.26       crayon_1.5.2         generics_0.1.3      
-[40] RcppParallel_5.1.10  rstudioapi_0.15.0    reshape2_1.4.4      
-[43] httr_1.4.7           pbapply_1.7-2        cachem_1.0.8        
-[46] stringr_1.5.1        splines_4.3.3        parallel_4.3.3      
-[49] softImpute_1.4-1     vctrs_0.6.5          Matrix_1.6-5        
-[52] jsonlite_1.8.8       callr_3.7.5          hms_1.1.3           
-[55] mixsqp_0.3-54        ggrepel_0.9.5        irlba_2.3.5.1       
-[58] horseshoe_0.2.0      trust_0.1-8          plotly_4.10.4       
-[61] jquerylib_0.1.4      tidyr_1.3.1          glue_1.8.0          
-[64] ps_1.7.6             uwot_0.2.3           stringi_1.8.3       
-[67] Polychrome_1.5.1     gtable_0.3.4         later_1.3.2         
-[70] quadprog_1.5-8       munsell_0.5.0        tibble_3.2.1        
-[73] pillar_1.9.0         htmltools_0.5.8.1    truncnorm_1.0-9     
-[76] R6_2.5.1             rprojroot_2.0.4      evaluate_1.0.3      
-[79] lattice_0.22-5       RhpcBLASctl_0.23-42  SQUAREM_2021.1      
-[82] ashr_2.2-66          httpuv_1.6.14        bslib_0.6.1         
-[85] Rcpp_1.0.12          deconvolveR_1.2-1    whisker_0.4.1       
-[88] xfun_0.42            fs_1.6.5             getPass_0.2-4       
-[91] pkgconfig_2.0.3     </code></pre>
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS 15.5
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+# [1] cowplot_1.1.3     ggplot2_3.5.0     fastTopics_0.7-25 flashier_1.0.55  
+# [5] NNLM_0.4.4        ebnm_1.1-34       workflowr_1.7.1  
+# 
+# loaded via a namespace (and not attached):
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.1        
+#  [4] dplyr_1.1.4          fastmap_1.1.1        lazyeval_0.2.2      
+#  [7] promises_1.2.1       digest_0.6.34        lifecycle_1.0.4     
+# [10] processx_3.8.3       invgamma_1.1         magrittr_2.0.3      
+# [13] compiler_4.3.3       rlang_1.1.5          sass_0.4.9          
+# [16] progress_1.2.3       tools_4.3.3          utf8_1.2.4          
+# [19] yaml_2.3.8           data.table_1.17.4    knitr_1.45          
+# [22] labeling_0.4.3       prettyunits_1.2.0    htmlwidgets_1.6.4   
+# [25] scatterplot3d_0.3-44 plyr_1.8.9           RColorBrewer_1.1-3  
+# [28] Rtsne_0.17           withr_3.0.2          purrr_1.0.2         
+# [31] grid_4.3.3           fansi_1.0.6          git2r_0.33.0        
+# [34] colorspace_2.1-0     scales_1.3.0         gtools_3.9.5        
+# [37] cli_3.6.4            rmarkdown_2.26       crayon_1.5.2        
+# [40] generics_0.1.3       RcppParallel_5.1.10  rstudioapi_0.15.0   
+# [43] reshape2_1.4.4       httr_1.4.7           pbapply_1.7-2       
+# [46] cachem_1.0.8         stringr_1.5.1        splines_4.3.3       
+# [49] parallel_4.3.3       softImpute_1.4-1     vctrs_0.6.5         
+# [52] Matrix_1.6-5         jsonlite_1.8.8       callr_3.7.5         
+# [55] hms_1.1.3            mixsqp_0.3-54        ggrepel_0.9.5       
+# [58] irlba_2.3.5.1        horseshoe_0.2.0      trust_0.1-8         
+# [61] plotly_4.10.4        jquerylib_0.1.4      tidyr_1.3.1         
+# [64] glue_1.8.0           ps_1.7.6             uwot_0.2.3          
+# [67] stringi_1.8.3        Polychrome_1.5.1     gtable_0.3.4        
+# [70] later_1.3.2          quadprog_1.5-8       munsell_0.5.0       
+# [73] tibble_3.2.1         pillar_1.9.0         htmltools_0.5.8.1   
+# [76] truncnorm_1.0-9      R6_2.5.1             rprojroot_2.0.4     
+# [79] evaluate_1.0.3       lattice_0.22-5       highr_0.10          
+# [82] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-66         
+# [85] httpuv_1.6.14        bslib_0.6.1          Rcpp_1.0.12         
+# [88] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.42           
+# [91] fs_1.6.5             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
 </div>
 
 
