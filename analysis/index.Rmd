@@ -20,3 +20,5 @@ output:
 * [More analyses of the "noisy" swimmer data.](noisy_swimmer_more.html)
 
 * [EBNMF analysis of the faces data](sparse_faces.html)
+
++ [EBNMF analysis of the LPS data set: failure of greedy initialization?](lps_fail.html)
