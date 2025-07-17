@@ -1,0 +1,111 @@
+---
+title: "EBNMF analysis of the LPS data set: how to improve greedy initialization"
+author: Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+```{r load-pkgs, message=FALSE}
+library(ebnm)
+library(flashier)
+library(fastTopics)
+library(ggplot2)
+library(cowplot)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
+
+Load the LPS data:
+
+```{r load-data}
+load("data/lps.RData")
+dim(counts)
+```
+
+Compute the shifted log counts:
+
+```{r shifted-log-counts}
+a <- 1
+s <- rowSums(counts)
+s <- s/mean(s)
+shifted_log_counts <- log1p(counts/(a*s))
+rm(counts)
+```
+
+Let's first try running EBNMF using the "greedy" initialization (without backfitting):
+
+```{r flashier-greedy, cache=TRUE}
+n  <- nrow(shifted_log_counts)
+x  <- rpois(1e7,1/n)
+s1 <- sd(log(x + 1))
+fl_greedy <- flash(shifted_log_counts,var_type = 2,S = s1,
+                   ebnm_fn = ebnm_point_exponential,backfit = FALSE,
+                   verbose = 0)
+```
+
+How many factors were added using the greedy initialization?
+
+```{r flashier-greedy-k}
+fl_greedy$n_factors
+```
+
+Does the initialization function make a difference? Let's try using the NMF function in the `RcppML` package:
+
+```{r}
+nmf_init_fn <- function(f) {
+  nmf_res <- RcppML::nmf(resid(f), k = 1, verbose = FALSE)
+  return(list(as.vector(nmf_res$w), as.vector(nmf_res$h)))
+}
+fl_greedy2 <- fl_greedy |>
+  flash_greedy(ebnm_fn = ebnm_point_exponential,
+               init_fn = nmf_init_fn,
+               Kmax = 10,
+               verbose = 0)
+fl_greedy2$n_factors
+```
+
+Next let's try doing a partial backfit and then re-adding factors:
+
+```{r}
+fl_greedy3 <- fl_greedy |>
+  flash_backfit(maxiter = 10, verbose = 0) |>
+  flash_greedy(ebnm_fn = ebnm_point_exponential,
+               Kmax = 10,
+               verbose = 0)
+fl_greedy3$n_factors
+```
+
+This works much better. Let's backfit and see how many factors are retained:
+
+```{r}
+fl_backfit <- fl_greedy3 |>
+  flash_backfit(maxiter = 100, verbose = 0) |> 
+  flash_nullcheck(verbose = 0)
+fl_backfit$n
+```
+
+
+Let's now compare the factors against the organ types in a Structure
+plot:
+
+```{r structure-plot-flashier-greedy, fig.height=1.75, fig.width=7.5}
+rows <- order(samples$timepoint)
+L <- ldf(fl_backfit,type = "i")$L
+structure_plot(L,grouping = samples$tissue,gap = 4,loadings_order = rows) +
+  labs(fill = "",y = "membership") +
+  theme(axis.text.x = element_text(angle = 0,hjust = 0.5))
+```
