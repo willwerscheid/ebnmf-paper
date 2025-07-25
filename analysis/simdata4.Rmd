@@ -1,0 +1,220 @@
+---
+title: NMF analyses of simulated data
+author: Jason Willwerscheid and Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed for the
+analyses below.
+
+```{r load-pkgs, message=FALSE}
+library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+library(fastTopics)
+source("code/swimmer_functions.R")
+```
+
+We'll simulate three scenarios, in each of which there are four populations:
+  1. One in which vanilla NMF is expected to do well. Inspired by text data: there are four topics, each of which corresponds to one of the four document populations. Each of the four populations is a 70/10/10/10 mixture of dense topics (so the component matrices are not sparse). Documents are all of the same size (so no normalization is necessary).
+  2. A modification of the first scenario in which component matrices are sparse. Each population is a 75/25/0/0 mixture of (dense) topics. Documents are of varying sizes.
+  3. A scenario inspired by scRNA-seq data (esp. Montoro), where one population corresponds to an abundant cell type (think Basal) and the other three are related types of varying abundance (think Tuft, Neuroendocrine, and Ionocyte).
+  
+For each scenario, we'll perform eight NMF decompositions:
+1. Vanilla NMF (oracle K)
+2. Vanilla NMF (K set too high)
+3. Sparse NMF (oracle sparsity)
+4. Sparse NMF (sparsity set too low)
+5. Sparse NMF (sparsity set too high)
+6. EBNMF (greedy) 
+7. EBNMF (greedy + backfit)
+8. EBNMF (NMF init + backfit)
+
+Visualization: 3 x 3 grid
+## Scenario One
+
+```{r sim-data}
+n <- 1000
+p <- 500
+k <- 4
+
+set.seed(1)
+L <- matrix(0, nrow = n, ncol = k)
+F <- matrix(0, nrow = p, ncol = k)
+
+# Loadings (document-topics):
+dominant_p <- 0.7
+other_p <- (1 - dominant_p) / 3
+L[, 1] <- c(rep(.7, 250), rep(.1, 750))
+L[, 2] <- c(rep(.1, 250), rep(.7, 250), rep(.1, 500))
+L[, 3] <- c(rep(.1, 500), rep(.7, 250), rep(.1, 250))
+L[, 4] <- c(rep(.1, 750), rep(.7, 250))
+
+# Anchor documents
+n_doc_anchors <- 20
+L[1:n_doc_anchors, 1] <- 1
+L[1:n_doc_anchors, 2:4] <- 0
+L[250 + 1:n_doc_anchors, 2] <- 1
+L[250 + 1:n_doc_anchors, c(1, 3, 4)] <- 0
+L[500 + 1:n_doc_anchors, 3] <- 1
+L[500 + 1:n_doc_anchors, c(1, 2, 4)] <- 0
+L[750 + 1:n_doc_anchors, 4] <- 1
+L[750 + 1:n_doc_anchors, 1:3] <- 0
+
+F <- matrix(rexp(p * 4), nrow = p, ncol = 4)
+F <- apply(F, 2, function(x) x / sum(x))
+
+# Anchor words
+n_word_anchors <- 10
+F[1:n_word_anchors, 2:4] <- 0
+F[(n_word_anchors + 1):(2 * n_word_anchors), c(1, 3, 4)] <- 0
+F[(2 * n_word_anchors + 1):(3 * n_word_anchors), c(1, 2, 4)] <- 0
+F[(3 * n_word_anchors + 1):(4 * n_word_anchors), 1:3] <- 0
+
+props <- L %*% t(F)
+X <- t(apply(props, 1, function(x) rmultinom(1, 2000, x)))
+
+Y <- log1p(X)
+F <- F[apply(Y, 2, sum) > 0, ]
+Y <- Y[, apply(Y, 2, sum) > 0]
+rownames(Y) <- paste0("sample", 1:nrow(Y))
+colnames(Y) <- paste0("feature", 1:ncol(Y))
+
+L_grps <- rep(LETTERS[1:4], each = 250)
+L_grps[1:n_doc_anchors] <- "A_anchors"
+L_grps[250 + 1:n_doc_anchors] <- "B_anchors"
+L_grps[500 + 1:n_doc_anchors] <- "C_anchors"
+L_grps[750 + 1:n_doc_anchors] <- "D_anchors"
+
+writeMat("matlab/simdata_scenario1.mat", Y = Y)
+```
+
+The "true" loadings matrix $L$ appears as follows:
+
+```{r}
+do_structure_plot <- function(LL, kset, title) {
+  structure_plot(LL[, kset], grouping = L_grps, gap = 20, 
+                 topics = rev(1:ncol(LL)), loadings_order = 1:1000,
+                 colors = RColorBrewer::brewer.pal(10, "Set3")) +
+    labs(y = "") +
+    ggtitle(title) +
+    guides(fill = "none", color = "none") +
+    # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    theme(axis.text.x = element_blank()) +
+    theme(axis.text.y = element_blank()) +
+    theme(plot.title.position = "plot")
+}
+plot_fl <- function(fl, kset, title) {
+  LDF <- ldf(fl, type = "f")
+  LL <- t(t(LDF$L) * LDF$D)
+  do_structure_plot(LL, kset, title)
+}
+plot_nmf <- function(res, kset, title) {
+  Wscale <- sqrt(apply(res$W, 2, function(x) sum(x^2)))
+  Hscale <- sqrt(apply(res$H, 1, function(x) sum(x^2)))
+  D <- Wscale * Hscale
+  LL <- t(t(res$W) / sqrt(Wscale) * sqrt(Hscale))
+  do_structure_plot(LL, kset, title)
+}
+
+allplots <- list()
+allplots[[1]] <- do_structure_plot(L, 1:4, "True")
+allplots[[1]]
+```
+
+Vanilla NMF with $K = 4$:
+
+```{r}
+set.seed(1)
+nmf_res <- NNLM::nnmf(Y, k = 4)
+allplots[[2]] <- plot_nmf(nmf_res, c(1, 3, 4, 2), "NMF (true K)")
+allplots[[2]]
+```
+
+Vanilla NMF with $K = 6$:
+
+```{r}
+set.seed(1)
+nmf_res <- NNLM::nnmf(Y, k = 6)
+allplots[[3]] <- plot_nmf(nmf_res, c(6, 1, 5, 4, 2, 3), "NMF (K = 6)")
+allplots[[3]]
+```
+
+Sparse NMF with the "correct" sparsity setting:
+
+```{r}
+sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.6.mat")
+allplots[[4]] <- plot_nmf(sparse_nmf, c(9, 6, 4, 3, 1:2, 5, 7:8, 10), "Sparse NMF (correct sparsity)")
+allplots[[4]]
+```
+
+Sparse NMF with sparsity set too high:
+
+```{r}
+sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.8.mat")
+allplots[[5]] <- plot_nmf(sparse_nmf, c(7, 1, 2:6, 8:10), "Sparse NMF (too much sparsity)")
+allplots[[5]]
+```
+
+Sparse NMF with sparsity set too low:
+
+```{r}
+sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.4.mat")
+allplots[[6]] <- plot_nmf(sparse_nmf, c(1, 8, 6, 4, 2, 7, 10, 9, 3, 5), "Sparse NMF (not enough sparsity)")
+allplots[[6]]
+```
+
+Greedy EBNMF:
+
+```{r}
+fl <- flash(Y, greedy_Kmax = 10, ebnm_fn = ebnm_point_exponential)
+allplots[[7]] <- plot_fl(fl, c(2, 4, 3, 5, 1), "EBNMF (greedy)")
+allplots[[7]]
+```
+
+EBNMF, greedy + backfit:
+
+```{r}
+fl_gb <- fl |> 
+  flash_backfit() |>
+  flash_greedy(Kmax = 10, ebnm_fn = ebnm_point_exponential) |>
+  flash_backfit() |>
+  flash_nullcheck()
+allplots[[8]] <- plot_fl(fl_gb, c(2, 4, 3, 5, 1, 6, 7), "EBNMF (greedy + backfit)") 
+allplots[[8]]
+```
+
+EBNMF, initialize from NMF solution (K = 10) and backfit:
+
+```{r}
+nmf_res <- NNLM::nnmf(Y, k = 10)
+fl_b <- flash_init(Y) |>
+  flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |>
+  flash_backfit() |>
+  flash_nullcheck()
+allplots[[9]] <- plot_fl(fl_b, c(2, 7, 4, 3, 1, 5:6, 8:9), "EBNMF (rank-10 NMF init)") 
+allplots[[9]]
+```
+
+All plots:
+
+```{r}
+p <- plot_grid(plotlist = allplots, nrow = 3, ncol = 3)
+p
+```
