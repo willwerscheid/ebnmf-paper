@@ -279,7 +279,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -290,8 +290,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -304,9 +304,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
@@ -329,18 +329,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -431,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6635a9a925a83ada3f3c1b8ccf246d6b764c0560targetblank6635a9aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeda46dec53c4c6ca8b5c683c848db43f59a9d6649targetblankda46deca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6635a9a925a83ada3f3c1b8ccf246d6b764c0560" target="_blank">6635a9a</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/da46dec53c4c6ca8b5c683c848db43f59a9d6649" target="_blank">da46dec</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6635a9a925a83ada3f3c1b8ccf246d6b764c0560targetblank6635a9aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeda46dec53c4c6ca8b5c683c848db43f59a9d6649targetblankda46deca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -449,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6635a9a925a83ada3f3c1b8ccf246d6b764c0560" target="_blank">6635a9a</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/da46dec53c4c6ca8b5c683c848db43f59a9d6649" target="_blank">da46dec</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -488,6 +491,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/simdata2.Rmd
+    Modified:   analysis/simdata4.Rmd
     Modified:   matlab/simdata2.mat
 
 </code></pre>
@@ -533,6 +537,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/simdata4.html" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -671,33 +692,255 @@ allplots &lt;- list()
 allplots[[1]] &lt;- do_structure_plot(L, 1:4, &quot;True&quot;)
 allplots[[1]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-1-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-1-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Vanilla NMF with <span class="math inline">\(K = 4\)</span>:</p>
 <pre class="r"><code>set.seed(1)
 nmf_res &lt;- NNLM::nnmf(Y, k = 4)
 allplots[[2]] &lt;- plot_nmf(nmf_res, c(1, 3, 4, 2), &quot;NMF (true K)&quot;)
 allplots[[2]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-2-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Vanilla NMF with <span class="math inline">\(K = 6\)</span>:</p>
 <pre class="r"><code>set.seed(1)
 nmf_res &lt;- NNLM::nnmf(Y, k = 6)
 allplots[[3]] &lt;- plot_nmf(nmf_res, c(6, 1, 5, 4, 2, 3), &quot;NMF (K = 6)&quot;)
 allplots[[3]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-3-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Sparse NMF with the “correct” sparsity setting:</p>
 <pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/simdata_scenario1_nmf_sW=0.6.mat&quot;)
 allplots[[4]] &lt;- plot_nmf(sparse_nmf, c(9, 6, 4, 3, 1:2, 5, 7:8, 10), &quot;Sparse NMF (correct sparsity)&quot;)
 allplots[[4]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-4-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Sparse NMF with sparsity set too high:</p>
 <pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/simdata_scenario1_nmf_sW=0.8.mat&quot;)
 allplots[[5]] &lt;- plot_nmf(sparse_nmf, c(7, 1, 2:6, 8:10), &quot;Sparse NMF (too much sparsity)&quot;)
 allplots[[5]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-5-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Sparse NMF with sparsity set too low:</p>
 <pre class="r"><code>sparse_nmf &lt;- readMat(&quot;matlab/simdata_scenario1_nmf_sW=0.4.mat&quot;)
 allplots[[6]] &lt;- plot_nmf(sparse_nmf, c(1, 8, 6, 4, 2, 7, 10, 9, 3, 5), &quot;Sparse NMF (not enough sparsity)&quot;)
 allplots[[6]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-6-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Greedy EBNMF:</p>
 <pre class="r"><code>fl &lt;- flash(Y, greedy_Kmax = 10, ebnm_fn = ebnm_point_exponential)
 # Warning in scale.EF(EF): Fitting stopped after the initialization function
@@ -705,6 +948,43 @@ allplots[[6]]</code></pre>
 allplots[[7]] &lt;- plot_fl(fl, c(2, 4, 3, 5, 1), &quot;EBNMF (greedy)&quot;)
 allplots[[7]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-7-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># Adding factor 1 to flash object...
 # Adding factor 2 to flash object...
 # Adding factor 3 to flash object...
@@ -725,6 +1005,43 @@ allplots[[7]]</code></pre>
 allplots[[8]] &lt;- plot_fl(fl_gb, c(2, 4, 3, 5, 1, 6, 7), &quot;EBNMF (greedy + backfit)&quot;) 
 allplots[[8]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-8-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># Backfitting 5 factors (tolerance: 7.45e-03)...
 #   Difference between iterations is within 1.0e+04...
 #   Difference between iterations is within 1.0e+03...
@@ -756,6 +1073,43 @@ fl_b &lt;- flash_init(Y) |&gt;
 allplots[[9]] &lt;- plot_fl(fl_b, c(2, 7, 4, 3, 1, 5:6, 8:9), &quot;EBNMF (rank-10 NMF init)&quot;) 
 allplots[[9]]</code></pre>
 <p><img src="figure/simdata4.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-9-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code># Backfitting 10 factors (tolerance: 7.45e-03)...
 #   Difference between iterations is within 1.0e+02...
 #   --Estimate of factor 6 is numerically zero!
@@ -779,7 +1133,44 @@ allplots[[9]]</code></pre>
 <p>All plots:</p>
 <pre class="r"><code>p &lt;- plot_grid(plotlist = allplots, nrow = 3, ncol = 3)
 p</code></pre>
-<p><img src="figure/simdata4.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/simdata4.Rmd/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/da46dec53c4c6ca8b5c683c848db43f59a9d6649/docs/figure/simdata4.Rmd/unnamed-chunk-10-1.png" target="_blank">da46dec</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-07-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

@@ -214,7 +214,7 @@ allplots[[9]]
 
 All plots:
 
-```{r}
+```{r fig.height=6, fig.width=8}
 p <- plot_grid(plotlist = allplots, nrow = 3, ncol = 3)
 p
 ```
