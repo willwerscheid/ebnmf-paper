@@ -22,3 +22,5 @@ output:
 * [EBNMF analysis of the faces data](sparse_faces.html)
 
 + [EBNMF analysis of the LPS data set: failure of greedy initialization?](lps_fail.html)
+
++ [EBNMF analysis of the LPS data set: how to improve greedy initialization](lps_fail_fix.html)
