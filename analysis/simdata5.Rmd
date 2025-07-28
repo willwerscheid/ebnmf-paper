@@ -160,7 +160,7 @@ Sparse NMF with the "correct" sparsity setting:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.6.mat")
-allplots[[4]] <- plot_nmf(sparse_nmf, c(1, 2, 6, 3, 5, 4, 7:10), "Sparse NMF (approximately correct sparsity)")
+allplots[[4]] <- plot_nmf(sparse_nmf, c(1, 2, 6, 3, 5, 4, 7:10), "Sparse NMF (good sparsity)")
 allplots[[4]]
 ```
 
@@ -184,7 +184,7 @@ Greedy EBNMF:
 
 ```{r}
 fl <- flash(Y, greedy_Kmax = 10, ebnm_fn = ebnm_point_exponential)
-allplots[[7]] <- plot_fl(fl, c(2, 4, 3, 5, 1), "EBNMF (greedy)")
+allplots[[7]] <- plot_fl(fl, c(2, 4, 3, 5, 1), "EBNMF, seed 1 (greedy)")
 allplots[[7]]
 ```
 
@@ -196,7 +196,7 @@ fl_gb <- fl |>
   flash_greedy(Kmax = 10, ebnm_fn = ebnm_point_exponential) |>
   flash_backfit() |>
   flash_nullcheck()
-allplots[[8]] <- plot_fl(fl_gb, c(2, 4, 3, 5, 1), "EBNMF (greedy + backfit)") 
+allplots[[8]] <- plot_fl(fl_gb, c(2, 4, 3, 5, 1), "EBNMF, seed 1 (greedy + backfit)") 
 allplots[[8]]
 ```
 
@@ -213,9 +213,110 @@ allplots[[9]] <- plot_fl(fl_b, c(3, 6, 2, 7, 1, 4:5), "EBNMF (rank-10 NMF init)"
 allplots[[9]]
 ```
 
+Use a different seed: 
+ 
+```{r}
+fl2 <- flash_init(Y) |>
+  flash_greedy(Kmax = 10, 
+               ebnm_fn = ebnm_point_exponential, 
+               init_fn = function(f) flash_greedy_init_default(
+                 f, sign_constraints = c(1, 1), seed = 5
+               ))
+allplots[[10]] <- plot_fl(fl2, c(2, 3, 4, 1), "EBNMF, seed 2 (greedy)")
+allplots[[10]]
+```
+
+```{r}
+fl_b2 <- flash_init(Y) |>
+  flash_greedy(Kmax = 10, 
+               ebnm_fn = ebnm_point_exponential, 
+               init_fn = function(f) flash_greedy_init_default(
+                 f, sign_constraints = c(1, 1), seed = 5
+               )) |>
+  flash_backfit() 
+allplots[[11]] <- plot_fl(fl_b2, c(2, 3, 4, 1), "EBNMF, seed 2 (greedy + backfit)")
+allplots[[11]]
+```
+
+
 All plots:
 
 ```{r fig.height=6, fig.width=8}
-p <- plot_grid(plotlist = allplots, nrow = 3, ncol = 3)
+p <- plot_grid(plotlist = allplots, nrow = 4, ncol = 3)
 p
+```
+
+The solution given by seed 2 has a much better ELBO:
+
+```{r}
+fl_gb$elbo
+fl_b2$elbo
+```
+
+However, the greedy initialization given by seed 1 has a better ELBO:
+
+```{r}
+fl$elbo
+fl2$elbo
+```
+
+
+Out of 100 seeds, we get the "good" solution given by seed 2 23 times:
+
+```{r warning=FALSE}
+niter <- 100
+n_good <- 0
+for (i in 1:niter) {
+  fl_next <- flash_init(Y) |>
+    flash_greedy(Kmax = 10, 
+                 ebnm_fn = ebnm_point_exponential, 
+                 init_fn = function(f) flash_greedy_init_default(
+                   f, sign_constraints = c(1, 1), seed = i
+                 ),
+                 verbose = 0) 
+  if (fl_next$n_factors == 4) {
+    n_good <- n_good + 1
+  }
+}
+n_good
+```
+
+Oddly, using a rowwise variance structure "improves" this to 41 out of 100 times:
+
+```{r warning=FALSE}
+niter <- 100
+n_good <- 0
+for (i in 1:niter) {
+  fl_next <- flash_init(Y, var_type = 1) |>
+    flash_greedy(Kmax = 10, 
+                 ebnm_fn = ebnm_point_exponential, 
+                 init_fn = function(f) flash_greedy_init_default(
+                   f, sign_constraints = c(1, 1), seed = i
+                 ),
+                 verbose = 0) 
+  if (fl_next$n_factors == 4) {
+    n_good <- n_good + 1
+  }
+}
+n_good
+```
+
+Using a columnwise variance structure, we get the "good" result 15 times out of 100:
+
+```{r warning=FALSE}
+niter <- 100
+n_good <- 0
+for (i in 1:niter) {
+  fl_next <- flash_init(Y, var_type = 2) |>
+    flash_greedy(Kmax = 10, 
+                 ebnm_fn = ebnm_point_exponential, 
+                 init_fn = function(f) flash_greedy_init_default(
+                   f, sign_constraints = c(1, 1), seed = i
+                 ),
+                 verbose = 0) 
+  if (fl_next$n_factors == 4) {
+    n_good <- n_good + 1
+  }
+}
+n_good
 ```
