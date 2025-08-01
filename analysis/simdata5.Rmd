@@ -145,7 +145,7 @@ fl_b <- flash_init(Y) |>
   flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |>
   flash_backfit(maxiter = 5000) |>
   flash_nullcheck()
-allplots[[4]] <- plot_fl(fl_b, c(4, 7, 3, 6, 1, 2, 5), "EBNMF (K = 8 NMF init)") 
+allplots[[4]] <- plot_fl(fl_b, c(4, 7, 3, 6, 1, 2, 5), "EBNMF, NMF init (K = 8)") 
 allplots[[4]]
 ```
 
@@ -213,7 +213,7 @@ Sparse NMF (K = 8) with approximately correct sparsity setting:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_k=8.mat")
-allplots[[12]] <- plot_nmf(sparse_nmf, c(2, 3, 8, 7, 1, 5, 4, 6), "SpNMF (K = 8, good spars)")
+allplots[[12]] <- plot_nmf(sparse_nmf, c(6, 2, 1, 8, 5, 4, 3, 7), "SpNMF (K = 8, good spars)")
 allplots[[12]]
 ```
 
