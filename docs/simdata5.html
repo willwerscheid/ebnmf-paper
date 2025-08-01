@@ -431,15 +431,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6236155e146005b0da8132c8fba23248a8e6f9batargetblank6236155a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4a66f570c1ff8d19832681474ee55a527e74e6f0targetblank4a66f57a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6236155e146005b0da8132c8fba23248a8e6f9ba" target="_blank">6236155</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4a66f570c1ff8d19832681474ee55a527e74e6f0" target="_blank">4a66f57</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6236155e146005b0da8132c8fba23248a8e6f9batargetblank6236155a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4a66f570c1ff8d19832681474ee55a527e74e6f0targetblank4a66f57a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -449,7 +449,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6236155e146005b0da8132c8fba23248a8e6f9ba" target="_blank">6236155</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4a66f570c1ff8d19832681474ee55a527e74e6f0" target="_blank">4a66f57</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -539,6 +539,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/4a66f570c1ff8d19832681474ee55a527e74e6f0/analysis/simdata5.Rmd" target="_blank">4a66f57</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-01
+</td>
+<td>
+workflowr::wflow_publish("analysis/simdata5.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/654058e1908ac8ef701a0dea8da111ec3e5fca41/docs/simdata5.html" target="_blank">654058e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -935,6 +969,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/654058e1908ac8ef701a0dea8da111ec3e5fca41/docs/figure/simdata5.Rmd/unnamed-chunk-4-1.png" target="_blank">654058e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-01
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/7030bb88e0e1cf04fd2a678f7106aa7a0360c60e/docs/figure/simdata5.Rmd/unnamed-chunk-4-1.png" target="_blank">7030bb8</a>
 </td>
 <td>
@@ -1049,9 +1094,9 @@ Jason Willwerscheid
 # Nullchecking 4 factors...
 # Done.</code></pre>
 <p>EBNMF with <code>Kmax = 4</code>, greedy + backfit:</p>
-<pre class="r"><code>fl_gb &lt;- fl |&gt; 
+<pre class="r"><code>fl_gb4 &lt;- fl |&gt; 
   flash_backfit() 
-allplots[[6]] &lt;- plot_fl(fl_gb, c(2, 4, 3, 1), &quot;Backfit EBNMF (Kmax = 4)&quot;) 
+allplots[[6]] &lt;- plot_fl(fl_gb4, c(2, 4, 3, 1), &quot;Backfit EBNMF (Kmax = 4)&quot;) 
 allplots[[6]]</code></pre>
 <p><img src="figure/simdata5.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1190,9 +1235,9 @@ Jason Willwerscheid
 # Nullchecking 5 factors...
 # Done.</code></pre>
 <p>EBNMF with <code>Kmax = 8</code>, greedy + backfit:</p>
-<pre class="r"><code>fl_gb &lt;- fl |&gt; 
+<pre class="r"><code>fl_gb8 &lt;- fl |&gt; 
   flash_backfit() 
-allplots[[8]] &lt;- plot_fl(fl_gb, c(2, 4, 3, 5, 1), &quot;Backfit EBNMF (Kmax = 8)&quot;) 
+allplots[[8]] &lt;- plot_fl(fl_gb8, c(2, 4, 3, 5, 1), &quot;Backfit EBNMF (Kmax = 8)&quot;) 
 allplots[[8]]</code></pre>
 <p><img src="figure/simdata5.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1463,6 +1508,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/654058e1908ac8ef701a0dea8da111ec3e5fca41/docs/figure/simdata5.Rmd/unnamed-chunk-12-1.png" target="_blank">654058e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-01
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/7030bb88e0e1cf04fd2a678f7106aa7a0360c60e/docs/figure/simdata5.Rmd/unnamed-chunk-12-1.png" target="_blank">7030bb8</a>
 </td>
 <td>
@@ -1515,6 +1571,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/654058e1908ac8ef701a0dea8da111ec3e5fca41/docs/figure/simdata5.Rmd/unnamed-chunk-13-1.png" target="_blank">654058e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-01
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/7030bb88e0e1cf04fd2a678f7106aa7a0360c60e/docs/figure/simdata5.Rmd/unnamed-chunk-13-1.png" target="_blank">7030bb8</a>
 </td>
 <td>
@@ -1528,6 +1595,13 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
+<p>ELBOs:</p>
+<pre class="r"><code>fl_b$elbo
+fl_gb4$elbo
+fl_gb8$elbo
+# [1] -277333.4
+# [1] -277059.1
+# [1] -280172.9</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
