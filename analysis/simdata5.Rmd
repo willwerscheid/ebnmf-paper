@@ -160,9 +160,9 @@ allplots[[5]]
 EBNMF with `Kmax = 4`, greedy + backfit:
 
 ```{r}
-fl_gb <- fl |> 
+fl_gb4 <- fl |> 
   flash_backfit() 
-allplots[[6]] <- plot_fl(fl_gb, c(2, 4, 3, 1), "Backfit EBNMF (Kmax = 4)") 
+allplots[[6]] <- plot_fl(fl_gb4, c(2, 4, 3, 1), "Backfit EBNMF (Kmax = 4)") 
 allplots[[6]]
 ```
 
@@ -177,9 +177,9 @@ allplots[[7]]
 EBNMF with `Kmax = 8`, greedy + backfit:
 
 ```{r}
-fl_gb <- fl |> 
+fl_gb8 <- fl |> 
   flash_backfit() 
-allplots[[8]] <- plot_fl(fl_gb, c(2, 4, 3, 5, 1), "Backfit EBNMF (Kmax = 8)") 
+allplots[[8]] <- plot_fl(fl_gb8, c(2, 4, 3, 5, 1), "Backfit EBNMF (Kmax = 8)") 
 allplots[[8]]
 ```
 
@@ -222,5 +222,13 @@ All plots:
 ```{r fig.height=6, fig.width=8}
 p <- plot_grid(plotlist = allplots, nrow = 3, ncol = 4)
 p
+```
+
+ELBOs:
+
+```{r}
+fl_b$elbo
+fl_gb4$elbo
+fl_gb8$elbo
 ```
 
