@@ -125,7 +125,7 @@ Vanilla NMF with $K = 4$:
 ```{r}
 set.seed(1)
 nmf_res <- NNLM::nnmf(Y, k = 4)
-allplots[[2]] <- plot_nmf(nmf_res, c(1, 3, 4, 2), "NMF (K = 4)")
+allplots[[2]] <- plot_nmf(nmf_res, c(1, 3, 4, 2), "NMF")
 allplots[[2]]
 ```
 
@@ -134,7 +134,7 @@ Vanilla NMF with $K = 8$:
 ```{r}
 set.seed(1)
 nmf_res <- NNLM::nnmf(Y, k = 8)
-allplots[[3]] <- plot_nmf(nmf_res, c(4, 8, 3, 6, 2, 5, 1, 7), "NMF (K = 8)")
+allplots[[3]] <- plot_nmf(nmf_res, c(4, 8, 3, 6, 2, 5, 1, 7), "NMF")
 allplots[[3]]
 ```
 
@@ -145,7 +145,7 @@ fl_b <- flash_init(Y) |>
   flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |>
   flash_backfit(maxiter = 5000) |>
   flash_nullcheck()
-allplots[[4]] <- plot_fl(fl_b, c(4, 7, 3, 6, 1, 2, 5), "EBNMF, NMF init (K = 8)") 
+allplots[[4]] <- plot_fl(fl_b, c(4, 7, 3, 6, 1, 2, 5), "EBNMF (NMF init)") 
 allplots[[4]]
 ```
 
@@ -153,7 +153,7 @@ Greedy EBNMF with `Kmax = 4`:
 
 ```{r}
 fl <- flash(Y, greedy_Kmax = 4, ebnm_fn = ebnm_point_exponential)
-allplots[[5]] <- plot_fl(fl, c(2, 4, 3, 1), "Greedy EBNMF (Kmax = 4)")
+allplots[[5]] <- plot_fl(fl, c(2, 4, 3, 1), "EBNMF (greedy)")
 allplots[[5]]
 ```
 
@@ -162,7 +162,7 @@ EBNMF with `Kmax = 4`, greedy + backfit:
 ```{r}
 fl_gb4 <- fl |> 
   flash_backfit() 
-allplots[[6]] <- plot_fl(fl_gb4, c(2, 4, 3, 1), "Backfit EBNMF (Kmax = 4)") 
+allplots[[6]] <- plot_fl(fl_gb4, c(2, 4, 3, 1), "EBNMF (backfit)") 
 allplots[[6]]
 ```
 
@@ -170,7 +170,7 @@ Greedy EBNMF with `Kmax = 8`:
 
 ```{r}
 fl <- flash(Y, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential)
-allplots[[7]] <- plot_fl(fl, c(2, 4, 3, 5, 1), "Greedy EBNMF (Kmax = 8)")
+allplots[[7]] <- plot_fl(fl, c(2, 4, 3, 5, 1), "EBNMF (greedy)")
 allplots[[7]]
 ```
 
@@ -179,7 +179,7 @@ EBNMF with `Kmax = 8`, greedy + backfit:
 ```{r}
 fl_gb8 <- fl |> 
   flash_backfit() 
-allplots[[8]] <- plot_fl(fl_gb8, c(2, 4, 3, 5, 1), "Backfit EBNMF (Kmax = 8)") 
+allplots[[8]] <- plot_fl(fl_gb8, c(2, 4, 3, 5, 1), "EBNMF (backfit)") 
 allplots[[8]]
 ```
 
@@ -187,7 +187,7 @@ Sparse NMF (K = 4) with approximately correct sparsity setting:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.5.mat")
-allplots[[10]] <- plot_nmf(sparse_nmf, c(4, 1, 2, 3), "SpNMF (K = 4, good spars)")
+allplots[[10]] <- plot_nmf(sparse_nmf, c(4, 1, 2, 3), "SpNMF (good sparsity)")
 allplots[[10]]
 ```
 
@@ -197,7 +197,7 @@ Sparse NMF (K = 4) with sparsity set too low:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.3.mat")
-allplots[[9]] <- plot_nmf(sparse_nmf, c(4, 3, 2, 1), "SpNMF (K = 4, low spars)")
+allplots[[9]] <- plot_nmf(sparse_nmf, c(4, 3, 2, 1), "SpNMF (low sparsity)")
 allplots[[9]]
 ```
 
@@ -205,7 +205,7 @@ Sparse NMF (K = 4) with sparsity set too high:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_sW=0.6.mat")
-allplots[[11]] <- plot_nmf(sparse_nmf, c(4, 1, 2, 3), "SpNMF (K = 4, high spars)")
+allplots[[11]] <- plot_nmf(sparse_nmf, c(4, 1, 2, 3), "SpNMF (high sparsity)")
 allplots[[11]]
 ```
 
@@ -213,15 +213,20 @@ Sparse NMF (K = 8) with approximately correct sparsity setting:
 
 ```{r}
 sparse_nmf <- readMat("matlab/simdata_scenario1_nmf_k=8.mat")
-allplots[[12]] <- plot_nmf(sparse_nmf, c(6, 2, 1, 8, 5, 4, 3, 7), "SpNMF (K = 8, good spars)")
+allplots[[12]] <- plot_nmf(sparse_nmf, c(6, 2, 1, 8, 5, 4, 3, 7), "SpNMF (good sparsity)")
 allplots[[12]]
 ```
 
 All plots:
 
 ```{r fig.height=6, fig.width=8}
-p <- plot_grid(plotlist = allplots, nrow = 3, ncol = 4)
-p
+p1 <- plot_grid(plotlist = allplots[c(1, 2, 5, 6, 11, 10)], nrow = 3, ncol = 2)
+p1
+```
+
+```{r fig.height=6, fig.width=8}
+p2 <- plot_grid(plotlist = allplots[c(1, 3, 7, 8, 4, 12)], nrow = 3, ncol = 2)
+p2
 ```
 
 ELBOs:
