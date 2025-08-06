@@ -1,5 +1,3 @@
-# TO DO: Explain here what this script is for, and how to use it.
-#
 # The CBCL faces data set was downloaded from here:
 # http://www.ai.mit.edu/courses/6.899/lectures/faces.tar.gz
 #
