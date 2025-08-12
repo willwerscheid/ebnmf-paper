@@ -1,0 +1,564 @@
+---
+title: NMF analyses of simulated data
+author: Jason Willwerscheid and Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+First, load the packages and some custom functions needed for the
+analyses below.
+
+```{r load-pkgs, message=FALSE}
+library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+library(fastTopics)
+source("code/swimmer_functions.R")
+```
+
+We will simulate three scenarios. 
+
+Plotting functions:
+
+```{r}
+align_cols <- function(plotmat, refmat) {
+  if (ncol(refmat) > ncol(plotmat)) {
+    refmat <- refmat[, 1:ncol(plotmat)]
+  }
+  idx <- rep(NA, ncol(plotmat))
+  cor_mat <- cor(plotmat, refmat)
+  cor_which <- apply(cor_mat, 1, which.max)
+  all_k <- rev(order(apply(cor_mat, 1, max)))
+  for (k in all_k) {
+    next_idx <- cor_which[k]
+    if (is.na(idx[next_idx])) {
+      idx[next_idx] <- k
+    } 
+  }
+  idx[which(is.na(idx))] <- setdiff(1:ncol(plotmat), idx)
+  return(idx)
+}
+
+do_structure_plot <- function(LL, kset, title) {
+  structure_plot(LL[, kset], grouping = L_grps, gap = 20, 
+                 topics = rev(1:ncol(LL)), loadings_order = 1:sum(ns),
+                 colors = RColorBrewer::brewer.pal(12, "Set3")) +
+    labs(y = "") +
+    ggtitle(title) +
+    guides(fill = "none", color = "none") +
+    theme(axis.text.x = element_blank()) +
+    theme(axis.text.y = element_blank()) +
+    theme(plot.title.position = "plot")
+}
+
+plot_fl <- function(fl, refmat, title) {
+  LDF <- ldf(fl, type = "f")
+  LL <- t(t(LDF$L) * LDF$D)
+  kset <- align_cols(LL, refmat)
+  do_structure_plot(LL, kset, title)
+}
+
+plot_nmf <- function(res, refmat, title) {
+  Wscale <- sqrt(apply(res$W, 2, function(x) sum(x^2)))
+  Hscale <- sqrt(apply(res$H, 1, function(x) sum(x^2)))
+  D <- Wscale * Hscale
+  LL <- t(t(res$W) / sqrt(Wscale) * sqrt(Hscale))
+  kset <- align_cols(LL, refmat)
+  do_structure_plot(LL, kset, title)
+}
+```
+
+Fitting functions:
+
+```{r}
+run_nmf <- function(Y, k, ntrials = 10) {
+  best_mse <- Inf
+  for (i in 1:ntrials) {
+    set.seed(i)
+    next_res <- NNLM::nnmf(Y, k = k)
+    if (min(next_res$mse) < best_mse) {
+      best_mse <- min(next_res$mse)
+      best_res <- next_res
+    }
+    return(best_res)
+  }
+}
+
+run_ebnmf_from_nmf <- function(Y, nmf_res, var_type, maxiter = 2000) {
+  flash_init(Y, var_type = var_type) |>
+    flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |>
+    flash_backfit(maxiter = maxiter) |>
+    flash_nullcheck()
+}
+
+run_greedy <- function(Y, Kmax, var_type = 2) {
+  set.seed(1)
+  flash(Y, var_type = var_type, greedy_Kmax = Kmax, ebnm_fn = ebnm_point_exponential)
+}
+
+run_greedy_backfit <- function(Y, Kmax, var_type = 2) {
+  run_greedy(Y, Kmax, var_type = var_type) |>
+    flash_backfit() |>
+    flash_nullcheck()
+}
+
+run_alternating_gb <- function(Y, Kmax, var_type = 2) {
+  fl <- flash_init(Y, var_type = var_type) |>
+    flash_set_verbose()
+  keep_going <- TRUE
+  while(keep_going) {
+    current_n <- fl$n_factors
+    fl <- fl |>
+      flash_greedy(ebnm_fn = ebnm_point_exponential) |>
+      flash_backfit(maxiter = 10)
+    if (fl$n_factors == current_n | fl$n_factors == Kmax) {
+      keep_going <- FALSE
+    }
+  }
+  fl <- fl |>
+    flash_backfit() |>
+    flash_nullcheck()
+  return(fl)
+}
+```
+
+## Simulation setting 1: fully-separated topics, rare population, Poisson noise
+
+```{r}
+ns <- c(690, 250, 50, 10)
+p <- 500
+k <- 4
+
+# Loadings (document-topics):
+L <- matrix(0, nrow = sum(ns), ncol = k)
+L[, 1] <- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
+L[, 2] <- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
+L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
+L[, 4] <- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
+
+# Topics should be similar in magnitude:
+set.seed(1)
+F <- matrix(rnorm(p * 4, mean = 50, sd = 10), nrow = p, ncol = 4)
+
+# Anchor words
+n_word_anchors <- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] <- 0
+}
+
+mu <- L %*% t(F)
+Y <- matrix(rpois(sum(ns) * p, mu), nrow = sum(ns), ncol = p)
+
+# Make sure there aren't any all-zero columns:
+F <- F[apply(Y, 2, sum) > 0, ]
+Y <- Y[, apply(Y, 2, sum) > 0]
+
+rownames(Y) <- paste0("sample", 1:nrow(Y))
+colnames(Y) <- paste0("feature", 1:ncol(Y))
+
+L_grps <- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat("matlab/simdata_scenario1.mat", Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))
+```
+
+The "true" loadings matrix $L$ appears as follows:
+
+```{r}
+k4_plots <- list()
+k4_plots[[1]] <- do_structure_plot(L, 1:4, "True")
+k4_plots[[1]]
+```
+
+Do fits:
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+k8_plots <- k4_plots
+
+nmf_res_k4 <- run_nmf(Y, k = 4)
+k4_plots[[2]] <- plot_nmf(nmf_res_k4, L, "NMF")
+
+ebnmf_res_nmf_init_k4 <- run_ebnmf_from_nmf(Y, nmf_res_k4, var_type = 0)
+k4_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k4, L, "EBNMF (NMF init)")
+
+ebnmf_res_greedy_k4 <- run_greedy(Y, Kmax = 4, var_type = 0)
+k4_plots[[4]] <- plot_fl(ebnmf_res_greedy_k4, L, "EBNMF (greedy)")
+
+ebnmf_res_gb_k4 <- run_greedy_backfit(Y, Kmax = 4, var_type = 0)
+k4_plots[[5]] <- plot_fl(ebnmf_res_gb_k4, L, "EBNMF (backfit)") 
+
+ebnmf_res_alternating_k4 <- run_alternating_gb(Y, Kmax = 4, var_type = 0)
+k4_plots[[6]] <- plot_fl(ebnmf_res_alternating_k4, L, "EBNMF (alternating)") 
+
+nmf_res_k8 <- run_nmf(Y, k = 8)
+k8_plots[[2]] <- plot_nmf(nmf_res_k8, L, "NMF")
+
+ebnmf_res_nmf_init_k8 <- run_ebnmf_from_nmf(Y, nmf_res_k8, var_type = 0)
+k8_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k8, L, "EBNMF (NMF init)")
+
+ebnmf_res_greedy_k8 <- run_greedy(Y, Kmax = 8, var_type = 0)
+k8_plots[[4]] <- plot_fl(ebnmf_res_greedy_k8, L, "EBNMF (greedy)")
+
+ebnmf_res_gb_k8 <- run_greedy_backfit(Y, Kmax = 8, var_type = 0)
+k8_plots[[5]] <- plot_fl(ebnmf_res_gb_k8, L, "EBNMF (backfit)") 
+
+ebnmf_res_alternating_k8 <- run_alternating_gb(Y, Kmax = 8, var_type = 0)
+k8_plots[[6]] <- plot_fl(ebnmf_res_alternating_k8, L, "EBNMF (alternating)") 
+```
+
+NMF and EBNMF, `K = 4`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k4_plots, nrow = 2, ncol = 3)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k4$elbo, ebnmf_res_gb_k4$elbo, ebnmf_res_alternating_k4$elbo)
+```
+
+Sparse NMF, `K = 4`:
+
+```{r}
+sparse_nmf_k4_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario1_k=4_sW=0.", i, ".mat"))
+  sparse_nmf_k4_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k4_plots, nrow = 3, ncol = 3)
+```
+
+NMF and EBNMF, `K = 8`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k8_plots, nrow = 2, ncol = 3)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k8$elbo, ebnmf_res_gb_k8$elbo, ebnmf_res_alternating_k8$elbo)
+```
+
+Sparse NMF, `K = 8`:
+
+```{r}
+sparse_nmf_k8_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario1_k=8_sW=0.", i, ".mat"))
+  sparse_nmf_k8_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k8_plots, nrow = 3, ncol = 3)
+```
+
+
+## Simulation setting 2: shared topics, varying document sizes, log1p link
+
+```{r}
+ns <- rep(250, 6)
+p <- 500
+k <- 3
+
+# Loadings (document-topics):
+L <- matrix(0, nrow = sum(ns), ncol = k)
+L[, 1] <- c(rep(1, ns[1]), rep(0, sum(ns[2:3])), rep(0.5, sum(ns[4:5])), rep(0, ns[6]))
+L[, 2] <- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, ns[3]), rep(0.5, ns[4]), rep(0, ns[5]), rep(0.5, ns[6]))
+L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]), rep(0.5, sum(ns[5:6])))
+
+set.seed(1)
+F <- matrix(rgamma(p * k, shape = 0.5, rate = 0.5), nrow = p, ncol = k)
+
+# Anchor words
+n_word_anchors <- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] <- 0
+}
+
+mu <- L %*% t(F)
+X <- matrix(rpois(sum(ns) * p, lambda = expm1(mu)), nrow = sum(ns), ncol = p)
+Y <- log1p(X)
+
+# Make sure there aren't any all-zero columns:
+F <- F[apply(Y, 2, sum) > 0, ]
+Y <- Y[, apply(Y, 2, sum) > 0]
+
+rownames(Y) <- paste0("sample", 1:nrow(Y))
+colnames(Y) <- paste0("feature", 1:ncol(Y))
+
+L_grps <- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat("matlab/simdata_scenario2.mat", Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))
+```
+
+The "true" loadings matrix $L$ appears as follows:
+
+```{r}
+k3_plots <- list()
+k3_plots[[1]] <- do_structure_plot(L, 1:3, "\"True\"")
+k3_plots[[1]]
+```
+
+Do fits:
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+k8_plots <- k3_plots
+
+nmf_res_k3 <- run_nmf(Y, k = 3)
+k3_plots[[2]] <- plot_nmf(nmf_res_k3, L, "NMF")
+
+ebnmf_res_nmf_init_k3_vartype0 <- run_ebnmf_from_nmf(Y, nmf_res_k3, var_type = 0)
+k3_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k3_vartype0, L, "EBNMF (NMF init, const)")
+
+ebnmf_res_nmf_init_k3_vartype2 <- run_ebnmf_from_nmf(Y, nmf_res_k3, var_type = 2)
+k3_plots[[4]] <- plot_fl(ebnmf_res_nmf_init_k3_vartype2, L, "EBNMF (NMF init, colwise)")
+
+ebnmf_res_gb_k3_vartype0 <- run_greedy_backfit(Y, Kmax = 3, var_type = 0)
+k3_plots[[5]] <- plot_fl(ebnmf_res_gb_k3_vartype0, L, "EBNMF (backfit, const)") 
+
+ebnmf_res_gb_k3_vartype2 <- run_greedy_backfit(Y, Kmax = 3, var_type = 2)
+k3_plots[[6]] <- plot_fl(ebnmf_res_gb_k3_vartype2, L, "EBNMF (backfit, colwise)") 
+
+ebnmf_res_alternating_k3_vartype0 <- run_alternating_gb(Y, Kmax = 3, var_type = 0)
+k3_plots[[7]] <- plot_fl(ebnmf_res_alternating_k3_vartype0, L, "EBNMF (alternating, const)") 
+
+ebnmf_res_alternating_k3_vartype2 <- run_alternating_gb(Y, Kmax = 3, var_type = 2)
+k3_plots[[8]] <- plot_fl(ebnmf_res_alternating_k3_vartype2, L, "EBNMF (alternating, colwise)") 
+
+nmf_res_k8 <- run_nmf(Y, k = 8)
+k8_plots[[2]] <- plot_nmf(nmf_res_k8, L, "NMF")
+
+ebnmf_res_nmf_init_k8_vartype0 <- run_ebnmf_from_nmf(Y, nmf_res_k8, var_type = 0)
+k8_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k8_vartype0, L, "EBNMF (NMF init, const)")
+
+ebnmf_res_nmf_init_k8_vartype2 <- run_ebnmf_from_nmf(Y, nmf_res_k8, var_type = 2)
+k8_plots[[4]] <- plot_fl(ebnmf_res_nmf_init_k8_vartype2, L, "EBNMF (NMF init, colwise)")
+
+ebnmf_res_gb_k8_vartype0 <- run_greedy_backfit(Y, Kmax = 8, var_type = 0)
+k8_plots[[5]] <- plot_fl(ebnmf_res_gb_k8_vartype0, L, "EBNMF (backfit, const)") 
+
+ebnmf_res_gb_k8_vartype2 <- run_greedy_backfit(Y, Kmax = 8, var_type = 2)
+k8_plots[[6]] <- plot_fl(ebnmf_res_gb_k8_vartype2, L, "EBNMF (backfit, colwise)") 
+
+ebnmf_res_alternating_k8_vartype0 <- run_alternating_gb(Y, Kmax = 8, var_type = 0)
+k8_plots[[7]] <- plot_fl(ebnmf_res_alternating_k8_vartype0, L, "EBNMF (alternating, const)") 
+
+ebnmf_res_alternating_k8_vartype2 <- run_alternating_gb(Y, Kmax = 8, var_type = 2)
+k8_plots[[8]] <- plot_fl(ebnmf_res_alternating_k8_vartype2, L, "EBNMF (alternating, colwise)") 
+```
+
+
+NMF and EBNMF, `K = 3`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k3_plots, nrow = 2, ncol = 4)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k3_vartype0$elbo, ebnmf_res_gb_k3_vartype0$elbo, ebnmf_res_alternating_k3_vartype0$elbo)
+```
+
+```{r}
+c(ebnmf_res_nmf_init_k3_vartype2$elbo, ebnmf_res_gb_k3_vartype2$elbo, ebnmf_res_alternating_k3_vartype2$elbo)
+```
+
+Sparse NMF, `K = 3`:
+
+```{r}
+sparse_nmf_k3_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario2_k=3_sW=0.", i, ".mat"))
+  sparse_nmf_k3_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k3_plots, nrow = 3, ncol = 3)
+```
+
+NMF and EBNMF, `K = 8`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k8_plots, nrow = 2, ncol = 4)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k8_vartype2$elbo, ebnmf_res_gb_k8_vartype2$elbo, ebnmf_res_alternating_k8_vartype2$elbo)
+```
+
+Sparse NMF, `K = 8`:
+
+```{r}
+sparse_nmf_k8_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario2_k=8_sW=0.", i, ".mat"))
+  sparse_nmf_k8_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k8_plots, nrow = 3, ncol = 3)
+```
+
+## Simulation setting 3: hierarchical relationships, rare "pure" populations
+
+```{r sim-data}
+ns <- c(rep(250, 4), rep(20, 7))
+p <- 500
+k <- 7
+
+# Loadings (document-topics):
+L <- matrix(0, nrow = sum(ns), ncol = k)
+L[, 7] <- c(rep(1/3, sum(ns[1:4])), rep(1, ns[5]), rep(0, sum(ns[6:11]))) # root
+L[, 5] <- c(rep(1/3, sum(ns[1:2])), rep(0, sum(ns[3:5])), rep(1, ns[6]), rep(0, sum(ns[7:11]))) # branch 1
+L[, 6] <- c(rep(0, sum(ns[1:2])), rep(1/3, sum(ns[3:4])), rep(0, sum(ns[5:6])), rep(1, ns[7]), rep(0, sum(ns[8:11]))) # branch 2
+L[, 1] <- c(rep(1/3, ns[1]), rep(0, sum(ns[2:7])), rep(1, ns[8]), rep(0, sum(ns[9:11]))) # leaf 1
+L[, 2] <- c(rep(0, ns[1]), rep(1/3, ns[2]), rep(0, sum(ns[3:8])), rep(1, ns[9]), rep(0, sum(ns[10:11]))) # leaf 2
+L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1/3, ns[3]), rep(0, sum(ns[4:9])), rep(1, ns[10]), rep(0, ns[11])) # leaf 3
+L[, 4] <- c(rep(0, sum(ns[1:3])), rep(1/3, ns[4]), rep(0, sum(ns[5:10])), rep(1, ns[11])) # leaf 4
+
+set.seed(3)
+F <- matrix(rgamma(p * k, shape = 0.4, rate = 0.4), nrow = p, ncol = k)
+
+# Anchor words
+n_word_anchors <- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] <- 0
+}
+
+mu <- L %*% t(F)
+X <- matrix(rpois(sum(ns) * p, lambda = expm1(mu)), nrow = sum(ns), ncol = p)
+Y <- log1p(X)
+
+# Make sure there aren't any all-zero columns:
+F <- F[apply(Y, 2, sum) > 0, ]
+Y <- Y[, apply(Y, 2, sum) > 0]
+
+rownames(Y) <- paste0("sample", 1:nrow(Y))
+colnames(Y) <- paste0("feature", 1:ncol(Y))
+
+L_grps <- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat("matlab/simdata_scenario3.mat", Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))
+```
+
+The "true" loadings matrix $L$ appears as follows:
+
+```{r}
+k7_plots <- list()
+k7_plots[[1]] <- do_structure_plot(L, 1:7, "\"True\"")
+k7_plots[[1]]
+```
+
+Do fits:
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+k12_plots <- k7_plots
+
+nmf_res_k7 <- run_nmf(Y, k = 7)
+k7_plots[[2]] <- plot_nmf(nmf_res_k7, L, "NMF")
+
+ebnmf_res_nmf_init_k7_vartype0 <- run_ebnmf_from_nmf(Y, nmf_res_k7, var_type = 0)
+k7_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k7_vartype0, L, "EBNMF (NMF init, const)")
+
+ebnmf_res_nmf_init_k7_vartype2 <- run_ebnmf_from_nmf(Y, nmf_res_k7, var_type = 2)
+k7_plots[[4]] <- plot_fl(ebnmf_res_nmf_init_k7_vartype2, L, "EBNMF (NMF init, colwise)")
+
+ebnmf_res_gb_k7_vartype0 <- run_greedy_backfit(Y, Kmax = 7, var_type = 0)
+k7_plots[[5]] <- plot_fl(ebnmf_res_gb_k7_vartype0, L, "EBNMF (backfit, const)") 
+
+ebnmf_res_gb_k7_vartype2 <- run_greedy_backfit(Y, Kmax = 7, var_type = 2)
+k7_plots[[6]] <- plot_fl(ebnmf_res_gb_k7_vartype2, L, "EBNMF (backfit, colwise)") 
+
+ebnmf_res_alternating_k7_vartype0 <- run_alternating_gb(Y, Kmax = 7, var_type = 0)
+k7_plots[[7]] <- plot_fl(ebnmf_res_alternating_k7_vartype0, L, "EBNMF (alternating, const)") 
+
+ebnmf_res_alternating_k7_vartype2 <- run_alternating_gb(Y, Kmax = 7, var_type = 2)
+k7_plots[[8]] <- plot_fl(ebnmf_res_alternating_k7_vartype2, L, "EBNMF (alternating, colwise)") 
+
+nmf_res_k12 <- run_nmf(Y, k = 12)
+k12_plots[[2]] <- plot_nmf(nmf_res_k12, L, "NMF")
+
+ebnmf_res_nmf_init_k12_vartype0 <- run_ebnmf_from_nmf(Y, nmf_res_k12, var_type = 0)
+k12_plots[[3]] <- plot_fl(ebnmf_res_nmf_init_k12_vartype0, L, "EBNMF (NMF init, const)")
+
+ebnmf_res_nmf_init_k12_vartype2 <- run_ebnmf_from_nmf(Y, nmf_res_k12, var_type = 2)
+k12_plots[[4]] <- plot_fl(ebnmf_res_nmf_init_k12_vartype2, L, "EBNMF (NMF init, colwise)")
+
+ebnmf_res_gb_k12_vartype0 <- run_greedy_backfit(Y, Kmax = 8, var_type = 0)
+k12_plots[[5]] <- plot_fl(ebnmf_res_gb_k12_vartype0, L, "EBNMF (backfit, const)") 
+
+ebnmf_res_gb_k12_vartype2 <- run_greedy_backfit(Y, Kmax = 8, var_type = 2)
+k12_plots[[6]] <- plot_fl(ebnmf_res_gb_k12_vartype2, L, "EBNMF (backfit, colwise)") 
+
+ebnmf_res_alternating_k12_vartype0 <- run_alternating_gb(Y, Kmax = 8, var_type = 0)
+k12_plots[[7]] <- plot_fl(ebnmf_res_alternating_k12_vartype0, L, "EBNMF (alternating, const)") 
+
+ebnmf_res_alternating_k12_vartype2 <- run_alternating_gb(Y, Kmax = 8, var_type = 2)
+k12_plots[[8]] <- plot_fl(ebnmf_res_alternating_k12_vartype2, L, "EBNMF (alternating, colwise)") 
+```
+
+
+NMF and EBNMF, `K = 7`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k7_plots, nrow = 2, ncol = 4)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k7_vartype0$elbo, ebnmf_res_gb_k7_vartype0$elbo, ebnmf_res_alternating_k7_vartype0$elbo)
+```
+
+```{r}
+c(ebnmf_res_nmf_init_k7_vartype2$elbo, ebnmf_res_gb_k7_vartype2$elbo, ebnmf_res_alternating_k7_vartype2$elbo)
+```
+
+Sparse NMF, `K = 7`:
+
+```{r}
+sparse_nmf_k7_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario3_k=7_sW=0.", i, ".mat"))
+  sparse_nmf_k7_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k7_plots, nrow = 3, ncol = 3)
+```
+
+NMF and EBNMF, `K = 12`:
+
+```{r fig.height=6, fig.width=8}
+plot_grid(plotlist = k12_plots, nrow = 2, ncol = 4)
+```
+
+Compare ELBOs:
+
+```{r}
+c(ebnmf_res_nmf_init_k12_vartype2$elbo, ebnmf_res_gb_k12_vartype2$elbo, ebnmf_res_alternating_k12_vartype2$elbo)
+```
+
+Sparse NMF, `K = 12`:
+
+```{r}
+sparse_nmf_k12_plots <- list()
+for (i in 1:9) {
+  sparse_nmf <- readMat(paste0("matlab/simdata_scenario3_k=12_sW=0.", i, ".mat"))
+  sparse_nmf_k12_plots[[i]] <- plot_nmf(sparse_nmf, L, paste0("SpNMF (sW = 0.", i, ")"))
+}
+plot_grid(plotlist = sparse_nmf_k12_plots, nrow = 3, ncol = 3)
+```
+
+

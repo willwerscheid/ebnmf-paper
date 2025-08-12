@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
+
+
+<title>NMF analyses of simulated data</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ebnmf-paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/ebnmf-paper">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">NMF analyses of simulated data</h1>
+<h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-08-12
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has staged changes. To know which version of the
+R Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20231214code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20231214)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20231214code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20231214)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea17d689e4a793f3acfcd114d6d16f5d291b02390targetblanka17d689a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a17d689e4a793f3acfcd114d6d16f5d291b02390" target="_blank">a17d689</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreea17d689e4a793f3acfcd114d6d16f5d291b02390targetblanka17d689a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/a17d689e4a793f3acfcd114d6d16f5d291b02390" target="_blank">a17d689</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/lps_fail_fix_cache/
+
+Untracked files:
+    Untracked:  analysis/simdata3.Rmd
+    Untracked:  analysis/simdata6.Rmd
+    Untracked:  matlab/simdata3.m
+    Untracked:  matlab/simdata3.mat
+    Untracked:  matlab/simdata3_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata3_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata3_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario1.m
+    Untracked:  matlab/simdata_scenario1.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=4.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=4_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=8.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario2.asv
+    Untracked:  matlab/simdata_scenario2.m
+    Untracked:  matlab/simdata_scenario2.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario2_nmf_k=6.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario3.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.9.mat
+
+Unstaged changes:
+    Modified:   analysis/simdata2.Rmd
+    Modified:   analysis/simdata5.Rmd
+    Modified:   analysis/simdata7.Rmd
+    Modified:   matlab/simdata2.mat
+
+Staged changes:
+    New:        analysis/simulations.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<p>First, load the packages and some custom functions needed for the
+analyses below.</p>
+<pre class="r"><code>library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+library(fastTopics)
+source(&quot;code/swimmer_functions.R&quot;)</code></pre>
+<p>We will simulate three scenarios.</p>
+<p>Plotting functions:</p>
+<pre class="r"><code>align_cols &lt;- function(plotmat, refmat) {
+  if (ncol(refmat) &gt; ncol(plotmat)) {
+    refmat &lt;- refmat[, 1:ncol(plotmat)]
+  }
+  idx &lt;- rep(NA, ncol(plotmat))
+  cor_mat &lt;- cor(plotmat, refmat)
+  cor_which &lt;- apply(cor_mat, 1, which.max)
+  all_k &lt;- rev(order(apply(cor_mat, 1, max)))
+  for (k in all_k) {
+    next_idx &lt;- cor_which[k]
+    if (is.na(idx[next_idx])) {
+      idx[next_idx] &lt;- k
+    } 
+  }
+  idx[which(is.na(idx))] &lt;- setdiff(1:ncol(plotmat), idx)
+  return(idx)
+}
+
+do_structure_plot &lt;- function(LL, kset, title) {
+  structure_plot(LL[, kset], grouping = L_grps, gap = 20, 
+                 topics = rev(1:ncol(LL)), loadings_order = 1:sum(ns),
+                 colors = RColorBrewer::brewer.pal(12, &quot;Set3&quot;)) +
+    labs(y = &quot;&quot;) +
+    ggtitle(title) +
+    guides(fill = &quot;none&quot;, color = &quot;none&quot;) +
+    theme(axis.text.x = element_blank()) +
+    theme(axis.text.y = element_blank()) +
+    theme(plot.title.position = &quot;plot&quot;)
+}
+
+plot_fl &lt;- function(fl, refmat, title) {
+  LDF &lt;- ldf(fl, type = &quot;f&quot;)
+  LL &lt;- t(t(LDF$L) * LDF$D)
+  kset &lt;- align_cols(LL, refmat)
+  do_structure_plot(LL, kset, title)
+}
+
+plot_nmf &lt;- function(res, refmat, title) {
+  Wscale &lt;- sqrt(apply(res$W, 2, function(x) sum(x^2)))
+  Hscale &lt;- sqrt(apply(res$H, 1, function(x) sum(x^2)))
+  D &lt;- Wscale * Hscale
+  LL &lt;- t(t(res$W) / sqrt(Wscale) * sqrt(Hscale))
+  kset &lt;- align_cols(LL, refmat)
+  do_structure_plot(LL, kset, title)
+}</code></pre>
+<p>Fitting functions:</p>
+<pre class="r"><code>run_nmf &lt;- function(Y, k, ntrials = 10) {
+  best_mse &lt;- Inf
+  for (i in 1:ntrials) {
+    set.seed(i)
+    next_res &lt;- NNLM::nnmf(Y, k = k)
+    if (min(next_res$mse) &lt; best_mse) {
+      best_mse &lt;- min(next_res$mse)
+      best_res &lt;- next_res
+    }
+    return(best_res)
+  }
+}
+
+run_ebnmf_from_nmf &lt;- function(Y, nmf_res, var_type, maxiter = 2000) {
+  flash_init(Y, var_type = var_type) |&gt;
+    flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |&gt;
+    flash_backfit(maxiter = maxiter) |&gt;
+    flash_nullcheck()
+}
+
+run_greedy &lt;- function(Y, Kmax, var_type = 2) {
+  set.seed(1)
+  flash(Y, var_type = var_type, greedy_Kmax = Kmax, ebnm_fn = ebnm_point_exponential)
+}
+
+run_greedy_backfit &lt;- function(Y, Kmax, var_type = 2) {
+  run_greedy(Y, Kmax, var_type = var_type) |&gt;
+    flash_backfit() |&gt;
+    flash_nullcheck()
+}
+
+run_alternating_gb &lt;- function(Y, Kmax, var_type = 2) {
+  fl &lt;- flash_init(Y, var_type = var_type) |&gt;
+    flash_set_verbose()
+  keep_going &lt;- TRUE
+  while(keep_going) {
+    current_n &lt;- fl$n_factors
+    fl &lt;- fl |&gt;
+      flash_greedy(ebnm_fn = ebnm_point_exponential) |&gt;
+      flash_backfit(maxiter = 10)
+    if (fl$n_factors == current_n | fl$n_factors == Kmax) {
+      keep_going &lt;- FALSE
+    }
+  }
+  fl &lt;- fl |&gt;
+    flash_backfit() |&gt;
+    flash_nullcheck()
+  return(fl)
+}</code></pre>
+<div
+id="simulation-setting-1-fully-separated-topics-rare-population-poisson-noise"
+class="section level2">
+<h2>Simulation setting 1: fully-separated topics, rare population,
+Poisson noise</h2>
+<pre class="r"><code>ns &lt;- c(690, 250, 50, 10)
+p &lt;- 500
+k &lt;- 4
+
+# Loadings (document-topics):
+L &lt;- matrix(0, nrow = sum(ns), ncol = k)
+L[, 1] &lt;- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
+L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
+L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
+L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
+
+# Topics should be similar in magnitude:
+set.seed(1)
+F &lt;- matrix(rnorm(p * 4, mean = 50, sd = 10), nrow = p, ncol = 4)
+
+# Anchor words
+n_word_anchors &lt;- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] &lt;- 0
+}
+
+mu &lt;- L %*% t(F)
+Y &lt;- matrix(rpois(sum(ns) * p, mu), nrow = sum(ns), ncol = p)
+
+# Make sure there aren&#39;t any all-zero columns:
+F &lt;- F[apply(Y, 2, sum) &gt; 0, ]
+Y &lt;- Y[, apply(Y, 2, sum) &gt; 0]
+
+rownames(Y) &lt;- paste0(&quot;sample&quot;, 1:nrow(Y))
+colnames(Y) &lt;- paste0(&quot;feature&quot;, 1:ncol(Y))
+
+L_grps &lt;- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat(&quot;matlab/simdata_scenario1.mat&quot;, Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))</code></pre>
+<p>The “true” loadings matrix <span class="math inline">\(L\)</span>
+appears as follows:</p>
+<pre class="r"><code>k4_plots &lt;- list()
+k4_plots[[1]] &lt;- do_structure_plot(L, 1:4, &quot;True&quot;)
+k4_plots[[1]]</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Do fits:</p>
+<p>NMF and EBNMF, <code>K = 4</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k4_plots, nrow = 2, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k4$elbo, ebnmf_res_gb_k4$elbo, ebnmf_res_alternating_k4$elbo)
+# [1] -1684790 -1695109 -1684788</code></pre>
+<p>Sparse NMF, <code>K = 4</code>:</p>
+<pre class="r"><code>sparse_nmf_k4_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario1_k=4_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k4_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k4_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>NMF and EBNMF, <code>K = 8</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k8_plots, nrow = 2, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k8$elbo, ebnmf_res_gb_k8$elbo, ebnmf_res_alternating_k8$elbo)
+# [1] -1686787 -1695109 -1684788</code></pre>
+<p>Sparse NMF, <code>K = 8</code>:</p>
+<pre class="r"><code>sparse_nmf_k8_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario1_k=8_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k8_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k8_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
+</div>
+<div
+id="simulation-setting-2-shared-topics-varying-document-sizes-log1p-link"
+class="section level2">
+<h2>Simulation setting 2: shared topics, varying document sizes, log1p
+link</h2>
+<pre class="r"><code>ns &lt;- rep(250, 6)
+p &lt;- 500
+k &lt;- 3
+
+# Loadings (document-topics):
+L &lt;- matrix(0, nrow = sum(ns), ncol = k)
+L[, 1] &lt;- c(rep(1, ns[1]), rep(0, sum(ns[2:3])), rep(0.5, sum(ns[4:5])), rep(0, ns[6]))
+L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, ns[3]), rep(0.5, ns[4]), rep(0, ns[5]), rep(0.5, ns[6]))
+L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]), rep(0.5, sum(ns[5:6])))
+
+set.seed(1)
+F &lt;- matrix(rgamma(p * k, shape = 0.5, rate = 0.5), nrow = p, ncol = k)
+
+# Anchor words
+n_word_anchors &lt;- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] &lt;- 0
+}
+
+mu &lt;- L %*% t(F)
+X &lt;- matrix(rpois(sum(ns) * p, lambda = expm1(mu)), nrow = sum(ns), ncol = p)
+Y &lt;- log1p(X)
+
+# Make sure there aren&#39;t any all-zero columns:
+F &lt;- F[apply(Y, 2, sum) &gt; 0, ]
+Y &lt;- Y[, apply(Y, 2, sum) &gt; 0]
+
+rownames(Y) &lt;- paste0(&quot;sample&quot;, 1:nrow(Y))
+colnames(Y) &lt;- paste0(&quot;feature&quot;, 1:ncol(Y))
+
+L_grps &lt;- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat(&quot;matlab/simdata_scenario2.mat&quot;, Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))</code></pre>
+<p>The “true” loadings matrix <span class="math inline">\(L\)</span>
+appears as follows:</p>
+<pre class="r"><code>k3_plots &lt;- list()
+k3_plots[[1]] &lt;- do_structure_plot(L, 1:3, &quot;\&quot;True\&quot;&quot;)
+k3_plots[[1]]</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-13-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Do fits:</p>
+<p>NMF and EBNMF, <code>K = 3</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k3_plots, nrow = 2, ncol = 4)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-15-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k3_vartype0$elbo, ebnmf_res_gb_k3_vartype0$elbo, ebnmf_res_alternating_k3_vartype0$elbo)
+# [1] -322666.1 -322860.3 -322860.3</code></pre>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k3_vartype2$elbo, ebnmf_res_gb_k3_vartype2$elbo, ebnmf_res_alternating_k3_vartype2$elbo)
+# [1] -230069.4 -235504.6 -245251.8</code></pre>
+<p>Sparse NMF, <code>K = 3</code>:</p>
+<pre class="r"><code>sparse_nmf_k3_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario2_k=3_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k3_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k3_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-18-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>NMF and EBNMF, <code>K = 8</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k8_plots, nrow = 2, ncol = 4)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-19-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k8_vartype2$elbo, ebnmf_res_gb_k8_vartype2$elbo, ebnmf_res_alternating_k8_vartype2$elbo)
+# [1] -240537.7 -235504.6 -212593.7</code></pre>
+<p>Sparse NMF, <code>K = 8</code>:</p>
+<pre class="r"><code>sparse_nmf_k8_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario2_k=8_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k8_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k8_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-21-1.png" width="840" style="display: block; margin: auto;" /></p>
+</div>
+<div
+id="simulation-setting-3-hierarchical-relationships-rare-pure-populations"
+class="section level2">
+<h2>Simulation setting 3: hierarchical relationships, rare “pure”
+populations</h2>
+<pre class="r"><code>ns &lt;- c(rep(250, 4), rep(20, 7))
+p &lt;- 500
+k &lt;- 7
+
+# Loadings (document-topics):
+L &lt;- matrix(0, nrow = sum(ns), ncol = k)
+L[, 7] &lt;- c(rep(1/3, sum(ns[1:4])), rep(1, ns[5]), rep(0, sum(ns[6:11]))) # root
+L[, 5] &lt;- c(rep(1/3, sum(ns[1:2])), rep(0, sum(ns[3:5])), rep(1, ns[6]), rep(0, sum(ns[7:11]))) # branch 1
+L[, 6] &lt;- c(rep(0, sum(ns[1:2])), rep(1/3, sum(ns[3:4])), rep(0, sum(ns[5:6])), rep(1, ns[7]), rep(0, sum(ns[8:11]))) # branch 2
+L[, 1] &lt;- c(rep(1/3, ns[1]), rep(0, sum(ns[2:7])), rep(1, ns[8]), rep(0, sum(ns[9:11]))) # leaf 1
+L[, 2] &lt;- c(rep(0, ns[1]), rep(1/3, ns[2]), rep(0, sum(ns[3:8])), rep(1, ns[9]), rep(0, sum(ns[10:11]))) # leaf 2
+L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1/3, ns[3]), rep(0, sum(ns[4:9])), rep(1, ns[10]), rep(0, ns[11])) # leaf 3
+L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1/3, ns[4]), rep(0, sum(ns[5:10])), rep(1, ns[11])) # leaf 4
+
+set.seed(3)
+F &lt;- matrix(rgamma(p * k, shape = 0.4, rate = 0.4), nrow = p, ncol = k)
+
+# Anchor words
+n_word_anchors &lt;- 10
+for (i in 1:k) {
+  F[((i - 1) * n_word_anchors + 1):(i * n_word_anchors), setdiff(1:k, i)] &lt;- 0
+}
+
+mu &lt;- L %*% t(F)
+X &lt;- matrix(rpois(sum(ns) * p, lambda = expm1(mu)), nrow = sum(ns), ncol = p)
+Y &lt;- log1p(X)
+
+# Make sure there aren&#39;t any all-zero columns:
+F &lt;- F[apply(Y, 2, sum) &gt; 0, ]
+Y &lt;- Y[, apply(Y, 2, sum) &gt; 0]
+
+rownames(Y) &lt;- paste0(&quot;sample&quot;, 1:nrow(Y))
+colnames(Y) &lt;- paste0(&quot;feature&quot;, 1:ncol(Y))
+
+L_grps &lt;- rep(LETTERS[1:length(ns)], times = ns)
+
+writeMat(&quot;matlab/simdata_scenario3.mat&quot;, Y = matrix(as.double(Y), nrow = sum(ns), ncol = p))
+# Warning in matrix(as.double(Y), nrow = sum(ns), ncol = p): data length [568860]
+# is not a sub-multiple or multiple of the number of columns [500]</code></pre>
+<p>The “true” loadings matrix <span class="math inline">\(L\)</span>
+appears as follows:</p>
+<pre class="r"><code>k7_plots &lt;- list()
+k7_plots[[1]] &lt;- do_structure_plot(L, 1:7, &quot;\&quot;True\&quot;&quot;)
+k7_plots[[1]]</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-22-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Do fits:</p>
+<p>NMF and EBNMF, <code>K = 7</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k7_plots, nrow = 2, ncol = 4)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-24-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k7_vartype0$elbo, ebnmf_res_gb_k7_vartype0$elbo, ebnmf_res_alternating_k7_vartype0$elbo)
+# [1] -264968.5 -401794.5 -265547.9</code></pre>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k7_vartype2$elbo, ebnmf_res_gb_k7_vartype2$elbo, ebnmf_res_alternating_k7_vartype2$elbo)
+# [1] -187837.2 -187910.5 -188439.5</code></pre>
+<p>Sparse NMF, <code>K = 7</code>:</p>
+<pre class="r"><code>sparse_nmf_k7_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario3_k=7_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k7_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k7_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-27-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>NMF and EBNMF, <code>K = 12</code>:</p>
+<pre class="r"><code>plot_grid(plotlist = k12_plots, nrow = 2, ncol = 4)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-28-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Compare ELBOs:</p>
+<pre class="r"><code>c(ebnmf_res_nmf_init_k12_vartype2$elbo, ebnmf_res_gb_k12_vartype2$elbo, ebnmf_res_alternating_k12_vartype2$elbo)
+# [1] -156413.0 -187910.5 -168367.2</code></pre>
+<p>Sparse NMF, <code>K = 12</code>:</p>
+<pre class="r"><code>sparse_nmf_k12_plots &lt;- list()
+for (i in 1:9) {
+  sparse_nmf &lt;- readMat(paste0(&quot;matlab/simdata_scenario3_k=12_sW=0.&quot;, i, &quot;.mat&quot;))
+  sparse_nmf_k12_plots[[i]] &lt;- plot_nmf(sparse_nmf, L, paste0(&quot;SpNMF (sW = 0.&quot;, i, &quot;)&quot;))
+}
+plot_grid(plotlist = sparse_nmf_k12_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/simulations.Rmd/unnamed-chunk-30-1.png" width="840" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.5.1 (2025-06-13)
+# Platform: aarch64-apple-darwin20
+# Running under: macOS Sequoia 15.5
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/New_York
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+#  [1] fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34        cowplot_1.2.0     
+#  [5] ggplot2_3.5.2      tidyr_1.3.1        dplyr_1.1.4        tibble_3.3.0      
+#  [9] R.matlab_3.7.0     workflowr_1.7.1   
+# 
+# loaded via a namespace (and not attached):
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.2        
+#  [4] R.utils_2.13.0       fastmap_1.2.0        lazyeval_0.2.2      
+#  [7] promises_1.3.3       digest_0.6.37        lifecycle_1.0.4     
+# [10] processx_3.8.6       invgamma_1.2         magrittr_2.0.3      
+# [13] compiler_4.5.1       rlang_1.1.6          sass_0.4.10         
+# [16] progress_1.2.3       tools_4.5.1          yaml_2.3.10         
+# [19] data.table_1.17.8    knitr_1.50           labeling_0.4.3      
+# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
+# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
+# [28] purrr_1.1.0          R.oo_1.27.1          grid_4.5.1          
+# [31] git2r_0.36.2         colorspace_2.1-1     scales_1.4.0        
+# [34] gtools_3.9.5         cli_3.6.5            rmarkdown_2.29      
+# [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
+# [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
+# [43] cachem_1.1.0         stringr_1.5.1        splines_4.5.1       
+# [46] parallel_4.5.1       softImpute_1.4-3     vctrs_0.6.5         
+# [49] Matrix_1.7-3         jsonlite_2.0.0       callr_3.7.6         
+# [52] hms_1.1.3            mixsqp_0.3-54        ggrepel_0.9.6       
+# [55] irlba_2.3.5.1        horseshoe_0.2.0      trust_0.1-8         
+# [58] plotly_4.11.0        jquerylib_0.1.4      glue_1.8.0          
+# [61] ps_1.9.1             uwot_0.2.3           stringi_1.8.7       
+# [64] Polychrome_1.5.4     gtable_0.3.6         later_1.4.2         
+# [67] quadprog_1.5-8       NNLM_0.4.4           pillar_1.11.0       
+# [70] htmltools_0.5.8.1    truncnorm_1.0-9      R6_2.6.1            
+# [73] rprojroot_2.1.0      evaluate_1.0.4       lattice_0.22-7      
+# [76] R.methodsS3_1.8.2    RhpcBLASctl_0.23-42  SQUAREM_2021.1      
+# [79] ashr_2.2-63          httpuv_1.6.16        bslib_0.9.0         
+# [82] Rcpp_1.1.0           deconvolveR_1.2-1    whisker_0.4.1       
+# [85] xfun_0.52            fs_1.6.6             getPass_0.2-4       
+# [88] pkgconfig_2.0.3</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
