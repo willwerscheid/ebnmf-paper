@@ -439,15 +439,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebbe6d4aa616637ccc718e016921ae480c8600ea8targetblankbbe6d4aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4e7af00e394f8362407875c62f53b777608c5063targetblank4e7af00a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bbe6d4aa616637ccc718e016921ae480c8600ea8" target="_blank">bbe6d4a</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4e7af00e394f8362407875c62f53b777608c5063" target="_blank">4e7af00</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebbe6d4aa616637ccc718e016921ae480c8600ea8targetblankbbe6d4aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4e7af00e394f8362407875c62f53b777608c5063targetblank4e7af00a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -457,7 +457,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bbe6d4aa616637ccc718e016921ae480c8600ea8" target="_blank">bbe6d4a</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4e7af00e394f8362407875c62f53b777608c5063" target="_blank">4e7af00</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -612,6 +612,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/4e7af00e394f8362407875c62f53b777608c5063/analysis/sim_scenario1.Rmd" target="_blank">4e7af00</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/sim_scenario1.html" target="_blank">c5dbc64</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -950,7 +984,11 @@ remove this warning. See the
 </div>
 <div id="results-kmax-4" class="section level2">
 <h2>Results, Kmax = 4</h2>
-<p>Correlations for <code>L</code>:</p>
+<p>Correlations for <code>L</code>. Each row gives correlations for one
+true component (one “population”), with rows arranged according to the
+abundance of the population (in descending order). Individual tiles
+correspond to individual simulations (a single combination of gamma
+shape and rare population size):</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 4, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
   mutate(rare_n = factor(rare_n), 
          shape = factor(shape),
@@ -985,6 +1023,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">c5dbc64</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">8aded61</a>
@@ -1035,6 +1084,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">c5dbc64</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">8aded61</a>
@@ -1090,6 +1150,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">c5dbc64</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">8aded61</a>
 </td>
 <td>
@@ -1140,6 +1211,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">c5dbc64</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">8aded61</a>
 </td>
 <td>
@@ -1153,7 +1235,9 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Scale of redundant/noisy factors:</p>
+<p>Scale of redundant/noisy factors. If any exist, they are arranged in
+descending order, with the largest redundant/noisy factor appearing in
+the top row:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 8, str_starts(metric_type, &quot;Scale&quot;)) |&gt;
   mutate(rare_n = factor(rare_n), 
          shape = factor(shape),
