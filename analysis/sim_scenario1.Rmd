@@ -275,7 +275,7 @@ plot_df <- all_res |> filter(Kmax == 4, str_starts(metric_type, "LLcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "white", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
@@ -291,9 +291,9 @@ plot_df <- all_res |> filter(Kmax == 4, str_starts(metric_type, "FFcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "white", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
+  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -309,7 +309,7 @@ plot_df <- all_res |> filter(Kmax == 8, str_starts(metric_type, "LLcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "white", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
@@ -325,9 +325,9 @@ plot_df <- all_res |> filter(Kmax == 8, str_starts(metric_type, "FFcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "white", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
+  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
