@@ -265,7 +265,7 @@ for (rare_n in c(3, 5, 10, 15, 20, 30, 50)) {
 
 ## Results, Kmax = 4
 
-Correlations for `L`:
+Correlations for `L`. Each row gives correlations for one true component (one "population"), with rows arranged according to the abundance of the population (in descending order). Individual tiles correspond to individual simulations (a single combination of gamma shape and rare population size):
 
 ```{r}
 plot_df <- all_res |> filter(Kmax == 4, str_starts(metric_type, "LLcor")) |>
@@ -331,7 +331,7 @@ ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
-Scale of redundant/noisy factors:
+Scale of redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row:
 
 ```{r}
 plot_df <- all_res |> filter(Kmax == 8, str_starts(metric_type, "Scale")) |>
