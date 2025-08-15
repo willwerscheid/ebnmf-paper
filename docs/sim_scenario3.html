@@ -440,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9232e56ecf8199bf5c9ffd9c1b600b71168eda97targetblank9232e56a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree46ef6087ef4cca37c2c46ca9ebc57868bcd54c0btargetblank46ef608a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9232e56ecf8199bf5c9ffd9c1b600b71168eda97" target="_blank">9232e56</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/46ef6087ef4cca37c2c46ca9ebc57868bcd54c0b" target="_blank">46ef608</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree9232e56ecf8199bf5c9ffd9c1b600b71168eda97targetblank9232e56a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree46ef6087ef4cca37c2c46ca9ebc57868bcd54c0btargetblank46ef608a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -458,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/9232e56ecf8199bf5c9ffd9c1b600b71168eda97" target="_blank">9232e56</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/46ef6087ef4cca37c2c46ca9ebc57868bcd54c0b" target="_blank">46ef608</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -476,7 +476,6 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
     Ignored:    analysis/sim_scenario2_cache/
@@ -618,6 +617,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/46ef6087ef4cca37c2c46ca9ebc57868bcd54c0b/analysis/sim_scenario3.Rmd" target="_blank">46ef608</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario3.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/sim_scenario3.html" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -916,6 +949,43 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
 # Warning in scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, :
 # prob-logis transformation introduced infinite values.</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-5-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 7, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
   mutate(n_anchor_docs = factor(n_anchor_docs), 
@@ -926,12 +996,49 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
+  labs(x = &quot;Number of anchor documents&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))
 # Warning in qfun(x, ...): NaNs produced
 # Warning in scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, :
 # prob-logis transformation introduced infinite values.</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-6-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="results-kmax-12" class="section level2">
 <h2>Results, Kmax = 12</h2>
@@ -945,12 +1052,49 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
+  labs(x = &quot;Number of anchor documents&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
   theme(axis.text.x = element_text(angle = 45))
 # Warning in qfun(x, ...): NaNs produced
 # Warning in scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, :
 # prob-logis transformation introduced infinite values.</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-7-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 12, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
   mutate(n_anchor_docs = factor(n_anchor_docs), 
@@ -961,12 +1105,49 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
+  labs(x = &quot;Number of anchor documents&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))
 # Warning in qfun(x, ...): NaNs produced
 # Warning in scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, :
 # prob-logis transformation introduced infinite values.</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-8-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Scale of redundant/noisy factors. If any exist, they are arranged in
 descending order, with the largest redundant/noisy factor appearing in
 the top row:</p>
@@ -978,9 +1159,46 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;purple&quot;, na.value = &quot;white&quot;) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Scale&quot;) +
+  labs(x = &quot;Number of anchor documents&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Scale&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-9-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="time-elapsed" class="section level2">
 <h2>Time elapsed</h2>
@@ -993,9 +1211,46 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
   facet_grid(rows = vars(Kmax), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
+  labs(x = &quot;Number of anchor documents&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario3.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-10-1.png" target="_blank">14ce12d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
