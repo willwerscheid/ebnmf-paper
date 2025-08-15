@@ -12,7 +12,7 @@
 <meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
 
 
-<title>NMF analyses of simulated data</title>
+<title>NMF analyses of simulated data, Scenario 1</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -270,7 +270,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">NMF analyses of simulated data</h1>
+<h1 class="title toc-ignore">NMF analyses of simulated data, Scenario
+1</h1>
 <h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
 
 </div>
@@ -300,7 +301,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-14
+<strong>Last updated:</strong> 2025-08-15
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -439,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4e7af00e394f8362407875c62f53b777608c5063targetblank4e7af00a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6a08f4c51b9844d548d05a3d1f0ea7940dfb5288targetblank6a08f4ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4e7af00e394f8362407875c62f53b777608c5063" target="_blank">4e7af00</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288" target="_blank">6a08f4c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree4e7af00e394f8362407875c62f53b777608c5063targetblank4e7af00a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6a08f4c51b9844d548d05a3d1f0ea7940dfb5288targetblank6a08f4ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -457,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/4e7af00e394f8362407875c62f53b777608c5063" target="_blank">4e7af00</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288" target="_blank">6a08f4c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -477,6 +478,7 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
+    Ignored:    analysis/sim_scenario2_cache/
 
 Untracked files:
     Untracked:  analysis/simdata3.Rmd
@@ -612,6 +614,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288/analysis/sim_scenario1.Rmd" target="_blank">6a08f4c</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/917b6ad4f73e56b22464f281d9ffbd278cdfe272/docs/sim_scenario1.html" target="_blank">917b6ad</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -810,7 +846,7 @@ matrix to be <span class="math inline">\(Y = \log(X + 1)\)</span>.</p>
   L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
   
   set.seed(1)
-  F &lt;- matrix(rgamma(p * 4, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = 4)
+  F &lt;- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
   
   # Anchor words
   n_anchor_words &lt;- 10
