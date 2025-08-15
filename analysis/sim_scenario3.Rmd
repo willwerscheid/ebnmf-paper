@@ -270,7 +270,7 @@ ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
+  labs(x = "Number of anchor documents", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
