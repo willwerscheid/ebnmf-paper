@@ -440,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2c68db85ede3dab118010370f0f1647218722525targetblank2c68db8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebad95b52f3baa17fc03884a4d92f1562c1cacfb6targetblankbad95b5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2c68db85ede3dab118010370f0f1647218722525" target="_blank">2c68db8</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bad95b52f3baa17fc03884a4d92f1562c1cacfb6" target="_blank">bad95b5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree2c68db85ede3dab118010370f0f1647218722525targetblank2c68db8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreebad95b52f3baa17fc03884a4d92f1562c1cacfb6targetblankbad95b5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -458,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/2c68db85ede3dab118010370f0f1647218722525" target="_blank">2c68db8</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/bad95b52f3baa17fc03884a4d92f1562c1cacfb6" target="_blank">bad95b5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -617,6 +617,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bad95b52f3baa17fc03884a4d92f1562c1cacfb6/analysis/sim_scenario3.Rmd" target="_blank">bad95b5</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario3.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/414f10215c2f5f8e24fc7822e0f9c056430c8ccf/docs/sim_scenario3.html" target="_blank">414f102</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1041,6 +1075,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/414f10215c2f5f8e24fc7822e0f9c056430c8ccf/docs/figure/sim_scenario3.Rmd/unnamed-chunk-5-1.png" target="_blank">414f102</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/14ce12d6d98ac3b5b767f1a4c86fc767e1319394/docs/figure/sim_scenario3.Rmd/unnamed-chunk-5-1.png" target="_blank">14ce12d</a>
 </td>
 <td>
@@ -1256,7 +1301,7 @@ the top row:</p>
   mutate(n_anchor_docs = factor(n_anchor_docs, ), 
          shape = factor(shape),
          method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_type = factor(metric_type, levels = paste(&quot;Scale&quot;, 8:12)))
+  mutate(metric_type = factor(metric_type, levels = paste0(&quot;Scale&quot;, 8:12)))
 ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;purple&quot;, na.value = &quot;white&quot;) +
