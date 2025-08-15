@@ -326,7 +326,7 @@ ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
 Scale of redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row:
 
 ```{r}
-plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "Scale")) |>
+plot_df <- all_res |> filter(Kmax == 6, metric_type %in% paste0("Scale", 4:6)) |>
   mutate(shared_n = factor(shared_n), 
          shape = factor(shape),
          method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0")))
