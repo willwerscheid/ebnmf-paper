@@ -330,7 +330,8 @@ Scale of redundant/noisy factors. If any exist, they are arranged in descending 
 plot_df <- all_res |> filter(Kmax == 12, str_starts(metric_type, "Scale")) |>
   mutate(n_anchor_docs = factor(n_anchor_docs, ), 
          shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0")))
+         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
+  mutate(metric_type = factor(metric_type, levels = paste("Scale", 8:12)))
 ggplot(plot_df, aes(x = n_anchor_docs, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = "white", high = "purple", na.value = "white") +
