@@ -207,15 +207,15 @@ Run simulations. We consider results for when the true `K = 3` is given in advan
 all_res <- tibble()
 
 set.seed(1)
-for (shared_n in c(25, 50, 100, 250, 400, 450, 475)) {
-  for (shape in c(0.25, 0.33, 0.5, 0.75, 1, 2, 4)) {
-    cat("RARE N: ", shared_n, "SHAPE: ", shape, "\n")
+for (shared_n in c(25, 100, 250, 400, 475)) {
+  for (shape in c(1/2, 2/3, 3/4, 1, 2)) {
+    cat("SHARED N: ", shared_n, "SHAPE: ", shape, "\n")
     
     gamma_mean <- 1
     scale <- gamma_mean / shape 
     
-    ns <- c(rep(500 - shared_n, 3), rep(shared_n, 3))
-    p <- 500
+    ns <- c(rep(2000 - shared_n, 3), rep(shared_n, 3))
+    p <- 2000
     
     sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
     Y <- sim_dat$Y
@@ -260,6 +260,9 @@ for (shared_n in c(25, 50, 100, 250, 400, 450, 475)) {
 Correlations for `L`. Each row gives correlations for one true component (one "population"), with rows arranged according to the abundance of the population (in descending order). Individual tiles correspond to individual simulations (a single combination of gamma shape and shared population size):
 
 ```{r}
+low_color <- "white"
+high_color <- "blue"
+na_color <- "black"
 plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "LLcor")) |>
   mutate(shared_n = factor(shared_n), 
          shape = factor(shape),
@@ -267,7 +270,7 @@ plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "LLcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
@@ -283,9 +286,9 @@ plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "FFcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
+  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -301,9 +304,9 @@ plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "LLcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
+  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -317,9 +320,9 @@ plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "FFcor")) |>
   mutate(metric_val = pmin(metric_val, 0.9999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "red", high = "blue", na.value = "red", transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
+  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -329,12 +332,13 @@ Scale of redundant/noisy factors. If any exist, they are arranged in descending 
 plot_df <- all_res |> filter(Kmax == 6, metric_type %in% paste0("Scale", 4:6)) |>
   mutate(shared_n = factor(shared_n), 
          shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0")))
+         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
+  mutate(metric_val = pmax(metric_val, 0.00001))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "white", high = "purple", na.value = "white") +
+  scale_fill_gradient(low = "white", high = "red", na.value = "white", transform = "logit") +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Scale") +
+  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Scale") +
   theme(axis.text.x = element_text(angle = 45))
 ```
 
@@ -344,12 +348,12 @@ ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
 plot_df <- all_res |> filter(str_starts(metric_type, "t_elapsed")) |>
   mutate(shared_n = factor(shared_n), 
          shape = factor(shape),
-         Kmax = factor(Kmax),
+         Kmax = factor(paste0("Kmax = ", Kmax)),
          method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) 
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
   facet_grid(rows = vars(Kmax), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of rarest population", y = "Shape of gamma prior on factors", fill = "Time elapsed (s)") +
+  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Time elapsed (s)") +
   theme(axis.text.x = element_text(angle = 45))
 ```
