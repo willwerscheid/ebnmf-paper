@@ -171,7 +171,7 @@ calc_metrics <- function(res, sim_dat) {
     used_cols <- c(used_cols, colmax)
   }
   
-  # Metrics for 4-8 are the scales of these (redundant/noisy) components:
+  # Metrics for 4-6 are the scales of these (redundant/noisy) components:
   L_scales <- apply(LL, 2, function(x) sum(x^2))
   L_scales <- L_scales / sum(L_scales)
   unmatched_scales <- L_scales[-used_cols]
@@ -207,15 +207,15 @@ Run simulations. We consider results for when the true `K = 3` is given in advan
 all_res <- tibble()
 
 set.seed(1)
-for (shared_n in c(25, 100, 250, 400, 475)) {
+for (shared_n in c(25, 100, 500, 900, 975)) {
   for (shape in c(1/2, 2/3, 3/4, 1, 2)) {
     cat("SHARED N: ", shared_n, "SHAPE: ", shape, "\n")
     
     gamma_mean <- 1
     scale <- gamma_mean / shape 
     
-    ns <- c(rep(2000 - shared_n, 3), rep(shared_n, 3))
-    p <- 2000
+    ns <- c(rep(1000 - shared_n, 3), rep(shared_n, 3))
+    p <- 1000
     
     sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
     Y <- sim_dat$Y
@@ -257,7 +257,7 @@ for (shared_n in c(25, 100, 250, 400, 475)) {
 
 ## Results, Kmax = 3
 
-Correlations for `L`. Each row gives correlations for one true component (one "population"), with rows arranged according to the abundance of the population (in descending order). Individual tiles correspond to individual simulations (a single combination of gamma shape and shared population size):
+Correlations for `L`. Each row gives correlations for one true component or "topic." Individual tiles correspond to individual simulations (a single combination of gamma shape and shared population size):
 
 ```{r}
 low_color <- "white"
@@ -265,12 +265,13 @@ high_color <- "blue"
 na_color <- "black"
 plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "LLcor")) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
@@ -281,12 +282,13 @@ Correlations for `F`:
 ```{r}
 plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "FFcor")) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
@@ -299,12 +301,13 @@ Correlations for `L`:
 ```{r}
 plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "LLcor")) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
   theme(axis.text.x = element_text(angle = 45))
@@ -315,12 +318,13 @@ Correlations for `F`:
 ```{r}
 plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "FFcor")) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit") +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
   theme(axis.text.x = element_text(angle = 45))
@@ -331,12 +335,13 @@ Scale of redundant/noisy factors. If any exist, they are arranged in descending 
 ```{r}
 plot_df <- all_res |> filter(Kmax == 6, metric_type %in% paste0("Scale", 4:6)) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) |>
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
   mutate(metric_val = pmax(metric_val, 0.00001))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = "white", high = "red", na.value = "white", transform = "logit") +
+  scale_fill_gradient(low = "white", high = "red", na.value = "white", transform = "logit",
+                      breaks = c(.0001, .001, .01, .1)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
   labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Scale") +
   theme(axis.text.x = element_text(angle = 45))
@@ -347,9 +352,9 @@ ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
 ```{r}
 plot_df <- all_res |> filter(str_starts(metric_type, "t_elapsed")) |>
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
+         shape = factor(round(shape, 2)),
          Kmax = factor(paste0("Kmax = ", Kmax)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF2", "NMF-EBNMF0", "EBNMF2", "EBNMF0"))) 
+         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) 
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
