@@ -301,7 +301,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-18
+<strong>Last updated:</strong> 2025-08-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -440,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeca1e6fd45fd7b2bcf863414c210b4aaec40a5a81targetblankca1e6fda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree40f58ef3daf2ba4281b6a0298a785da1b973c4b8targetblank40f58efa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ca1e6fd45fd7b2bcf863414c210b4aaec40a5a81" target="_blank">ca1e6fd</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/40f58ef3daf2ba4281b6a0298a785da1b973c4b8" target="_blank">40f58ef</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreeca1e6fd45fd7b2bcf863414c210b4aaec40a5a81targetblankca1e6fda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree40f58ef3daf2ba4281b6a0298a785da1b973c4b8targetblank40f58efa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -458,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/ca1e6fd45fd7b2bcf863414c210b4aaec40a5a81" target="_blank">ca1e6fd</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/40f58ef3daf2ba4281b6a0298a785da1b973c4b8" target="_blank">40f58ef</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -616,6 +616,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f58ef3daf2ba4281b6a0298a785da1b973c4b8/analysis/sim_scenario2.Rmd" target="_blank">40f58ef</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-19
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario2.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/sim_scenario2.html" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -898,7 +932,7 @@ function are as in the previous analysis.</p>
     used_cols &lt;- c(used_cols, colmax)
   }
   
-  # Metrics for 4-8 are the scales of these (redundant/noisy) components:
+  # Metrics for 4-6 are the scales of these (redundant/noisy) components:
   L_scales &lt;- apply(LL, 2, function(x) sum(x^2))
   L_scales &lt;- L_scales / sum(L_scales)
   unmatched_scales &lt;- L_scales[-used_cols]
@@ -932,15 +966,15 @@ next_tib &lt;- function(shape, ns, method, Kmax, res, sim_dat) {
 <pre class="r"><code>all_res &lt;- tibble()
 
 set.seed(1)
-for (shared_n in c(25, 100, 250, 400, 475)) {
+for (shared_n in c(25, 100, 500, 900, 975)) {
   for (shape in c(1/2, 2/3, 3/4, 1, 2)) {
     cat(&quot;SHARED N: &quot;, shared_n, &quot;SHAPE: &quot;, shape, &quot;\n&quot;)
     
     gamma_mean &lt;- 1
     scale &lt;- gamma_mean / shape 
     
-    ns &lt;- c(rep(2000 - shared_n, 3), rep(shared_n, 3))
-    p &lt;- 2000
+    ns &lt;- c(rep(1000 - shared_n, 3), rep(shared_n, 3))
+    p &lt;- 1000
     
     sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
     Y &lt;- sim_dat$Y
@@ -995,21 +1029,21 @@ remove this warning. See the
 <div id="results-kmax-3" class="section level2">
 <h2>Results, Kmax = 3</h2>
 <p>Correlations for <code>L</code>. Each row gives correlations for one
-true component (one “population”), with rows arranged according to the
-abundance of the population (in descending order). Individual tiles
-correspond to individual simulations (a single combination of gamma
-shape and shared population size):</p>
+true component or “topic.” Individual tiles correspond to individual
+simulations (a single combination of gamma shape and shared population
+size):</p>
 <pre class="r"><code>low_color &lt;- &quot;white&quot;
 high_color &lt;- &quot;blue&quot;
 na_color &lt;- &quot;black&quot;
 plot_df &lt;- all_res |&gt; filter(Kmax == 3, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
   labs(x = &quot;Size of shared populations&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
@@ -1038,6 +1072,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">9b0074e</a>
 </td>
 <td>
@@ -1054,12 +1099,13 @@ Jason Willwerscheid
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 3, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
   labs(x = &quot;Size of shared populations&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
@@ -1088,6 +1134,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-6-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-6-1.png" target="_blank">9b0074e</a>
 </td>
 <td>
@@ -1107,12 +1164,13 @@ Jason Willwerscheid
 <p>Correlations for <code>L</code>:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 6, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
   labs(x = &quot;Size of shared populations&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
@@ -1141,6 +1199,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-7-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-7-1.png" target="_blank">9b0074e</a>
 </td>
 <td>
@@ -1157,12 +1226,13 @@ Jason Willwerscheid
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 6, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
   labs(x = &quot;Size of shared populations&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
@@ -1191,6 +1261,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-8-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-8-1.png" target="_blank">9b0074e</a>
 </td>
 <td>
@@ -1209,12 +1290,13 @@ descending order, with the largest redundant/noisy factor appearing in
 the top row:</p>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 6, metric_type %in% paste0(&quot;Scale&quot;, 4:6)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
   mutate(metric_val = pmax(metric_val, 0.00001))
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;, na.value = &quot;white&quot;, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;, na.value = &quot;white&quot;, transform = &quot;logit&quot;,
+                      breaks = c(.0001, .001, .01, .1)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
   labs(x = &quot;Size of shared populations&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Scale&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
@@ -1241,6 +1323,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-9-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/e310652c039e5445ecd1d0695d9d0b9edcd4d4fe/docs/figure/sim_scenario2.Rmd/unnamed-chunk-9-1.png" target="_blank">e310652</a>
@@ -1272,9 +1365,9 @@ Jason Willwerscheid
 <h2>Time elapsed</h2>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(str_starts(metric_type, &quot;t_elapsed&quot;)) |&gt;
   mutate(shared_n = factor(shared_n), 
-         shape = factor(shape),
+         shape = factor(round(shape, 2)),
          Kmax = factor(paste0(&quot;Kmax = &quot;, Kmax)),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) 
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) 
 ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
@@ -1304,6 +1397,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">9b0074e</a>
@@ -1357,30 +1461,29 @@ Session information
 # [10] processx_3.8.6       invgamma_1.2         magrittr_2.0.3      
 # [13] compiler_4.5.1       rlang_1.1.6          sass_0.4.10         
 # [16] progress_1.2.3       tools_4.5.1          yaml_2.3.10         
-# [19] data.table_1.17.8    knitr_1.50           labeling_0.4.3      
-# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
-# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
-# [28] purrr_1.1.0          R.oo_1.27.1          grid_4.5.1          
-# [31] git2r_0.36.2         colorspace_2.1-1     scales_1.4.0        
-# [34] gtools_3.9.5         cli_3.6.5            rmarkdown_2.29      
-# [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
-# [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
-# [43] cachem_1.1.0         splines_4.5.1        parallel_4.5.1      
-# [46] softImpute_1.4-3     vctrs_0.6.5          Matrix_1.7-3        
-# [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
-# [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
-# [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
-# [58] jquerylib_0.1.4      glue_1.8.0           codetools_0.2-20    
-# [61] ps_1.9.1             uwot_0.2.3           stringi_1.8.7       
-# [64] Polychrome_1.5.4     gtable_0.3.6         later_1.4.2         
-# [67] quadprog_1.5-8       NNLM_0.4.4           pillar_1.11.0       
-# [70] htmltools_0.5.8.1    truncnorm_1.0-9      R6_2.6.1            
-# [73] rprojroot_2.1.0      evaluate_1.0.4       lattice_0.22-7      
-# [76] R.methodsS3_1.8.2    RhpcBLASctl_0.23-42  SQUAREM_2021.1      
-# [79] ashr_2.2-63          httpuv_1.6.16        bslib_0.9.0         
-# [82] Rcpp_1.1.0           deconvolveR_1.2-1    whisker_0.4.1       
-# [85] xfun_0.52            fs_1.6.6             getPass_0.2-4       
-# [88] pkgconfig_2.0.3</code></pre>
+# [19] data.table_1.17.8    knitr_1.50           prettyunits_1.2.0   
+# [22] htmlwidgets_1.6.4    scatterplot3d_0.3-44 RColorBrewer_1.1-3  
+# [25] Rtsne_0.17           withr_3.0.2          purrr_1.1.0         
+# [28] R.oo_1.27.1          grid_4.5.1           git2r_0.36.2        
+# [31] colorspace_2.1-1     scales_1.4.0         gtools_3.9.5        
+# [34] cli_3.6.5            rmarkdown_2.29       crayon_1.5.3        
+# [37] generics_0.1.4       RcppParallel_5.1.10  rstudioapi_0.17.1   
+# [40] httr_1.4.7           pbapply_1.7-2        cachem_1.1.0        
+# [43] splines_4.5.1        parallel_4.5.1       softImpute_1.4-3    
+# [46] vctrs_0.6.5          Matrix_1.7-3         jsonlite_2.0.0      
+# [49] callr_3.7.6          hms_1.1.3            mixsqp_0.3-54       
+# [52] ggrepel_0.9.6        irlba_2.3.5.1        horseshoe_0.2.0     
+# [55] trust_0.1-8          plotly_4.11.0        jquerylib_0.1.4     
+# [58] glue_1.8.0           ps_1.9.1             uwot_0.2.3          
+# [61] stringi_1.8.7        Polychrome_1.5.4     gtable_0.3.6        
+# [64] later_1.4.2          quadprog_1.5-8       pillar_1.11.0       
+# [67] htmltools_0.5.8.1    truncnorm_1.0-9      R6_2.6.1            
+# [70] rprojroot_2.1.0      evaluate_1.0.4       lattice_0.22-7      
+# [73] R.methodsS3_1.8.2    RhpcBLASctl_0.23-42  SQUAREM_2021.1      
+# [76] ashr_2.2-63          httpuv_1.6.16        bslib_0.9.0         
+# [79] Rcpp_1.1.0           deconvolveR_1.2-1    whisker_0.4.1       
+# [82] xfun_0.52            fs_1.6.6             getPass_0.2-4       
+# [85] pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 </div>
