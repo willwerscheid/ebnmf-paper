@@ -301,7 +301,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-15
+<strong>Last updated:</strong> 2025-08-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -440,15 +440,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6a08f4c51b9844d548d05a3d1f0ea7940dfb5288targetblank6a08f4ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree26d905dbcfb51ad1629362dff30cb808711ede25targetblank26d905da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288" target="_blank">6a08f4c</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/26d905dbcfb51ad1629362dff30cb808711ede25" target="_blank">26d905d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6a08f4c51b9844d548d05a3d1f0ea7940dfb5288targetblank6a08f4ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree26d905dbcfb51ad1629362dff30cb808711ede25targetblank26d905da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -458,7 +458,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288" target="_blank">6a08f4c</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/26d905dbcfb51ad1629362dff30cb808711ede25" target="_blank">26d905d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -479,6 +479,7 @@ Ignored files:
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
     Ignored:    analysis/sim_scenario2_cache/
+    Ignored:    analysis/sim_scenario3_cache/
 
 Untracked files:
     Untracked:  analysis/simdata3.Rmd
@@ -614,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/26d905dbcfb51ad1629362dff30cb808711ede25/analysis/sim_scenario1.Rmd" target="_blank">26d905d</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-19
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/e2631ba8f9628d85934c887528941c70687c4f7c/docs/sim_scenario1.html" target="_blank">e2631ba</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -823,20 +858,24 @@ run_alternating_gb &lt;- function(Y, Kmax, var_type = 2) {
 }</code></pre>
 <p>In this analysis we consider the “fully-separated topics” scenario.
 Here there are four populations of varying abundance; the most abundant
-population is of size 700, while the rarest population ranges from 3 to
-50 individuals. The <code>L</code> matrix codes population memberships.
-The factors <code>F</code> are randomly generated from a Gamma
-distribution with mean 1, where the shape of the distribution ranges
-from 0.25 (so that counts vary widely across columns) to 4 (similar
-counts across columns). For separability in the <code>K = 4</code> case,
-we create 10 “anchor words” for each topic. Finally, we use a log1p link
-function in the sense that we simulate counts <span
-class="math inline">\(X\)</span> as Poisson(<span
+population is of size 1150 to 1197, while the rarest population ranges
+from 3 to 50 individuals. The <code>L</code> matrix codes population
+memberships. The factors <code>F</code> are randomly generated from a
+Gamma distribution with mean 1, where the shape of the distribution
+ranges from 0.5 (so that counts vary widely across columns) to 2
+(similar counts across columns). For separability in the
+<code>K = 4</code> case, we create 10 “anchor words” for each topic.
+Finally, we use a log1p link function in the sense that we simulate
+counts <span class="math inline">\(X\)</span> as Poisson(<span
 class="math inline">\(e^\mu - 1\)</span>), where <span
 class="math inline">\(\mu = LF&#39;\)</span>, and then take the data
 matrix to be <span class="math inline">\(Y = \log(X + 1)\)</span>.</p>
-<pre class="r"><code>sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link = &quot;log1p&quot;) {
-  k &lt;- 4
+<pre class="r"><code>trueK &lt;- 4 
+highK &lt;- 8 
+n_anchor_words &lt;- 10
+
+sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link = &quot;log1p&quot;) {
+  k &lt;- trueK
   
   # Loadings (document-topics):
   L &lt;- matrix(0, nrow = sum(ns), ncol = k)
@@ -849,7 +888,6 @@ matrix to be <span class="math inline">\(Y = \log(X + 1)\)</span>.</p>
   F &lt;- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
   
   # Anchor words
-  n_anchor_words &lt;- 10
   for (i in 1:k) {
     F[((i - 1) * n_anchor_words + 1):(i * n_anchor_words), setdiff(1:k, i)] &lt;- 0
   }
@@ -907,12 +945,12 @@ portion of the fit only.</strong></li>
     FF &lt;- t(fit$H / sqrt(Hscale) * sqrt(Wscale))
   }
   
-  # Metrics for components 1-4 are correlations:
-  LL_cors &lt;- FF_cors &lt;- rep(NA, ncol(sim_dat$L))
+  # Metrics for components 1-K are correlations with true factors:
+  LL_cors &lt;- FF_cors &lt;- rep(NA, trueK)
   used_cols &lt;- numeric(0)
   LL_cormat &lt;- cor(sim_dat$L, LL)
   FF_cormat &lt;- cor(sim_dat$F, FF)
-  for (i in 1:min(ncol(sim_dat$L), ncol(LL))) {
+  for (i in 1:min(trueK, ncol(LL))) {
     rowmax &lt;- which.max(apply(abs(LL_cormat), 1, max))
     colmax &lt;- which.max(apply(abs(LL_cormat), 2, max))
     LL_cors[rowmax] &lt;- LL_cormat[rowmax, colmax]
@@ -922,18 +960,18 @@ portion of the fit only.</strong></li>
     used_cols &lt;- c(used_cols, colmax)
   }
   
-  # Metrics for 5-8 are the scales of these (redundant/noisy) components:
+  # Metrics for remaining are the scales of these (redundant/noisy) components:
   L_scales &lt;- apply(LL, 2, function(x) sum(x^2))
   L_scales &lt;- L_scales / sum(L_scales)
   unmatched_scales &lt;- L_scales[-used_cols]
   unmatched_scales &lt;- sort(unmatched_scales, decreasing = TRUE)
-  unmatched_scales &lt;- c(unmatched_scales, rep(NA, 4 - length(unmatched_scales)))
+  unmatched_scales &lt;- c(unmatched_scales, rep(NA, highK - trueK - length(unmatched_scales)))
 
   all_metrics &lt;- c(LL_cors, FF_cors, unmatched_scales)
   names(all_metrics) &lt;- c(
-    paste0(&quot;LLcor&quot;, 1:4),
-    paste0(&quot;FFcor&quot;, 1:4),
-    paste0(&quot;Scale&quot;, 5:8)
+    paste0(&quot;LLcor&quot;, 1:trueK),
+    paste0(&quot;FFcor&quot;, 1:trueK),
+    paste0(&quot;Scale&quot;, (trueK + 1):highK)
   ) 
   
   return(all_metrics)
@@ -944,7 +982,7 @@ next_tib &lt;- function(shape, ns, method, Kmax, res, sim_dat) {
   return(tibble(
     method = method,
     Kmax = Kmax,
-    rare_n = ns[4],
+    varied_n = ns[4],
     shape = shape,
     metric_type = c(&quot;t_elapsed&quot;, names(metrics)),
     metric_val = c(res$t[3], metrics)
@@ -958,50 +996,50 @@ can be less than <code>Kmax</code>:</p>
 <pre class="r"><code>all_res &lt;- tibble()
 
 set.seed(1)
-for (rare_n in c(3, 5, 10, 15, 20, 30, 50)) {
-  for (shape in c(0.25, 0.33, 0.5, 0.75, 1, 2, 4)) {
-    cat(&quot;RARE N: &quot;, rare_n, &quot;SHAPE: &quot;, shape, &quot;\n&quot;)
+for (varied_n in  c(3, 5, 10, 20, 50)) { 
+  for (shape in c(1/2, 2/3, 3/4, 1, 2)) { 
+    cat(&quot;RARE N: &quot;, varied_n, &quot;SHAPE: &quot;, shape, &quot;\n&quot;)
     
     gamma_mean &lt;- 1
     scale &lt;- gamma_mean / shape 
     
-    ns &lt;- c(700 - rare_n, 250, 50, rare_n)
-    p &lt;- 500
+    ns &lt;- c(1200 - varied_n, 250, 50, varied_n)
+    p &lt;- 1000
     
     sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
     Y &lt;- sim_dat$Y
     
-    nmf_res_k4 &lt;- run_nmf(Y, k = 4)
+    nmf_res_trueK &lt;- run_nmf(Y, k = trueK)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, 4, nmf_res_k4, sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, trueK, nmf_res_trueK, sim_dat))
     
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF0&quot;, 4, run_ebnmf_from_nmf(Y, nmf_res_k4$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF0&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 0), sim_dat))
     
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF2&quot;, 4, run_ebnmf_from_nmf(Y, nmf_res_k4$fit, var_type = 2), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF2&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 2), sim_dat))
 
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMF0&quot;, 4, run_alternating_gb(Y, Kmax = 4, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;EBNMF0&quot;, trueK, run_alternating_gb(Y, Kmax = trueK, var_type = 0), sim_dat))
 
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMF2&quot;, 4, run_alternating_gb(Y, Kmax = 4, var_type = 2), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;EBNMF2&quot;, trueK, run_alternating_gb(Y, Kmax = trueK, var_type = 2), sim_dat))
     
-    nmf_res_k8 &lt;- run_nmf(Y, k = 8)
+    nmf_res_highK &lt;- run_nmf(Y, k = highK)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, 8, nmf_res_k8, sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF0&quot;, 8, run_ebnmf_from_nmf(Y, nmf_res_k8$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, highK, nmf_res_highK, sim_dat))
     
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF2&quot;, 8, run_ebnmf_from_nmf(Y, nmf_res_k8$fit, var_type = 2), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF0&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 0), sim_dat))
+    
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(shape, ns, &quot;NMF-EBNMF2&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 2), sim_dat))
 
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMF0&quot;, 8, run_alternating_gb(Y, Kmax = 8, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;EBNMF0&quot;, highK, run_alternating_gb(Y, Kmax = highK, var_type = 0), sim_dat))
 
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMF2&quot;, 8, run_alternating_gb(Y, Kmax = 8, var_type = 2), sim_dat))
+      bind_rows(next_tib(shape, ns, &quot;EBNMF2&quot;, highK, run_alternating_gb(Y, Kmax = highK, var_type = 2), sim_dat))
   }
 }</code></pre>
 <div class="alert alert-warning">
@@ -1025,16 +1063,21 @@ true component (one “population”), with rows arranged according to the
 abundance of the population (in descending order). Individual tiles
 correspond to individual simulations (a single combination of gamma
 shape and rare population size):</p>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 4, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+<pre class="r"><code>low_color &lt;- &quot;white&quot;
+high_color &lt;- &quot;blue&quot;
+na_color &lt;- &quot;black&quot;
+xlabel &lt;- &quot;Size of rarest population&quot;
+plot_df &lt;- all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1086,16 +1129,17 @@ Jason Willwerscheid
 </div>
 </div>
 <p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 4, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1150,16 +1194,17 @@ Jason Willwerscheid
 <div id="results-kmax-8" class="section level2">
 <h2>Results, Kmax = 8</h2>
 <p>Correlations for <code>L</code>:</p>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 8, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;LLcor&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true L&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1211,16 +1256,17 @@ Jason Willwerscheid
 </div>
 </div>
 <p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 8, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) |&gt;
-  mutate(metric_val = pmin(metric_val, 0.9999))
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;FFcor&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmin(metric_val, 0.99999))
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;red&quot;, high = &quot;blue&quot;, na.value = &quot;red&quot;, transform = &quot;logit&quot;) +
+  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = &quot;logit&quot;,
+                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Cor. w/ true F&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1274,15 +1320,17 @@ Jason Willwerscheid
 <p>Scale of redundant/noisy factors. If any exist, they are arranged in
 descending order, with the largest redundant/noisy factor appearing in
 the top row:</p>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == 8, str_starts(metric_type, &quot;Scale&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;)))
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) |&gt;
+  mutate(metric_val = pmax(metric_val, 0.00001))
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;purple&quot;, na.value = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;, na.value = &quot;white&quot;, transform = &quot;logit&quot;,
+                      breaks = c(.0001, .001, .01, .1)) +
   facet_grid(rows = vars(metric_type), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Scale&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Scale&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1326,15 +1374,15 @@ Jason Willwerscheid
 <div id="time-elapsed" class="section level2">
 <h2>Time elapsed</h2>
 <pre class="r"><code>plot_df &lt;- all_res |&gt; filter(str_starts(metric_type, &quot;t_elapsed&quot;)) |&gt;
-  mutate(rare_n = factor(rare_n), 
-         shape = factor(shape),
-         Kmax = factor(Kmax),
-         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF2&quot;, &quot;NMF-EBNMF0&quot;, &quot;EBNMF2&quot;, &quot;EBNMF0&quot;))) 
-ggplot(plot_df, aes(x = rare_n, y = shape, fill = metric_val)) +
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         Kmax = factor(paste0(&quot;Kmax = &quot;, Kmax)),
+         method = factor(method, levels = c(&quot;NMF&quot;, &quot;NMF-EBNMF0&quot;, &quot;NMF-EBNMF2&quot;, &quot;EBNMF0&quot;, &quot;EBNMF2&quot;))) 
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
   facet_grid(rows = vars(Kmax), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = &quot;Size of rarest population&quot;, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
@@ -1412,29 +1460,29 @@ Session information
 # [10] processx_3.8.6       invgamma_1.2         magrittr_2.0.3      
 # [13] compiler_4.5.1       rlang_1.1.6          sass_0.4.10         
 # [16] progress_1.2.3       tools_4.5.1          yaml_2.3.10         
-# [19] data.table_1.17.8    knitr_1.50           labeling_0.4.3      
-# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
-# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
-# [28] purrr_1.1.0          R.oo_1.27.1          grid_4.5.1          
-# [31] git2r_0.36.2         colorspace_2.1-1     scales_1.4.0        
-# [34] gtools_3.9.5         cli_3.6.5            rmarkdown_2.29      
-# [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
-# [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
-# [43] cachem_1.1.0         splines_4.5.1        parallel_4.5.1      
-# [46] softImpute_1.4-3     vctrs_0.6.5          Matrix_1.7-3        
-# [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
-# [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
-# [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
-# [58] jquerylib_0.1.4      glue_1.8.0           ps_1.9.1            
-# [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
-# [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
-# [67] pillar_1.11.0        htmltools_0.5.8.1    truncnorm_1.0-9     
-# [70] R6_2.6.1             rprojroot_2.1.0      evaluate_1.0.4      
-# [73] lattice_0.22-7       R.methodsS3_1.8.2    RhpcBLASctl_0.23-42 
-# [76] SQUAREM_2021.1       ashr_2.2-63          httpuv_1.6.16       
-# [79] bslib_0.9.0          Rcpp_1.1.0           deconvolveR_1.2-1   
-# [82] whisker_0.4.1        xfun_0.52            fs_1.6.6            
-# [85] getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+# [19] data.table_1.17.8    knitr_1.50           prettyunits_1.2.0   
+# [22] htmlwidgets_1.6.4    scatterplot3d_0.3-44 RColorBrewer_1.1-3  
+# [25] Rtsne_0.17           withr_3.0.2          purrr_1.1.0         
+# [28] R.oo_1.27.1          grid_4.5.1           git2r_0.36.2        
+# [31] colorspace_2.1-1     scales_1.4.0         gtools_3.9.5        
+# [34] cli_3.6.5            rmarkdown_2.29       crayon_1.5.3        
+# [37] generics_0.1.4       RcppParallel_5.1.10  rstudioapi_0.17.1   
+# [40] httr_1.4.7           pbapply_1.7-2        cachem_1.1.0        
+# [43] splines_4.5.1        parallel_4.5.1       softImpute_1.4-3    
+# [46] vctrs_0.6.5          Matrix_1.7-3         jsonlite_2.0.0      
+# [49] callr_3.7.6          hms_1.1.3            mixsqp_0.3-54       
+# [52] ggrepel_0.9.6        irlba_2.3.5.1        horseshoe_0.2.0     
+# [55] trust_0.1-8          plotly_4.11.0        jquerylib_0.1.4     
+# [58] glue_1.8.0           ps_1.9.1             uwot_0.2.3          
+# [61] stringi_1.8.7        Polychrome_1.5.4     gtable_0.3.6        
+# [64] later_1.4.2          quadprog_1.5-8       pillar_1.11.0       
+# [67] htmltools_0.5.8.1    truncnorm_1.0-9      R6_2.6.1            
+# [70] rprojroot_2.1.0      evaluate_1.0.4       lattice_0.22-7      
+# [73] R.methodsS3_1.8.2    RhpcBLASctl_0.23-42  SQUAREM_2021.1      
+# [76] ashr_2.2-63          httpuv_1.6.16        bslib_0.9.0         
+# [79] Rcpp_1.1.0           deconvolveR_1.2-1    whisker_0.4.1       
+# [82] xfun_0.52            fs_1.6.6             getPass_0.2-4       
+# [85] pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 </div>
