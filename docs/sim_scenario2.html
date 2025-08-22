@@ -525,15 +525,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree29d30a7e697dc5b58682bdf72917e80d804bd134targetblank29d30a7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6768bba4cc98a339549cd752b1558324d44af3e7targetblank6768bbaa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/29d30a7e697dc5b58682bdf72917e80d804bd134" target="_blank">29d30a7</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6768bba4cc98a339549cd752b1558324d44af3e7" target="_blank">6768bba</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree29d30a7e697dc5b58682bdf72917e80d804bd134targetblank29d30a7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6768bba4cc98a339549cd752b1558324d44af3e7targetblank6768bbaa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +543,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/29d30a7e697dc5b58682bdf72917e80d804bd134" target="_blank">29d30a7</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6768bba4cc98a339549cd752b1558324d44af3e7" target="_blank">6768bba</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -701,6 +701,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6768bba4cc98a339549cd752b1558324d44af3e7/analysis/sim_scenario2.Rmd" target="_blank">6768bba</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario2.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/sim_scenario2.html" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -939,7 +973,6 @@ sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, li
   F &lt;- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
   
   # Anchor words
-  n_anchor_words &lt;- 10
   for (i in 1:k) {
     F[((i - 1) * n_anchor_words + 1):(i * n_anchor_words), setdiff(1:k, i)] &lt;- 0
   }
@@ -1052,9 +1085,83 @@ size):</p>
 xlabel &lt;- &quot;Size of shared population&quot;
 make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-3-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-4-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="comments-kmax-3" class="section level2">
 <h2>Comments, Kmax = 3</h2>
@@ -1130,6 +1237,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-6-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-6-1.png" target="_blank">384778f</a>
 </td>
 <td>
@@ -1203,6 +1321,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-7-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-7-1.png" target="_blank">384778f</a>
 </td>
 <td>
@@ -1263,6 +1392,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-8-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-8-1.png" target="_blank">384778f</a>
@@ -1327,6 +1467,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-9-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-9-1.png" target="_blank">384778f</a>
@@ -1431,6 +1582,43 @@ ex_plots_k6[[6]] &lt;- plot_fl(ebnmf_res_alt2_k6$fit, sim_dat$L, &quot;EBNMF (al
 
 plot_grid(plotlist = ex_plots_k6, nrow = 3, ncol = 2)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-11-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The story is again similar to the previous analysis: although EBNMF
 with an NMF initialization is a clear improvement over vanilla NMF,
 alternating EBNMF gives an even cleaner representation, with the
@@ -1451,6 +1639,43 @@ ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-12-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div id="comments-overall" class="section level3">
 <h3>Comments, overall</h3>
 <p>As in the previous analysis, I think that columnwise-variance
