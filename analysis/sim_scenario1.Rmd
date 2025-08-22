@@ -188,6 +188,7 @@ Correlations for `F`:
 ```{r}
 make_corplot(all_res |> filter(Kmax == trueK, str_starts(metric_type, "FFcor")), "Cor. w/ true F")
 ```
+
 ### Comments, Kmax = 4
 
 All EBNMF methods outperform NMF in estimating `L` but all methods, including NMF, perform very similarly in estimating `F`. This makes sense, since the true `L` is sparse but the true `F` is almost entirely dense.
@@ -196,16 +197,16 @@ In general, the constant-variance EBNMF methods (`var_type = 0`) outperform the 
 
 ### Example, Kmax = 4
 
-It will suffice to illustrate results for NMF, EBNMFnmf0, EBNMFalt0, and EBNMFalt2. We'll consider the setting where `shape = 2,` with the size of the rarest population equal to 10.
+It will suffice to illustrate results for NMF, EBNMFnmf0, EBNMFalt0, and EBNMFalt2. We'll consider the setting where `shape = 1,` with the size of the rarest population equal to 10.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
-shape <- 2
-scale <- 1 / 2
+shape <- 1
+scale <- 1
 
 ns <- c(1190, 250, 50, 10)
 p <- 1000
 
-set.seed(15)
+set.seed(14)
 sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
 Y <- sim_dat$Y
 
