@@ -56,7 +56,6 @@ sim_data <- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link 
   F <- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
   
   # Anchor words
-  n_anchor_words <- 10
   for (i in 1:k) {
     F[((i - 1) * n_anchor_words + 1):(i * n_anchor_words), setdiff(1:k, i)] <- 0
   }
