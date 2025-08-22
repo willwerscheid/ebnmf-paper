@@ -3,7 +3,7 @@ title: NMF analyses of simulated data, Scenario 2
 author: Jason Willwerscheid and Peter Carbonetto
 output:
   workflowr::wflow_html:
-    toc: no
+    toc: yes
     theme: readable
     highlight: textmate
     lib_dir: site_libs
@@ -26,82 +26,22 @@ library(cowplot)
 library(ebnm)
 library(flashier)
 library(fastTopics)
-source("code/swimmer_functions.R")
+source("./code/sim_functions.R")
 ```
 
-We use three different fitting methods:
+For details on fitting methods and evaluation metrics, see our previous analysis in `analysis/sim_scenario1.Rmd`.
 
-1. "NMF": Uses package `NNLM`. As is common practice, we do 10 trials and choose the fit with the lowest error.
+## Simulation setting
 
-2. "NMF-EBNMF": EBNMF using an NMF initialization. We test `var_type = 0` and `var_type2`; we refer to these submethods as "NMF-EBNMF0" and "NMF-EBNMF2".
-
-3. "EBNMF": An EBNMF fit produced by alternatively adding one "greedy" factor and running 10 backfitting iterations (so, we backfit after *each* new factor is added). After no new factor can be added, we perform a full backfit. We again test `var_type = 0` and `var_type2`, giving "EBNMF0" and "EBNMF2".
-
-The fitting functions appear as follows:
+In this analysis we consider the "shared topics" scenario. Here there are six populations: three "pure" populations defined by a single topic each, and three "mixed" populations, each of which is an admixture of 2 of the three pure populations (with varying admixture proportions). We vary the relative size of pure and mixed populations, from 25 pure and 975 mixed to 975 mixed and 25 pure for each population. The `L` matrix codes population memberships. The factors `F` and the `log1p` link function are as in the previous analysis.
 
 ```{r}
-run_nmf <- function(Y, k, ntrials = 10) {
-  cat("Running NMF")
-  t <- system.time({
-    best_mse <- Inf
-    for (i in 1:ntrials) {
-      cat(".")
-      set.seed(i)
-      next_res <- NNLM::nnmf(Y, k = k, verbose = 0)
-      if (min(next_res$mse) < best_mse) {
-        best_mse <- min(next_res$mse)
-        best_res <- next_res
-      }
-    }
-  })
-  cat("\n")
+trueK <- 3
+highK <- 8 
+n_anchor_words <- 10
 
-  return(list(t = t, fit = best_res))
-}
-
-run_ebnmf_from_nmf <- function(Y, nmf_res, var_type, maxiter = 2000) {
-  cat("Running EBNMF from NMF:\n")
-  t <- system.time({
-    fl <- flash_init(Y, var_type = var_type) |>
-      flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_point_exponential) |>
-      flash_backfit(maxiter = maxiter, verbose = 0) |>
-      flash_nullcheck(verbose = 0)
-  })
-  
-  return(list(t = t, fit = fl))
-}
-
-run_alternating_gb <- function(Y, Kmax, var_type = 2) {
-  cat("Running alternating EBNMF")
-  t <- system.time({
-    fl <- flash_init(Y, var_type = var_type) |>
-      flash_set_verbose(0)
-    keep_going <- TRUE
-    while(keep_going) {
-      cat(".")
-      current_n <- fl$n_factors
-      fl <- fl |>
-        flash_greedy(ebnm_fn = ebnm_point_exponential) |>
-        flash_backfit(maxiter = 10)
-      if (fl$n_factors == current_n | fl$n_factors == Kmax) {
-        keep_going <- FALSE
-      }
-    }
-    cat("\n")
-    fl <- fl |>
-      flash_backfit(maxiter = 2000, verbose = 0) |>
-      flash_nullcheck(verbose = 0)
-  })
-  
-  return(list(t = t, fit = fl))
-}
-```
-
-In this analysis we consider the "shared topics" scenario. Here there are six populations: three "pure" populations defined by a single topic each, and three "mixed" populations that are admixtures of 2 of the three pure populations (with varying admixture proportions). We vary the relative size of pure and mixed populations, from 25 and 475 to 475 and 25 individuals for each population. The `L` matrix codes population memberships. The factors `F` and the log1p link function are as in the previous analysis.
-
-```{r}
 sim_data <- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link = "log1p") {
-  k <- 3
+  k <- trueK
   
   # Loadings (document-topics):
   set.seed(1)
@@ -139,67 +79,7 @@ sim_data <- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link 
 }
 ```
 
-The metrics are as in the previous analysis.
-
-```{r}
-calc_metrics <- function(res, sim_dat) {
-  fit <- res$fit
-  if (inherits(fit, "flash")) {
-    LDF <- ldf(fit, type = "f")
-    LL <- t(t(LDF$L) * LDF$D)
-    FF <- t(t(LDF$F) * LDF$D)
-  } else {
-    Wscale <- sqrt(apply(fit$W, 2, function(x) sum(x^2)))
-    Hscale <- sqrt(apply(fit$H, 1, function(x) sum(x^2)))
-    D <- Wscale * Hscale
-    LL <- t(t(fit$W) / sqrt(Wscale) * sqrt(Hscale))
-    FF <- t(fit$H / sqrt(Hscale) * sqrt(Wscale))
-  }
-  
-  # Metrics for components 1-3 are correlations:
-  LL_cors <- FF_cors <- rep(NA, ncol(sim_dat$L))
-  used_cols <- numeric(0)
-  LL_cormat <- cor(sim_dat$L, LL)
-  FF_cormat <- cor(sim_dat$F, FF)
-  for (i in 1:min(ncol(sim_dat$L), ncol(LL))) {
-    rowmax <- which.max(apply(abs(LL_cormat), 1, max))
-    colmax <- which.max(apply(abs(LL_cormat), 2, max))
-    LL_cors[rowmax] <- LL_cormat[rowmax, colmax]
-    FF_cors[rowmax] <- FF_cormat[rowmax, colmax]
-    LL_cormat[, colmax] <- 0
-    LL_cormat[rowmax, ] <- 0
-    used_cols <- c(used_cols, colmax)
-  }
-  
-  # Metrics for 4-6 are the scales of these (redundant/noisy) components:
-  L_scales <- apply(LL, 2, function(x) sum(x^2))
-  L_scales <- L_scales / sum(L_scales)
-  unmatched_scales <- L_scales[-used_cols]
-  unmatched_scales <- sort(unmatched_scales, decreasing = TRUE)
-  unmatched_scales <- c(unmatched_scales, rep(NA, 5 - length(unmatched_scales)))
-
-  all_metrics <- c(LL_cors, FF_cors, unmatched_scales)
-  names(all_metrics) <- c(
-    paste0("LLcor", 1:3),
-    paste0("FFcor", 1:3),
-    paste0("Scale", 4:8)
-  ) 
-  
-  return(all_metrics)
-}
-
-next_tib <- function(shape, ns, method, Kmax, res, sim_dat) {
-  metrics <- calc_metrics(res, sim_dat)
-  return(tibble(
-    method = method,
-    Kmax = Kmax,
-    shared_n = ns[4],
-    shape = shape,
-    metric_type = c("t_elapsed", names(metrics)),
-    metric_val = c(res$t[3], metrics)
-  ))
-}
-```
+## Simulation code
 
 Run simulations. We consider results for when the true `K = 3` is given in advance as well as for when `K` is overspecified (here, `Kmax = 6`):
 
@@ -207,50 +87,62 @@ Run simulations. We consider results for when the true `K = 3` is given in advan
 all_res <- tibble()
 
 set.seed(1)
-for (shared_n in c(25, 100, 500, 900, 975)) {
+for (varied_n in c(25, 100, 500, 900, 975)) {
   for (shape in c(1/2, 2/3, 3/4, 1, 2)) {
-    cat("SHARED N: ", shared_n, "SHAPE: ", shape, "\n")
+    cat("SHARED N: ", varied_n, "SHAPE: ", shape, "\n")
     
     gamma_mean <- 1
     scale <- gamma_mean / shape 
     
-    ns <- c(rep(1000 - shared_n, 3), rep(shared_n, 3))
+    ns <- c(rep(1000 - varied_n, 3), rep(varied_n, 3))
     p <- 1000
     
     sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
     Y <- sim_dat$Y
     
-    nmf_res_k3 <- run_nmf(Y, k = 3)
+    nmf_res_trueK <- run_nmf(Y, k = trueK)
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF", 3, nmf_res_k3, sim_dat))
+      bind_rows(next_tib(shape, ns, "NMF", trueK, nmf_res_trueK, sim_dat))
     
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF-EBNMF0", 3, run_ebnmf_from_nmf(Y, nmf_res_k3$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, "EBNMFnmf0", trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 0), sim_dat))
     
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF-EBNMF2", 3, run_ebnmf_from_nmf(Y, nmf_res_k3$fit, var_type = 2), sim_dat))
-
-    all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "EBNMF0", 3, run_alternating_gb(Y, Kmax = 3, var_type = 0), sim_dat))
-
-    all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "EBNMF2", 3, run_alternating_gb(Y, Kmax = 3, var_type = 2), sim_dat))
-    
-    nmf_res_k6 <- run_nmf(Y, k = 6)
-    all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF", 6, nmf_res_k6, sim_dat))
+      bind_rows(next_tib(shape, ns, "EBNMFnmf2", trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 2), sim_dat))
     
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF-EBNMF0", 6, run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(shape, ns, "EBNMFgb0", trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 0), sim_dat))
     
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "NMF-EBNMF2", 6, run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 2), sim_dat))
-
+      bind_rows(next_tib(shape, ns, "EBNMFgb2", trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 2), sim_dat))
+    
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "EBNMF0", 6, run_alternating_gb(Y, Kmax = 6, var_type = 0), sim_dat))
-
+      bind_rows(next_tib(shape, ns, "EBNMFalt0", trueK, run_alternating(Y, Kmax = trueK, var_type = 0), sim_dat))
+    
     all_res <- all_res |> 
-      bind_rows(next_tib(shape, ns, "EBNMF2", 6, run_alternating_gb(Y, Kmax = 6, var_type = 2), sim_dat))
+      bind_rows(next_tib(shape, ns, "EBNMFalt2", trueK, run_alternating(Y, Kmax = trueK, var_type = 2), sim_dat))
+    
+    nmf_res_highK <- run_nmf(Y, k = highK)
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "NMF", highK, nmf_res_highK, sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFnmf0", highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 0), sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFnmf2", highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 2), sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFgb0", highK, run_greedy_backfit(Y, Kmax = highK, var_type = 0), sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFgb2", highK, run_greedy_backfit(Y, Kmax = highK, var_type = 2), sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFalt0", highK, run_alternating(Y, Kmax = highK, var_type = 0), sim_dat))
+    
+    all_res <- all_res |> 
+      bind_rows(next_tib(shape, ns, "EBNMFalt2", highK, run_alternating(Y, Kmax = highK, var_type = 2), sim_dat))
   }
 }
 ```
@@ -260,105 +152,129 @@ for (shared_n in c(25, 100, 500, 900, 975)) {
 Correlations for `L`. Each row gives correlations for one true component or "topic." Individual tiles correspond to individual simulations (a single combination of gamma shape and shared population size):
 
 ```{r}
-low_color <- "white"
-high_color <- "blue"
-na_color <- "black"
-plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "LLcor")) |>
-  mutate(shared_n = factor(shared_n), 
-         shape = factor(round(shape, 2)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
-  mutate(metric_val = pmin(metric_val, 0.99999))
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
-                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
-  facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
-  theme(axis.text.x = element_text(angle = 45))
+lvls <- c("NMF", "EBNMFnmf0", "EBNMFgb0", "EBNMFalt0", "EBNMFnmf2", "EBNMFgb2", "EBNMFalt2")
+xlabel <- "Size of shared population"
+make_corplot(all_res |> filter(Kmax == trueK, str_starts(metric_type, "LLcor")), "Cor. w/ true L")
 ```
 
 Correlations for `F`:
 
 ```{r}
-plot_df <- all_res |> filter(Kmax == 3, str_starts(metric_type, "FFcor")) |>
-  mutate(shared_n = factor(shared_n), 
-         shape = factor(round(shape, 2)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
-  mutate(metric_val = pmin(metric_val, 0.99999))
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
-                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
-  facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
-  theme(axis.text.x = element_text(angle = 45))
+make_corplot(all_res |> filter(Kmax == trueK, str_starts(metric_type, "FFcor")), "Cor. w/ true F")
 ```
+
+## Comments, Kmax = 3
+
+The story here is pretty similar to the previous analysis, except that there is very little to distinguish among the three EBNMF methods. The constant-variance methods do slightly better than the columnwise-variance methods, but the gap is small. All EBNMF methods outperform vanilla NMF, particularly in estimating `L`.
+
+## Example, Kmax = 3
+
+Since EBNMF methods all perform similarly, it will suffice to illustrate NMF, EBNMFalt0, and EBNMFalt2. We'll consider the setting where `shape = 0.5` and the size of the shared populations is 100, since this setting gives noticeably different results for the constant-variance and columnwise-variance methods.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+shape <- 0.5
+scale <- 2
+
+ns <- c(rep(900, 3), rep(100, 3))
+p <- 1000
+
+set.seed(6)
+sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
+Y <- sim_dat$Y
+
+nmf_res_k3 <- run_nmf(Y, k = 3)
+ebnmf_res_alt0_k3 <- run_alternating(Y, Kmax = 3, var_type = 0)
+ebnmf_res_alt2_k3 <- run_alternating(Y, Kmax = 3, var_type = 2)
+```
+
+```{r}
+ex_plots_k3 <- list()
+ex_plots_k3[[1]] <- make_structure_plot(sim_dat$L, 1:3, "True")
+ex_plots_k3[[2]] <- plot_nmf(nmf_res_k3$fit, sim_dat$L, "NMF")
+ex_plots_k3[[3]] <- plot_fl(ebnmf_res_alt0_k3$fit, sim_dat$L, "EBNMF (alt, const)")
+ex_plots_k3[[4]] <- plot_fl(ebnmf_res_alt2_k3$fit, sim_dat$L, "EBNMF (alt, colwise)")
+
+plot_grid(plotlist = ex_plots_k3, nrow = 2, ncol = 2)
+```
+
+Visually, the columnwise-variance results look nicer, since they sparsify the blue "background" component. Estimation for the shared populations are however somewhat irregular, and for this reason their correlations with the true component matrices are lower than for constant-variance EBNMF. Of course, since we're using correlations as an evaluation metric, the presence of a background component will not be heavily penalized; this is I think one limitation of correlation as a metric.
 
 ## Results, Kmax = 6
 
 Correlations for `L`:
 
 ```{r}
-plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "LLcor")) |>
-  mutate(shared_n = factor(shared_n), 
-         shape = factor(round(shape, 2)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
-  mutate(metric_val = pmin(metric_val, 0.99999))
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
-                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
-  facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true L") +
-  theme(axis.text.x = element_text(angle = 45))
+make_corplot(all_res |> filter(Kmax == highK, str_starts(metric_type, "LLcor")), "Cor. w/ true L")
 ```
 
 Correlations for `F`:
 
 ```{r}
-plot_df <- all_res |> filter(Kmax == 6, str_starts(metric_type, "FFcor")) |>
-  mutate(shared_n = factor(shared_n), 
-         shape = factor(round(shape, 2)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
-  mutate(metric_val = pmin(metric_val, 0.99999))
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = low_color, high = high_color, na.value = na_color, transform = "logit",
-                      breaks = c(0.9, 0.99, 0.999, 0.9999)) +
-  facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Cor. w/ true F") +
-  theme(axis.text.x = element_text(angle = 45))
+make_corplot(all_res |> filter(Kmax == highK, str_starts(metric_type, "FFcor")), "Cor. w/ true F")
 ```
 
 Scale of redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row:
 
 ```{r}
-plot_df <- all_res |> filter(Kmax == 6, metric_type %in% paste0("Scale", 4:6)) |>
-  mutate(shared_n = factor(shared_n), 
-         shape = factor(round(shape, 2)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) |>
-  mutate(metric_val = pmax(metric_val, 0.00001))
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = "white", high = "red", na.value = "white", transform = "logit",
-                      breaks = c(.0001, .001, .01, .1)) +
-  facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Scale") +
-  theme(axis.text.x = element_text(angle = 45))
+make_scaleplot(all_res |> filter(Kmax == highK, str_starts(metric_type, "Scale")))
 ```
+
+## Comments, Kmax = 6
+
+Here the success of the EBNMF methods is more varied, with alternating EBNMF consistently getting good results in the correlation plots. Interestingly, correlations with the true `F` vary much more than correlations with the true `L`. Again the columnwise-variance methods do a much better job removing redundant factors, with the greedy-backfit and alternating methods outperforming the NMF-initialization methods.  
+
+## Example, Kmax = 6
+
+We'll take a closer look at the NMF, EBNMFnmf0, EBNMFnmf2, EBNMFalt0, and EBNMFalt2 methods. We'll consider the setting where `shape = 0.75` and the size of the shared populations is 500.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+shape <- 3/4
+scale <- 4/3
+
+ns <- c(rep(500, 3), rep(500, 3))
+p <- 1000
+
+set.seed(13)
+sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
+Y <- sim_dat$Y
+
+nmf_res_k6 <- run_nmf(Y, k = 6)
+ebnmf_res_nmf0_k6 <- run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 0)
+ebnmf_res_nmf2_k6 <- run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 2)
+ebnmf_res_alt0_k6 <- run_alternating(Y, Kmax = 6, var_type = 0)
+ebnmf_res_alt2_k6 <- run_alternating(Y, Kmax = 6, var_type = 2)
+```
+
+```{r}
+ex_plots_k6 <- list()
+ex_plots_k6[[1]] <- make_structure_plot(sim_dat$L, 1:3, "True")
+ex_plots_k6[[2]] <- plot_nmf(nmf_res_k6$fit, sim_dat$L, "NMF")
+ex_plots_k6[[3]] <- plot_fl(ebnmf_res_nmf0_k6$fit, sim_dat$L, "EBNMF (NMF init, const)")
+ex_plots_k6[[4]] <- plot_fl(ebnmf_res_nmf2_k6$fit, sim_dat$L, "EBNMF (NMF init, colwise)")
+ex_plots_k6[[5]] <- plot_fl(ebnmf_res_alt0_k6$fit, sim_dat$L, "EBNMF (alt, const)")
+ex_plots_k6[[6]] <- plot_fl(ebnmf_res_alt2_k6$fit, sim_dat$L, "EBNMF (alt, colwise)")
+
+plot_grid(plotlist = ex_plots_k6, nrow = 3, ncol = 2)
+```
+
+The story is again similar to the previous analysis: although EBNMF with an NMF initialization is a clear improvement over vanilla NMF, alternating EBNMF gives an even cleaner representation, with the columnwise-variance approach doing a slightly better job than the constant-variance approach.
 
 ## Time elapsed
 
 ```{r}
 plot_df <- all_res |> filter(str_starts(metric_type, "t_elapsed")) |>
-  mutate(shared_n = factor(shared_n), 
+  mutate(varied_n = factor(varied_n), 
          shape = factor(round(shape, 2)),
          Kmax = factor(paste0("Kmax = ", Kmax)),
-         method = factor(method, levels = c("NMF", "NMF-EBNMF0", "NMF-EBNMF2", "EBNMF0", "EBNMF2"))) 
-ggplot(plot_df, aes(x = shared_n, y = shape, fill = metric_val)) +
+         method = factor(method, levels = lvls)) 
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   geom_tile() +
   scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
   facet_grid(rows = vars(Kmax), cols = vars(method), scales = "free_x") +
-  labs(x = "Size of shared populations", y = "Shape of gamma prior on factors", fill = "Time elapsed (s)") +
+  labs(x = xlabel, y = "Shape of gamma prior on factors", fill = "Time elapsed (s)") +
   theme(axis.text.x = element_text(angle = 45))
 ```
+
+### Comments, overall
+
+As in the previous analysis, I think that columnwise-variance alternating EBNMF wins out here. The constant-variance approach does give slightly better correlations with the true `L`, but the gap is much smaller here than in the previous analysis, and the `Kmax = 3` example above illustrates why we might not want to put full faith in the correlation metric. 
