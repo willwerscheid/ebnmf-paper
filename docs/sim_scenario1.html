@@ -531,15 +531,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree27544909aceed5086b6e387b195149391fbdff11targetblank2754490a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee309769b684d506b27f780ca48155967c42e5f55targetblanke309769a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/27544909aceed5086b6e387b195149391fbdff11" target="_blank">2754490</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e309769b684d506b27f780ca48155967c42e5f55" target="_blank">e309769</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree27544909aceed5086b6e387b195149391fbdff11targetblank2754490a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee309769b684d506b27f780ca48155967c42e5f55targetblanke309769a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -549,7 +549,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/27544909aceed5086b6e387b195149391fbdff11" target="_blank">2754490</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e309769b684d506b27f780ca48155967c42e5f55" target="_blank">e309769</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -575,7 +575,6 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/sim_scenario2_copy.Rmd
     Untracked:  analysis/simdata3.Rmd
-    Untracked:  code/sim_functions.R
     Untracked:  matlab/simdata3.m
     Untracked:  matlab/simdata3.mat
     Untracked:  matlab/simdata3_nmf_sW=0.5.mat
@@ -667,6 +666,9 @@ Unstaged changes:
     Modified:   analysis/simdata2.Rmd
     Modified:   matlab/simdata2.mat
 
+Staged changes:
+    New:        code/sim_functions.R
+
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -710,6 +712,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/e309769b684d506b27f780ca48155967c42e5f55/analysis/sim_scenario1.Rmd" target="_blank">e309769</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/sim_scenario1.html" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1116,10 +1152,86 @@ prior on <code>F</code> and rare population size):</p>
 xlabel &lt;- &quot;Size of rarest population&quot;
 make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-3-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlations for <code>F</code>:</p>
 <pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" />
-### Comments, Kmax = 4</p>
+<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="comments-kmax-4" class="section level3">
+<h3>Comments, Kmax = 4</h3>
 <p>All EBNMF methods outperform NMF in estimating <code>L</code> but all
 methods, including NMF, perform very similarly in estimating
 <code>F</code>. This makes sense, since the true <code>L</code> is
@@ -1137,15 +1249,15 @@ similar across all columnwise-variance methods.</p>
 <div id="example-kmax-4" class="section level3">
 <h3>Example, Kmax = 4</h3>
 <p>It will suffice to illustrate results for NMF, EBNMFnmf0, EBNMFalt0,
-and EBNMFalt2. We’ll consider the setting where <code>shape = 2,</code>
+and EBNMFalt2. We’ll consider the setting where <code>shape = 1,</code>
 with the size of the rarest population equal to 10.</p>
-<pre class="r"><code>shape &lt;- 2
-scale &lt;- 1 / 2
+<pre class="r"><code>shape &lt;- 1
+scale &lt;- 1
 
 ns &lt;- c(1190, 250, 50, 10)
 p &lt;- 1000
 
-set.seed(15)
+set.seed(14)
 sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
 Y &lt;- sim_dat$Y
 
@@ -1198,6 +1310,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">9e1347f</a>
@@ -1270,6 +1393,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">9e1347f</a>
 </td>
 <td>
@@ -1330,6 +1464,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">9e1347f</a>
@@ -1394,6 +1539,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" target="_blank">9e1347f</a>
@@ -1482,6 +1638,43 @@ ex_plots_k8[[6]] &lt;- plot_fl(ebnmf_res_alt2_k8$fit, sim_dat$L, &quot;EBNMF (al
 
 plot_grid(plotlist = ex_plots_k8, nrow = 3, ncol = 2)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-11-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The NMF-initialization results appear pretty unsatisfactory. The
 columnwise-variance alternating result does slightly less well in
 estimating the fourth component, but overall the cleanness of the
@@ -1502,6 +1695,43 @@ ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
   theme(axis.text.x = element_text(angle = 45))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-12-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="comments-overall" class="section level3">
 <h3>Comments, overall</h3>
