@@ -12,7 +12,7 @@
 <meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
 
 
-<title>NMF analyses of simulated data, Scenario 1 (fully separated topics)</title>
+<title>NMF analyses of simulated data, Scenario 1 (fully separated topics), Part 2</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -34,6 +34,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -230,6 +231,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -344,10 +348,18 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">NMF analyses of simulated data, Scenario 1
-(fully separated topics)</h1>
+(fully separated topics), Part 2</h1>
 <h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
 
 </div>
@@ -377,7 +389,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-22
+<strong>Last updated:</strong> 2025-08-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -502,6 +514,9 @@ unnamed-chunk-4
 unnamed-chunk-5
 </li>
 <li>
+unnamed-chunk-6
+</li>
+<li>
 unnamed-chunk-8
 </li>
 </ul>
@@ -531,15 +546,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee309769b684d506b27f780ca48155967c42e5f55targetblanke309769a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree17444fc0bf5323f2dccb3803846d1caac53652b3targetblank17444fca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e309769b684d506b27f780ca48155967c42e5f55" target="_blank">e309769</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/17444fc0bf5323f2dccb3803846d1caac53652b3" target="_blank">17444fc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee309769b684d506b27f780ca48155967c42e5f55targetblanke309769a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree17444fc0bf5323f2dccb3803846d1caac53652b3targetblank17444fca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -549,7 +564,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e309769b684d506b27f780ca48155967c42e5f55" target="_blank">e309769</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/17444fc0bf5323f2dccb3803846d1caac53652b3" target="_blank">17444fc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -573,7 +588,6 @@ Ignored files:
     Ignored:    analysis/sim_scenario3_cache/
 
 Untracked files:
-    Untracked:  analysis/sim_scenario2_copy.Rmd
     Untracked:  analysis/simdata3.Rmd
     Untracked:  matlab/simdata3.m
     Untracked:  matlab/simdata3.mat
@@ -661,13 +675,10 @@ Untracked files:
     Untracked:  output/sim_scenario1.rds
 
 Unstaged changes:
-    Modified:   analysis/sim_scenario2.Rmd
     Modified:   analysis/sim_scenario3.Rmd
     Modified:   analysis/simdata2.Rmd
+    Modified:   code/sim_functions.R
     Modified:   matlab/simdata2.mat
-
-Staged changes:
-    New:        code/sim_functions.R
 
 </code></pre>
 <p>
@@ -712,6 +723,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/17444fc0bf5323f2dccb3803846d1caac53652b3/analysis/sim_scenario1.Rmd" target="_blank">17444fc</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/1165151731e6730fa2c576dc4f9ddfe61c6d8ba2/docs/sim_scenario1.html" target="_blank">1165151</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -950,44 +995,88 @@ library(cowplot)
 library(ebnm)
 library(flashier)
 library(fastTopics)
+library(RcppML)
 source(&quot;./code/sim_functions.R&quot;)</code></pre>
+<div id="scenario" class="section level3">
+<h3>Scenario</h3>
+<p>As in Part 1, we consider the “fully-separated topics” scenario. Here
+there are four populations of varying abundance; the rarest population
+ranges from 3 to 50 individuals, while the most abundant population is
+of size 1150 to 1197. The <code>L</code> matrix codes population
+memberships. The factors <code>F</code> are randomly generated from a
+Gamma distribution with mean 1, where the shape of the distribution
+ranges from 0.5 (so that counts vary widely across columns) to 2
+(similar counts across columns). For separability in the
+<code>K = 4</code> case, we create 10 “anchor words” for each topic.
+Finally, we use a <code>log1p</code> link function in the sense that we
+simulate counts <span class="math inline">\(X\)</span> as Poisson(<span
+class="math inline">\(e^\mu - 1\)</span>), where <span
+class="math inline">\(\mu = LF&#39;\)</span>, and then take the data
+matrix to be <span class="math inline">\(Y = \log(X + 1)\)</span>.</p>
+<pre class="r"><code>sim_data &lt;- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
+  pops &lt;- rep(LETTERS[1:length(ns)], times = ns)
+  
+  L &lt;- matrix(0, nrow = sum(ns), ncol = 4)
+  L[, 1] &lt;- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
+  L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
+  L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
+  L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
+  
+  F &lt;- sim_F(p, 4, gamma_shape, gamma_scale, n_anchor_words)
+  X &lt;- sim_X(L, F)
+  return_sim_data(X, L, F, pops)
+}
+
+set.seed(1)
+example_sim &lt;- sim_data(c(1175, 250, 50, 25), 2000, 4)
+
+Y &lt;- example_sim$Y
+Ynorm &lt;- example_sim$Ynorm
+L &lt;- example_sim$L
+pops &lt;- example_sim$pops</code></pre>
+</div>
 <div id="fitting-methods" class="section level3">
 <h3>Fitting methods</h3>
-<p>We use four different fitting methods:</p>
+<p>We use ten fitting methods:</p>
 <ol style="list-style-type: decimal">
-<li><p>“NMF”: Uses package <code>NNLM</code>. As is common practice, we
-do 10 trials and choose the fit with the lowest error.</p></li>
-<li><p>“EBNMFnmf”: EBNMF using an NMF initialization. We test
-<code>var_type = 0</code> and <code>var_type = 2</code>; we refer to
-these submethods as “EBNMFnmf0” and “EBNMFnmf2”.</p></li>
-<li><p>“EBNMFgb”: An EBNMF fit produced by adding as many “greedy”
-factors as possible (up to <code>Kmax</code>), then backfitting, and
-repeating (adding as many greedy factors as possible and backfitting)
-until either <code>Kmax</code> factors have been added or no new factors
-are greedily added. We again test <code>var_type = 0</code> and
-<code>var_type = 2</code>, giving “EBNMFgb0” and “EBNMFgb2”.</p></li>
-<li><p>“EBNMFalt”: An EBNMF fit produced by alternatively adding one
-“greedy” factor and running 10 backfitting iterations (so, we backfit
-after <em>each</em> new factor is added). After no new factor can be
-added, we perform a full backfit. We again test
-<code>var_type = 0</code> and <code>var_type = 2</code>, giving
-“EBNMFalt0” and “EBNMFalt2”.</p></li>
+<li>“NMF”: Vanilla NMF on the normalized data; uses package
+<code>RcppML</code>. As is common practice, we do 10 trials and choose
+the fit with the lowest error.</li>
 </ol>
+<p>2–5. “SpNMF”: Sparse NMF on the normalized data; again uses package
+<code>RcppML</code>. Uses an L1 penalty for the document loadings
+matrix. This penalty can range from 0 to 1. We use settings of 0.1, 0.3,
+0.5, and 0.7.</p>
+<ol start="6" style="list-style-type: decimal">
+<li><p>“EBNMFnmf”: EBNMF using the vanilla NMF results as
+initialization.</p></li>
+<li><p>“EBNMFgb”: A “bulk alternating” EBNMF fit. Produced by adding as
+many “greedy” factors as possible (up to <code>Kmax</code>), then
+backfitting, and repeating (adding as many greedy factors as possible
+and backfitting) until either <code>Kmax</code> factors have been added
+or no new factors are greedily added.</p></li>
+<li><p>“EBNMFalt”: An “alternating” EBNMF fit. Produced by alternatively
+adding one “greedy” factor and running 10 backfitting iterations (so, we
+backfit after <em>each</em> new factor is added). After no new factor
+can be added, we perform a full backfit.</p></li>
+</ol>
+<p>9–10. “EBNMFgbraw” and “EBNMFaltraw”: Produced by running bulk
+alternating and alternating EBNMF on the unnormalized data.</p>
 <p>For code, see <code>code/sim_functions.R</code>.</p>
 </div>
 <div id="evaluation-metrics" class="section level3">
 <h3>Evaluation metrics</h3>
 <p>We consider the following metrics:</p>
 <ol style="list-style-type: decimal">
-<li><p>Correlation of the fitted <code>L</code> matrix with the true
-<code>L</code>. Since the order of columns is arbitrary, we “align”
-columns by taking the maximally correlated fitted column for each true
-topic. Note that since the true <code>L</code> is sparse, we expect
-EBNMF to outperform NMF.</p></li>
-<li><p>Correlation of the fitted <code>F</code> matrix with the true
-<code>F</code>. The true <code>F</code> is dense (except for the anchor
-words), so we don’t necessarily expect EBNMF to do much better than
-NMF.</p></li>
+<li><p>Cosine distance between the fitted <code>L</code> matrix and the
+true <code>L</code>. Since the order of columns is arbitrary, we “align”
+columns by taking the least distant fitted column for each true topic.
+Note that since the true <code>L</code> is sparse, we expect EBNMF to
+outperform NMF.</p></li>
+<li><p>Cosine distance between the fitted <code>F</code> matrix and the
+true <code>F</code>. The true <code>F</code> is dense (except for the
+anchor words), so we don’t necessarily expect EBNMF to do much better
+than NMF.</p></li>
 <li><p>The relative scale of any extra fitted columns. In general, these
 columns will be either noise or redundant with other components. We
 calculate the relative scale of column <span
@@ -996,65 +1085,11 @@ class="math inline">\(i\)</span> as</p></li>
 <p><span class="math display">\[ \| \ell_i \|_2^2 / \sum_{k = 1}^K \|
 \ell_k \|_2^2. \]</span></p>
 <ol start="4" style="list-style-type: decimal">
-<li>The elapsed time taken to run the method. Note that <strong>NMF
-times are for 10 separate runs, and EBNMFnmf times are for the EBNMF
-portion of the fit only.</strong></li>
+<li>The elapsed time taken to run the method. Note that <strong>NMF and
+sparse NMF times are for 10 separate runs, and EBNMFnmf times are for
+the EBNMF portion of the fit only.</strong></li>
 </ol>
 <p>For code, see <code>code/sim_functions.R</code>.</p>
-</div>
-<div id="simulation-setting" class="section level3">
-<h3>Simulation setting</h3>
-<p>In this analysis we consider the “fully-separated topics” scenario.
-Here there are four populations of varying abundance; the rarest
-population ranges from 3 to 50 individuals, while the most abundant
-population is of size 1150 to 1197. The <code>L</code> matrix codes
-population memberships. The factors <code>F</code> are randomly
-generated from a Gamma distribution with mean 1, where the shape of the
-distribution ranges from 0.5 (so that counts vary widely across columns)
-to 2 (similar counts across columns). For separability in the
-<code>K = 4</code> case, we create 10 “anchor words” for each topic.
-Finally, we use a <code>log1p</code> link function in the sense that we
-simulate counts <span class="math inline">\(X\)</span> as Poisson(<span
-class="math inline">\(e^\mu - 1\)</span>), where <span
-class="math inline">\(\mu = LF&#39;\)</span>, and then take the data
-matrix to be <span class="math inline">\(Y = \log(X + 1)\)</span>.</p>
-<pre class="r"><code>trueK &lt;- 4 
-highK &lt;- 8 
-n_anchor_words &lt;- 10
-
-sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link = &quot;log1p&quot;) {
-  k &lt;- trueK
-  
-  # Loadings (document-topics):
-  L &lt;- matrix(0, nrow = sum(ns), ncol = k)
-  L[, 1] &lt;- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
-  L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
-  L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
-  L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
-  
-  F &lt;- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
-  
-  # Anchor words
-  for (i in 1:k) {
-    F[((i - 1) * n_anchor_words + 1):(i * n_anchor_words), setdiff(1:k, i)] &lt;- 0
-  }
-  
-  mu &lt;- L %*% t(F)
-  if (link == &quot;identity&quot;) {
-    Y &lt;- matrix(rpois(sum(ns) * p, mu), nrow = sum(ns), ncol = p)
-  } else if (link == &quot;log1p&quot;) {
-    Y &lt;- matrix(log1p(rpois(sum(ns) * p, expm1(mu))), nrow = sum(ns), ncol = p)
-  }
-  
-  # Make sure there aren&#39;t any all-zero columns:
-  F &lt;- F[apply(Y, 2, sum) &gt; 0, ]
-  Y &lt;- Y[, apply(Y, 2, sum) &gt; 0]
-  
-  rownames(Y) &lt;- paste0(&quot;sample&quot;, 1:nrow(Y))
-  colnames(Y) &lt;- paste0(&quot;feature&quot;, 1:ncol(Y))
-
-  return(list(Y = Y, L = L, F = F))
-}</code></pre>
 </div>
 <div id="simulation-code" class="section level3">
 <h3>Simulation code</h3>
@@ -1063,12 +1098,15 @@ sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, li
 <code>K</code> is overspecified (here, <code>Kmax = 8</code>). Since
 EBNMF can “choose” the total number of factors to add, <code>K</code>
 can be less than <code>Kmax</code>:</p>
-<pre class="r"><code>all_res &lt;- tibble()
+<pre class="r"><code>trueK &lt;- 4
+highK &lt;- 8
+verbose &lt;- FALSE
 
+all_res &lt;- tibble()
 next_seed &lt;- 0
-for (varied_n in  c(3, 5, 10, 20, 50)) { 
+for (varied_n in  c(3, 5, 10, 25, 50)) { 
   for (shape in c(1/2, 2/3, 3/4, 1, 2)) { 
-    cat(&quot;RARE N: &quot;, varied_n, &quot;SHAPE: &quot;, shape, &quot;\n&quot;)
+    if (verbose) cat(&quot;RARE N: &quot;, varied_n, &quot;SHAPE: &quot;, shape)
     
     gamma_mean &lt;- 1
     scale &lt;- gamma_mean / shape 
@@ -1079,51 +1117,169 @@ for (varied_n in  c(3, 5, 10, 20, 50)) {
     next_seed &lt;- next_seed + 1
     set.seed(next_seed)
     sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
+    
     Y &lt;- sim_dat$Y
+    Ynorm &lt;- sim_dat$Ynorm
     
-    nmf_res_trueK &lt;- run_nmf(Y, k = trueK)
+    nmf_res_trueK &lt;- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, trueK, nmf_res_trueK, sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF&quot;, trueK, nmf_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    spnmf_res_trueK_1 &lt;- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.1, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf0&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.1&quot;, trueK, spnmf_res_trueK_1, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    spnmf_res_trueK_3 &lt;- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.3, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf2&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 2), sim_dat))
-
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb0&quot;, trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 0), sim_dat))
-
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb2&quot;, trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 2), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.3&quot;, trueK, spnmf_res_trueK_3, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    spnmf_res_trueK_5 &lt;- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.5, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt0&quot;, trueK, run_alternating(Y, Kmax = trueK, var_type = 0), sim_dat))
-
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt2&quot;, trueK, run_alternating(Y, Kmax = trueK, var_type = 2), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.5&quot;, trueK, spnmf_res_trueK_5, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
-    nmf_res_highK &lt;- run_nmf(Y, k = highK)
+    spnmf_res_trueK_7 &lt;- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.7, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, highK, nmf_res_highK, sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.7&quot;, trueK, spnmf_res_trueK_7, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    ebnmf_nmf_res_trueK &lt;- run_ebnmf_from_nmf(Ynorm, nmf_res_trueK$fit, var_type = 2)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf0&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 0), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF-EBNMF&quot;, trueK, ebnmf_nmf_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    ebnmf_gb_res_trueK &lt;- run_greedy_backfit(Ynorm, Kmax = trueK)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf2&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 2), sim_dat))
-
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb0&quot;, highK, run_greedy_backfit(Y, Kmax = highK, var_type = 0), sim_dat))
-
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb2&quot;, highK, run_greedy_backfit(Y, Kmax = highK, var_type = 2), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFgb&quot;, trueK, ebnmf_gb_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
     
+    ebnmf_alt_res_trueK &lt;- run_alternating(Ynorm, Kmax = trueK)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt0&quot;, highK, run_alternating(Y, Kmax = highK, var_type = 0), sim_dat))
-
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFalt&quot;, trueK, ebnmf_alt_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    nmfraw_res_trueK &lt;- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0, seeds = 1:10)
     all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt2&quot;, highK, run_alternating(Y, Kmax = highK, var_type = 2), sim_dat))
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMFraw&quot;, trueK, nmfraw_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_trueK_1 &lt;- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.1, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.1raw&quot;, trueK, spnmfraw_res_trueK_1, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_trueK_3 &lt;- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.3, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.3raw&quot;, trueK, spnmfraw_res_trueK_3, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_trueK_5 &lt;- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.5, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.5raw&quot;, trueK, spnmfraw_res_trueK_5, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_trueK_7 &lt;- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.7, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.7raw&quot;, trueK, spnmfraw_res_trueK_7, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_nmfraw_res_trueK &lt;- run_ebnmf_from_nmf(Y, nmfraw_res_trueK$fit, var_type = 2)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF-EBNMFraw&quot;, trueK, ebnmf_nmfraw_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_gbraw_res_trueK &lt;- run_greedy_backfit(Y, Kmax = trueK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFgbraw&quot;, trueK, ebnmf_gbraw_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_altraw_res_trueK &lt;- run_alternating(Y, Kmax = trueK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFaltraw&quot;, trueK, ebnmf_altraw_res_trueK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    nmf_res_highK &lt;- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF&quot;, highK, nmf_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmf_res_highK_1 &lt;- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.1, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.1&quot;, highK, spnmf_res_highK_1, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmf_res_highK_3 &lt;- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.3, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.3&quot;, highK, spnmf_res_highK_3, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmf_res_highK_5 &lt;- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.5, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.5&quot;, highK, spnmf_res_highK_5, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmf_res_highK_7 &lt;- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.7, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.7&quot;, highK, spnmf_res_highK_7, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_nmf_res_highK &lt;- run_ebnmf_from_nmf(Ynorm, nmf_res_highK$fit, var_type = 2)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF-EBNMF&quot;, highK, ebnmf_nmf_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_gb_res_highK &lt;- run_greedy_backfit(Ynorm, Kmax = highK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFgb&quot;, highK, ebnmf_gb_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_alt_res_highK &lt;- run_alternating(Ynorm, Kmax = highK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFalt&quot;, highK, ebnmf_alt_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    nmfraw_res_highK &lt;- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMFraw&quot;, highK, nmfraw_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_highK_1 &lt;- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.1, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.1raw&quot;, highK, spnmfraw_res_highK_1, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_highK_3 &lt;- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.3, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.3raw&quot;, highK, spnmfraw_res_highK_3, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_highK_5 &lt;- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.5, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.5raw&quot;, highK, spnmfraw_res_highK_5, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    spnmfraw_res_highK_7 &lt;- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.7, seeds = 1:10)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;SpNMF0.7raw&quot;, highK, spnmfraw_res_highK_7, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_nmfraw_res_highK &lt;- run_ebnmf_from_nmf(Y, nmfraw_res_highK$fit, var_type = 2)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;NMF-EBNMFraw&quot;, highK, ebnmf_nmfraw_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_gbraw_res_highK &lt;- run_greedy_backfit(Y, Kmax = highK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFgbraw&quot;, highK, ebnmf_gbraw_res_highK, sim_dat))
+    if (verbose) cat(&quot;.&quot;)
+    
+    ebnmf_altraw_res_highK &lt;- run_alternating(Y, Kmax = highK)
+    all_res &lt;- all_res |&gt; 
+      bind_rows(next_tib(next_seed, shape, ns, &quot;EBNMFaltraw&quot;, highK, ebnmf_altraw_res_highK, sim_dat))
+    if (verbose) cat(&quot;\n&quot;)
   }
 }</code></pre>
 <div class="alert alert-warning">
@@ -1143,14 +1299,17 @@ remove this warning. See the
 </div>
 <div id="results-kmax-4" class="section level3">
 <h3>Results, Kmax = 4</h3>
-<p>Correlations for <code>L</code>. Each row gives correlations for one
-true component (one “population”), with rows arranged according to the
-abundance of the population (in descending order). Individual tiles
-correspond to individual simulations (a single combination of gamma
-prior on <code>F</code> and rare population size):</p>
-<pre class="r"><code>lvls &lt;- c(&quot;NMF&quot;, &quot;EBNMFnmf0&quot;, &quot;EBNMFgb0&quot;, &quot;EBNMFalt0&quot;, &quot;EBNMFnmf2&quot;, &quot;EBNMFgb2&quot;, &quot;EBNMFalt2&quot;)
-xlabel &lt;- &quot;Size of rarest population&quot;
-make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
+<p>Cosine similarities for <code>L</code> (normalized data). Each row
+gives cosine similarities for one true component (one “population”),
+with rows arranged according to the abundance of the population (in
+descending order). Individual tiles correspond to individual simulations
+(a single combination of gamma prior on <code>F</code> and rare
+population size):</p>
+<pre class="r"><code>xlabel &lt;- &quot;Size of rarest population&quot;
+norm_lvls &lt;- c(&quot;NMF&quot;, &quot;SpNMF0.1&quot;, &quot;SpNMF0.3&quot;, &quot;SpNMF0.5&quot;, &quot;SpNMF0.7&quot;, &quot;NMF-EBNMF&quot;, &quot;EBNMFgb&quot;, &quot;EBNMFalt&quot;)
+raw_lvls &lt;- c(&quot;NMFraw&quot;, &quot;SpNMF0.1raw&quot;, &quot;SpNMF0.3raw&quot;, &quot;SpNMF0.5raw&quot;, &quot;SpNMF0.7raw&quot;, &quot;NMF-EBNMFraw&quot;, &quot;EBNMFgbraw&quot;, &quot;EBNMFaltraw&quot;)
+lvls &lt;- norm_lvls
+make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
@@ -1189,8 +1348,9 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
+<p>Cosine similarities for <code>L</code> (non-normalized data):</p>
+<pre class="r"><code>lvls &lt;- raw_lvls
+make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
@@ -1229,71 +1389,15 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-</div>
-<div id="comments-kmax-4" class="section level3">
-<h3>Comments, Kmax = 4</h3>
-<p>All EBNMF methods outperform NMF in estimating <code>L</code> but all
-methods, including NMF, perform very similarly in estimating
-<code>F</code>. This makes sense, since the true <code>L</code> is
-sparse but the true <code>F</code> is almost entirely dense.</p>
-<p>In general, the constant-variance EBNMF methods
-(<code>var_type = 0</code>) outperform the columnwise-variance methods
-(<code>var_type = 2</code>). Among the constant-variance methods, the
-greedy-backfit and alternating approaches outperform the
-NMF-initialization approach, especially when the shape parameter is
-large or the size of the rare population is small (the differences are
-most pronounced in results for the fourth component, which corresponds
-to the topic defining the rarest population). Results are extremely
-similar across all columnwise-variance methods.</p>
-</div>
-<div id="example-kmax-4" class="section level3">
-<h3>Example, Kmax = 4</h3>
-<p>It will suffice to illustrate results for NMF, EBNMFnmf0, EBNMFalt0,
-and EBNMFalt2. We’ll consider the setting where <code>shape = 1,</code>
-with the size of the rarest population equal to 10.</p>
-<pre class="r"><code>shape &lt;- 1
-scale &lt;- 1
-
-ns &lt;- c(1190, 250, 50, 10)
-p &lt;- 1000
-
-set.seed(14)
-sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-Y &lt;- sim_dat$Y
-
-nmf_res_k4 &lt;- run_nmf(Y, k = 4)
-ebnmf_res_nmf_k4 &lt;- run_ebnmf_from_nmf(Y, nmf_res_k4$fit, var_type = 0)
-ebnmf_res_alt0_k4 &lt;- run_alternating(Y, Kmax = 4, var_type = 0)
-ebnmf_res_alt2_k4 &lt;- run_alternating(Y, Kmax = 4, var_type = 2)</code></pre>
-<div class="alert alert-warning">
+<p>Cosine similarities for <code>F</code> (non-normalized data):</p>
+<pre class="r"><code>make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;FFcos&quot;)), &quot;Cos. sim. w/ true F&quot;)</code></pre>
+<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
-<strong>Warning:</strong> The above code chunk cached its results, but
-it won’t be re-run if previous chunks it depends on are updated. If you
-need to use caching, it is highly recommended to also set
-<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
-file (in a chunk that is not cached). Alternatively, you can customize
-the option <code>dependson</code> for each individual chunk that is
-cached. Using either <code>autodep</code> or <code>dependson</code> will
-remove this warning. See the
-<a href="https://yihui.name/knitr/options/#cache"
->knitr cache options</a> for more details.
-</p>
-</div>
-<pre class="r"><code>ex_plots_k4 &lt;- list()
-ex_plots_k4[[1]] &lt;- make_structure_plot(sim_dat$L, 1:4, &quot;True&quot;)
-ex_plots_k4[[2]] &lt;- plot_nmf(nmf_res_k4$fit, sim_dat$L, &quot;NMF&quot;)
-ex_plots_k4[[3]] &lt;- plot_fl(ebnmf_res_nmf_k4$fit, sim_dat$L, &quot;EBNMF (NMF init, const)&quot;)
-ex_plots_k4[[4]] &lt;- plot_fl(ebnmf_res_alt0_k4$fit, sim_dat$L, &quot;EBNMF (alt, const)&quot;)
-ex_plots_k4[[5]] &lt;- plot_fl(ebnmf_res_alt2_k4$fit, sim_dat$L, &quot;EBNMF (alt, colwise)&quot;)
-
-plot_grid(plotlist = ex_plots_k4, nrow = 2, ncol = 3)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
-Past versions of unnamed-chunk-6-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div id="fig-unnamed-chunk-5-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1312,7 +1416,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">bcf66b1</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -1323,7 +1427,7 @@ Jason Willwerscheid
 </tr>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">9e1347f</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">9e1347f</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -1334,7 +1438,7 @@ Jason Willwerscheid
 </tr>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">c5dbc64</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">c5dbc64</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -1345,7 +1449,7 @@ Jason Willwerscheid
 </tr>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-6-1.png" target="_blank">8aded61</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">8aded61</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -1358,16 +1462,65 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Visually, the three EBNMF methods all do a fairly good job at
-cleaning up NMF results, but the NMF-initialization method doesn’t fully
-sparsify the fourth component (red), while the columnwise variance
-structure seems to leave a large “background” component (blue)
-intact.</p>
 </div>
-<div id="results-kmax-8" class="section level3">
-<h3>Results, Kmax = 8</h3>
-<p>Correlations for <code>L</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
+<div id="comments-kmax-4" class="section level3">
+<h3>Comments, Kmax = 4</h3>
+<p>All sparse NMF and EBNMF methods outperform NMF in estimating
+<code>L</code> (as long as the L1 penalty is not set too high) but all
+methods, including NMF, perform very similarly in estimating
+<code>F</code>. This makes sense, since the true <code>L</code> is
+sparse but the true <code>F</code> is almost entirely dense.
+Interestingly, EBNMF outperforms sparse NMF on the normalized data but
+sparse NMF outperforms EBNMF on the non-normalized data. All three EBNMF
+approaches give pretty similar results.</p>
+</div>
+<div id="example-kmax-4" class="section level3">
+<h3>Example, Kmax = 4</h3>
+<p>It will suffice to illustrate results for NMF, SpNMF0.5, and
+EBNMFalt. We’ll consider the setting where <code>shape = 2/3,</code>
+with the size of the rarest population equal to 10.</p>
+<pre class="r"><code>shape &lt;- 2/3
+scale &lt;- 3/2
+
+ns &lt;- c(1190, 250, 50, 10)
+
+ex_seed &lt;- all_res |&gt; filter(shape == 2/3, varied_n == 10) |&gt; slice(1) |&gt; pull(seed)
+set.seed(ex_seed)
+sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
+Y &lt;- sim_dat$Y
+Ynorm &lt;- sim_dat$Ynorm
+
+nmf_res_k4 &lt;- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = 0, seeds = 1:10)
+spnmf_res_k4 &lt;- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = 0.5, seeds = 1:10)
+ebnmf_res_k4 &lt;- run_alternating(Ynorm, Kmax = 4, var_type = 2)
+nmf_raw_res_k4 &lt;- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0, seeds = 1:10)
+spnmf_raw_res_k4 &lt;- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0.5, seeds = 1:10)
+ebnmf_raw_res_k4 &lt;- run_alternating(Y, Kmax = 4, var_type = 2)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<pre class="r"><code>L &lt;- sim_dat$L
+pops &lt;- sim_dat$pops
+
+ex_plots_k4 &lt;- list()
+ex_plots_k4[[1]] &lt;- plot_nmf(nmf_res_k4$fit, L, pops, &quot;NMF (norm.)&quot;)
+ex_plots_k4[[2]] &lt;- plot_nmf(spnmf_res_k4$fit, L, pops, &quot;Sparse NMF (norm.)&quot;)
+ex_plots_k4[[3]] &lt;- plot_fl(ebnmf_res_k4$fit, L, pops, &quot;Alt. EBNMF (norm.)&quot;)
+ex_plots_k4[[4]] &lt;- plot_nmf(nmf_raw_res_k4$fit, L, pops, &quot;NMF (raw)&quot;)
+ex_plots_k4[[5]] &lt;- plot_nmf(spnmf_raw_res_k4$fit, L, pops, &quot;Sparse NMF (raw)&quot;)
+ex_plots_k4[[6]] &lt;- plot_fl(ebnmf_raw_res_k4$fit, L, pops, &quot;Alt. EBNMF (raw)&quot;)
+plot_grid(plotlist = ex_plots_k4, nrow = 2, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
@@ -1439,8 +1592,15 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
+<p>In the non-normalized case, the better performance of sparse NMF
+appears to be due to the failure of EBNMF to sparsify the blue
+component.</p>
+</div>
+<div id="results-kmax-8" class="section level3">
+<h3>Results, Kmax = 8</h3>
+<p>Cosine similarities for <code>L</code> (normalized data):</p>
+<pre class="r"><code>lvls &lt;- norm_lvls
+make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
@@ -1512,10 +1672,9 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Scale of redundant/noisy factors. If any exist, they are arranged in
-descending order, with the largest redundant/noisy factor appearing in
-the top row:</p>
-<pre class="r"><code>make_scaleplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
+<p>Cosine similarities for <code>L</code> (non-normalized data):</p>
+<pre class="r"><code>lvls &lt;- raw_lvls
+make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -1576,67 +1735,74 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-</div>
-<div id="comments-kmax-8" class="section level3">
-<h3>Comments, Kmax = 8</h3>
-<p>The correlation plots tell a similar story to the
-<code>Kmax = 4</code> case, except that here the poorer quality of the
-NMF fit results in relatively low correlations with the true
-<code>F</code> (in addition to the true <code>L</code>) in the NMF and
-EBNMFnmf cases.</p>
-<p>As with <code>Kmax = 4</code>, the constant-variance methods
-generally outperform the columnwise-variance methods with respect to
-correlation with the true component matrices. However, the
-columnwise-variance “greedy-backfit” and “alternating” methods tend to
-do a better job of removing or minimizing redundant components. So there
-appears to be a tradeoff between accurate estimation of <code>L</code>
-and <code>F</code> and economy of representation.</p>
-</div>
-<div id="example-kmax-8" class="section level3">
-<h3>Example, Kmax = 8</h3>
-<p>Since results for the “greedy-backfit” and “alternating” methods are
-very similar, we’ll illustrate results for NMF, EBNMFnmf0, EBNMFnmf2,
-EBNMFalt0, and EBNMFalt2. We’ll now consider the setting where
-<code>shape = 2/3,</code> with the size of the rarest population again
-equal to 10.</p>
-<pre class="r"><code>shape &lt;- 2/3
-scale &lt;- 1.5
-
-ns &lt;- c(1190, 250, 50, 10)
-p &lt;- 1000
-
-set.seed(12)
-sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-Y &lt;- sim_dat$Y
-
-nmf_res_k8 &lt;- run_nmf(Y, k = 8)
-ebnmf_res_nmf0_k8 &lt;- run_ebnmf_from_nmf(Y, nmf_res_k8$fit, var_type = 0)
-ebnmf_res_nmf2_k8 &lt;- run_ebnmf_from_nmf(Y, nmf_res_k8$fit, var_type = 2)
-ebnmf_res_alt0_k8 &lt;- run_alternating(Y, Kmax = 8, var_type = 0)
-ebnmf_res_alt2_k8 &lt;- run_alternating(Y, Kmax = 8, var_type = 2)</code></pre>
-<div class="alert alert-warning">
+<p>Cosine similarities for <code>F</code> (non-normalized data):</p>
+<pre class="r"><code>make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;FFcos&quot;)), &quot;Cos. sim. w/ true F&quot;)</code></pre>
+<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
-<strong>Warning:</strong> The above code chunk cached its results, but
-it won’t be re-run if previous chunks it depends on are updated. If you
-need to use caching, it is highly recommended to also set
-<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
-file (in a chunk that is not cached). Alternatively, you can customize
-the option <code>dependson</code> for each individual chunk that is
-cached. Using either <code>autodep</code> or <code>dependson</code> will
-remove this warning. See the
-<a href="https://yihui.name/knitr/options/#cache"
->knitr cache options</a> for more details.
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
 </p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">bcf66b1</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">9e1347f</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-19
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">8aded61</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-14
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<pre class="r"><code>ex_plots_k8 &lt;- list()
-ex_plots_k8[[1]] &lt;- make_structure_plot(sim_dat$L, 1:4, &quot;True&quot;)
-ex_plots_k8[[2]] &lt;- plot_nmf(nmf_res_k8$fit, sim_dat$L, &quot;NMF&quot;)
-ex_plots_k8[[3]] &lt;- plot_fl(ebnmf_res_nmf0_k8$fit, sim_dat$L, &quot;EBNMF (NMF init, const)&quot;)
-ex_plots_k8[[4]] &lt;- plot_fl(ebnmf_res_nmf2_k8$fit, sim_dat$L, &quot;EBNMF (NMF init, colwise)&quot;)
-ex_plots_k8[[5]] &lt;- plot_fl(ebnmf_res_alt0_k8$fit, sim_dat$L, &quot;EBNMF (alt, const)&quot;)
-ex_plots_k8[[6]] &lt;- plot_fl(ebnmf_res_alt2_k8$fit, sim_dat$L, &quot;EBNMF (alt, colwise)&quot;)
-
-plot_grid(plotlist = ex_plots_k8, nrow = 3, ncol = 2)</code></pre>
+</div>
+<p>Scale of redundant/noisy factors. If any exist, they are arranged in
+descending order, with the largest redundant/noisy factor appearing in
+the top row.</p>
+<p>Normalized data:</p>
+<pre class="r"><code>lvls &lt;- norm_lvls
+make_scaleplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
@@ -1675,25 +1841,9 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>The NMF-initialization results appear pretty unsatisfactory. The
-columnwise-variance alternating result does slightly less well in
-estimating the fourth component, but overall the cleanness of the
-representation is, I think, preferable to the constant-variance
-result.</p>
-</div>
-<div id="timings" class="section level3">
-<h3>Timings</h3>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(str_starts(metric_type, &quot;t_elapsed&quot;)) |&gt;
-  mutate(varied_n = factor(varied_n), 
-         shape = factor(round(shape, 2)),
-         Kmax = factor(paste0(&quot;Kmax = &quot;, Kmax)),
-         method = factor(method, levels = lvls)) 
-ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
-  facet_grid(rows = vars(Kmax), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
-  theme(axis.text.x = element_text(angle = 45))</code></pre>
+<p>Non-normalized data:</p>
+<pre class="r"><code>lvls &lt;- raw_lvls
+make_scaleplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
 <p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
@@ -1733,14 +1883,87 @@ Jason Willwerscheid
 </div>
 </div>
 </div>
-<div id="comments-overall" class="section level3">
-<h3>Comments, overall</h3>
-<p>Given that we rarely know the “true” K, I prefer the
-columnwise-variance alternating results (or greedy-backfit results,
-which are very similar). I think the cleanness of the representation
-outweighs a slight loss in accuracy. Note also that these methods are
-generally as fast or faster than vanilla NMF (at least, when we do 10
-iterations of NMF and choose the best iteration)!</p>
+<div id="comments-kmax-8" class="section level3">
+<h3>Comments, Kmax = 8</h3>
+<p>The cosine similarity plots tell a similar story to the
+<code>Kmax = 4</code> case, except that here the poorer quality of the
+NMF fit results in relatively low cosine similarities with the true
+<code>F</code> (in addition to the true <code>L</code>) in the NMF and
+EBNMFnmf cases.</p>
+<p>Although, as with <code>Kmax = 4</code>, sparse NMF does better than
+EBNMF on non-normalized data, EBNMF is consistently better at
+eliminating redundant/noisy factors, and both the bulk alternating and
+strictly alternating approaches do better than initializing with
+NMF.</p>
+</div>
+<div id="example-kmax-8" class="section level3">
+<h3>Example, Kmax = 8</h3>
+<p>As well as NMF, SpNMF0.5, and EBNMFalt, we include NMF-EBNMF in these
+results. We’ll again consider the setting where
+<code>shape = 2/3,</code> with the size of the rarest population equal
+to 10.</p>
+<pre class="r"><code>nmf_res_k8 &lt;- run_RcppML_sparse_nmf(Ynorm, k = 8, L1pen = 0, seeds = 1:10)
+spnmf_res_k8 &lt;- run_RcppML_sparse_nmf(Ynorm, k = 8, L1pen = 0.5, seeds = 1:10)
+nmf_ebnmf_res_k8 &lt;- run_ebnmf_from_nmf(Ynorm, nmf_res_k8$fit, var_type = 2)
+ebnmf_res_k8 &lt;- run_alternating(Ynorm, Kmax = 8, var_type = 2)
+nmf_raw_res_k8 &lt;- run_RcppML_sparse_nmf(Y, k = 8, L1pen = 0, seeds = 1:10)
+spnmf_raw_res_k8 &lt;- run_RcppML_sparse_nmf(Y, k = 8, L1pen = 0.5, seeds = 1:10)
+nmf_ebnmf_raw_res_k8 &lt;- run_ebnmf_from_nmf(Y, nmf_raw_res_k8$fit, var_type = 2)
+ebnmf_raw_res_k8 &lt;- run_alternating(Y, Kmax = 8, var_type = 2)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<pre class="r"><code>L &lt;- sim_dat$L
+pops &lt;- sim_dat$pops
+
+ex_plots_k8 &lt;- list()
+ex_plots_k8[[1]] &lt;- plot_nmf(nmf_res_k8$fit, L, pops, &quot;NMF (norm.)&quot;)
+ex_plots_k8[[2]] &lt;- plot_nmf(spnmf_res_k8$fit, L, pops, &quot;Sparse NMF (norm.)&quot;)
+ex_plots_k8[[3]] &lt;- plot_fl(nmf_ebnmf_res_k8$fit, L, pops, &quot;NMF-EBNMF (norm.)&quot;)
+ex_plots_k8[[4]] &lt;- plot_fl(ebnmf_res_k8$fit, L, pops, &quot;Alt. EBNMF (norm.)&quot;)
+ex_plots_k8[[5]] &lt;- plot_nmf(nmf_raw_res_k8$fit, L, pops, &quot;NMF (raw)&quot;)
+ex_plots_k8[[6]] &lt;- plot_nmf(spnmf_raw_res_k8$fit, L, pops, &quot;Sparse NMF (raw)&quot;)
+ex_plots_k8[[7]] &lt;- plot_fl(nmf_ebnmf_raw_res_k8$fit, L, pops, &quot;NMF-EBNMF (raw)&quot;)
+ex_plots_k8[[8]] &lt;- plot_fl(ebnmf_raw_res_k8$fit, L, pops, &quot;Alt. EBNMF (raw)&quot;)
+plot_grid(plotlist = ex_plots_k8, nrow = 2, ncol = 4)</code></pre>
+<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-14-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>The NMF-initialization results appear pretty unsatisfactory. The
+columnwise-variance alternating result does slightly less well in
+estimating the fourth component, but overall the cleanness of the
+representation is, I think, preferable to the constant-variance
+result.</p>
+</div>
+<div id="timings" class="section level3">
+<h3>Timings</h3>
+<p>Timings are averaged across normalized and non-normalized runs:</p>
+<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(str_starts(metric_type, &quot;t_elapsed&quot;)) |&gt;
+  mutate(varied_n = factor(varied_n), 
+         shape = factor(round(shape, 2)),
+         Kmax = factor(paste0(&quot;Kmax = &quot;, Kmax)),
+         method = factor(str_remove(method, &quot;raw&quot;), levels = norm_lvls)) |&gt;
+  group_by(varied_n, shape, Kmax, method) |&gt;
+  summarize(metric_val = mean(metric_val))
+# `summarise()` has grouped output by &#39;varied_n&#39;, &#39;shape&#39;, &#39;Kmax&#39;. You can
+# override using the `.groups` argument.
+ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
+  geom_tile() +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
+  facet_grid(rows = vars(Kmax), cols = vars(method), scales = &quot;free_x&quot;) +
+  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
+  theme(axis.text.x = element_text(angle = 45)) + 
+  theme(strip.text = element_text(size = 8))</code></pre>
+<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-15-1.png" width="840" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1768,9 +1991,9 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-#  [1] fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34        cowplot_1.2.0     
-#  [5] ggplot2_3.5.2      stringr_1.5.1      tidyr_1.3.1        dplyr_1.1.4       
-#  [9] tibble_3.3.0       R.matlab_3.7.0     workflowr_1.7.1   
+#  [1] RcppML_0.3.7       fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34       
+#  [5] cowplot_1.2.0      ggplot2_3.5.2      stringr_1.5.1      tidyr_1.3.1       
+#  [9] dplyr_1.1.4        tibble_3.3.0       R.matlab_3.7.0     workflowr_1.7.1   
 # 
 # loaded via a namespace (and not attached):
 #  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.2        
@@ -1859,6 +2082,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
