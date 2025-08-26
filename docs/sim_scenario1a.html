@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
+
+
+<title>NMF analyses of simulated data, Scenario 1 (fully separated topics), Part 1</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">ebnmf-paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/willwerscheid/ebnmf-paper">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">NMF analyses of simulated data, Scenario 1
+(fully separated topics), Part 1</h1>
+<h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-08-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20231214code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20231214)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20231214code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20231214)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee2e1b489431d22d20854f1421cb86499b6b99e2ctargetblanke2e1b48a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e2e1b489431d22d20854f1421cb86499b6b99e2c" target="_blank">e2e1b48</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee2e1b489431d22d20854f1421cb86499b6b99e2ctargetblanke2e1b48a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e2e1b489431d22d20854f1421cb86499b6b99e2c" target="_blank">e2e1b48</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/lps_fail_fix_cache/
+    Ignored:    analysis/sim_scenario1_cache/
+    Ignored:    analysis/sim_scenario2_cache/
+    Ignored:    analysis/sim_scenario3_cache/
+
+Untracked files:
+    Untracked:  analysis/simdata3.Rmd
+    Untracked:  matlab/simdata3.m
+    Untracked:  matlab/simdata3.mat
+    Untracked:  matlab/simdata3_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata3_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata3_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario1.m
+    Untracked:  matlab/simdata_scenario1.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_k=4_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_k=8_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=4.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=4_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_nmf_k=8.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario1_nmf_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario1_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario2.asv
+    Untracked:  matlab/simdata_scenario2.m
+    Untracked:  matlab/simdata_scenario2.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario2_k=3_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario2_k=8_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario2_nmf_k=6.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario2_nmf_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario2_nmf_vanilla.mat
+    Untracked:  matlab/simdata_scenario3.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario3_k=12_sW=0.9.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.1.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.2.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.3.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.4.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.5.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.6.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.7.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.8.mat
+    Untracked:  matlab/simdata_scenario3_k=7_sW=0.9.mat
+    Untracked:  output/sim_scenario1.rds
+
+Unstaged changes:
+    Modified:   analysis/sim_scenario1.Rmd
+    Modified:   analysis/sim_scenario3.Rmd
+    Modified:   analysis/simdata2.Rmd
+    Modified:   code/sim_functions.R
+    Modified:   matlab/simdata2.mat
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/sim_scenario1a.Rmd</code>) and
+HTML (<code>docs/sim_scenario1a.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/e2e1b489431d22d20854f1421cb86499b6b99e2c/analysis/sim_scenario1a.Rmd" target="_blank">e2e1b48</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1a.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+library(fastTopics)
+library(RcppML)
+source(&quot;./code/sim_functions.R&quot;)</code></pre>
+<div id="scenario" class="section level3">
+<h3>Scenario</h3>
+<p>To allow for objective comparisons among methods, we restrict
+ourselves to scenarios where the matrix of true means is separable. In
+topic modeling terms, each topic must feature at least one “anchor word”
+(a word that appears in that topic and nowhere else) and there must be
+at least one “pure” document per topic. In the simplest such scenario,
+which we will consider here, <em>all</em> documents are pure.</p>
+<p>To begin, let there be four populations, respectively consisting of
+1175, 250, 50, and 25 “pure” documents. We code population memberships
+using a binary <span class="math inline">\(1500 \times 4\)</span>
+component matrix <span class="math inline">\(L\)</span>, with <span
+class="math inline">\(L_{ik} = 1\)</span> if document <span
+class="math inline">\(i\)</span> belongs to population <span
+class="math inline">\(k\)</span> and <span class="math inline">\(L_{ik}
+= 0\)</span> otherwise. Topics are given by a <span
+class="math inline">\(2000 \times 4\)</span> component matrix <span
+class="math inline">\(F\)</span>. For separability, we include 10 anchor
+words per topic. For these 40 words, <span class="math inline">\(F_{jk}
+= 1\)</span> if word <span class="math inline">\(j\)</span> is an anchor
+word for topic <span class="math inline">\(k\)</span> and <span
+class="math inline">\(F_{jk} = 0\)</span> otherwise. The remaining <span
+class="math inline">\(1960 \times 4\)</span> entries <span
+class="math inline">\(F_{jk}\)</span> are simulated from a Gamma
+distribution with shape parameter <span class="math inline">\(2\)</span>
+and scale parameter <span class="math inline">\(1/2\)</span> (i.e., mean
+<span class="math inline">\(1\)</span> and variance <span
+class="math inline">\(1/2\)</span>), so that all entries <span
+class="math inline">\(F_{jk}\)</span> are similar in magnitude. We
+define the matrix of “true means” as <span class="math inline">\(\mu =
+LF&#39;\)</span>. We then simulate the data matrix <span
+class="math inline">\(Y\)</span> using a <code>log1p</code> link
+function; that is, we simulate count <span
+class="math inline">\(X_{ij}\)</span> from a Poisson distribution with
+mean <span class="math inline">\(e^{\mu_{ij}} - 1\)</span>, then set
+<span class="math inline">\(Y_{ij} = \log(X_{ij} + 1)\)</span>.</p>
+<pre class="r"><code>sim_data &lt;- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
+  pops &lt;- rep(LETTERS[1:length(ns)], times = ns)
+  
+  L &lt;- matrix(0, nrow = sum(ns), ncol = 4)
+  L[, 1] &lt;- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
+  L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
+  L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
+  L[, 4] &lt;- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
+  
+  F &lt;- sim_F(p, 4, gamma_shape, gamma_scale, n_anchor_words)
+  X &lt;- sim_X(L, F)
+  return_sim_data(X, L, F, pops)
+}
+
+set.seed(1)
+example_sim &lt;- sim_data(c(1175, 250, 50, 25), 2000, 4)
+
+Y &lt;- example_sim$Y
+Ynorm &lt;- example_sim$Ynorm
+L &lt;- example_sim$L
+pops &lt;- example_sim$pops</code></pre>
+</div>
+<div id="nmf-4-topics" class="section level3">
+<h3>NMF, 4 topics</h3>
+<p>As is common practice, we fit NMF by running multiple trials and
+choosing the fit with the lowest error.</p>
+<pre class="r"><code>nmf_k4_res &lt;- run_nmf(Y, k = 4)</code></pre>
+<p>Results vary slightly from one trial to the next:</p>
+<pre class="r"><code>nmf_k4_worst_res &lt;- run_nmf(Y, k = 4, seeds = which.max(nmf_k4_res$all_mse))
+nmf_k4_p1 &lt;- plot_nmf(
+  nmf_k4_res$fit, L, pops, 
+  paste0(&quot;Best fit, 10 trials (MSE = &quot;, round(min(nmf_k4_res$all_mse), 4), &quot;)&quot;)
+)
+nmf_k4_p2 &lt;- plot_nmf(
+  nmf_k4_worst_res$fit, L, pops,
+  paste0(&quot;Worst fit, 10 trials (MSE = &quot;, round(nmf_k4_worst_res$all_mse, 4), &quot;)&quot;)
+)
+plot_grid(nmf_k4_p1, nmf_k4_p2, nrow = 1)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nmf_k4_plots-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Even though we set our simulation parameters so that counts are
+similar in magnitude across words, normalization helps:</p>
+<pre class="r"><code>nmf_norm_k4_res &lt;- run_nmf(Ynorm, k = 4)
+nmf_norm_k4_worst_res &lt;- run_nmf(Ynorm, k = 4, seeds = which.max(nmf_norm_k4_res$all_mse))
+nmf_norm_k4_p1 &lt;- plot_nmf(
+  nmf_norm_k4_res$fit, L, pops,
+  paste0(&quot;Best fit, 10 trials (MSE = &quot;, round(min(nmf_norm_k4_res$all_mse), 4), &quot;)&quot;)
+)
+nmf_norm_k4_p2 &lt;- plot_nmf(
+  nmf_norm_k4_worst_res$fit, L, pops,
+  paste0(&quot;Worst fit, 10 trials (MSE = &quot;, round(nmf_norm_k4_worst_res$all_mse, 4), &quot;)&quot;)
+)
+plot_grid(nmf_norm_k4_p1, nmf_norm_k4_p2, nrow = 1)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nmf_norm_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>The best fit here comes close to the representation we’re looking
+for: one separate topic for each of the four populations.</p>
+<p>To improve upon these results, it should suffice merely to “sparsify”
+the components. Lee and Seung’s multiplicative updates are known to
+sometimes produce sparser “parts-based” representations, so let’s see
+whether results differ using their method:</p>
+<pre class="r"><code>nmf_lee_k4_res &lt;- run_nmf(Ynorm, k = 4, method = &quot;lee&quot;)
+nmf_lee_k4_worst_res &lt;- run_nmf(Ynorm, k = 4, seeds = which.max(nmf_lee_k4_res$all_mse))
+nmf_lee_k4_p1 &lt;- plot_nmf(
+  nmf_lee_k4_res$fit, L, pops,
+  paste0(&quot;Best fit, 10 trials (MSE = &quot;, round(min(nmf_lee_k4_res$all_mse), 4), &quot;)&quot;)
+)
+nmf_lee_k4_p2 &lt;- plot_nmf(
+  nmf_lee_k4_worst_res$fit, L, pops,
+  paste0(&quot;Worst fit, 10 trials (MSE = &quot;, round(nmf_lee_k4_worst_res$all_mse, 4), &quot;)&quot;)
+)
+plot_grid(nmf_lee_k4_p1, nmf_lee_k4_p2, nrow = 1)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nmf_lee_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Results are very similar.</p>
+</div>
+<div id="nmf-8-topics" class="section level3">
+<h3>NMF, 8 topics</h3>
+<p>In practice, of course, the “true” number of components <span
+class="math inline">\(K\)</span> will almost always be unknown (if a
+true number can even be said to exist!). If, for example, we set <span
+class="math inline">\(K = 8\)</span>, the four “true” components become
+much more difficult to find:</p>
+<pre class="r"><code>nmf_k8_res &lt;- run_nmf(Y, k = 8)
+nmf_k8_p &lt;- plot_nmf(
+  nmf_k8_res$fit, L, pops, 
+  paste0(&quot;Unnormalized, SCD&quot;)
+)
+
+nmf_norm_k8_res &lt;- run_nmf(Ynorm, k = 8)
+nmf_norm_k8_p &lt;- plot_nmf(
+  nmf_norm_k8_res$fit, L, pops,
+  paste0(&quot;Normalized, SCD&quot;)
+)
+
+nmf_lee_k8_res &lt;- run_nmf(Ynorm, k = 8, method = &quot;lee&quot;)
+nmf_lee_k8_p &lt;- plot_nmf(
+  nmf_lee_k8_res$fit, L, pops,
+  paste0(&quot;Normalized, Multiplicative&quot;)
+)
+
+plot_grid(nmf_k8_p, nmf_norm_k8_p, nmf_lee_k8_p, nrow = 1)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nmf_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>In general, then, we’d like not only to sparsify the “true”
+components, but also to minimize or eliminate redundant components.</p>
+</div>
+<div id="sparse-nmf-4-topics" class="section level3">
+<h3>Sparse NMF, 4 topics</h3>
+<p>First we’ll attempt to sparsify results by putting an L1 penalty on
+the document loadings matrix (the topics themselves are not very sparse,
+so we’ll ignore the word loadings matrix for now). An L1 penalty has
+been implemented in a number of R packages, including <code>NNLM</code>
+and <code>RcppML</code>. Note, however, that these packages implement
+the penalty very differently.</p>
+<p><code>NNLM</code> has been widely used, but using it to perform
+sparse NMF is difficult because there is no obvious scale for the L1
+penalty. Further, we need to penalize <em>both</em> component matrices
+to see much of a difference in results. (It’s possible that
+<code>NNLM</code> does not handle the issue that without penalizing
+<span class="math inline">\(H\)</span>, an L1 penalty on <span
+class="math inline">\(W\)</span> can be circumvented by simply
+decreasing the magnitude of <span class="math inline">\(W\)</span> and
+correspondingly increasing the magnitude of <span
+class="math inline">\(H\)</span>. We should look into this.)</p>
+<pre class="r"><code>nnlm_k4_plots &lt;- list()
+nnlm_k4_t &lt;- numeric()
+for (L1pen in c(.001, .01, .1, 1, 2, 5)) {
+  next_res &lt;- run_sparse_nmf(Ynorm, k = 4, L1pen = L1pen)
+  next_p &lt;- plot_nmf(next_res$fit, L, pops, paste0(&quot;L1 penalty = &quot;, L1pen))
+  nnlm_k4_plots &lt;- c(nnlm_k4_plots, list(next_p))
+  nnlm_k4_t &lt;- c(nnlm_k4_t, next_res$t[3])
+}
+plot_grid(plotlist = nnlm_k4_plots, nrow = 2, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nnlm_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>So <code>NNLM</code> achieves some sparsification. We were however
+unable to find a setting of the L1 penalty that completely sparsifies
+the blue and yellow components. (Setting the L1 penalty much larger than
+5 will cause the estimated component matrices to be zeroed out.)</p>
+<p>For sparse NMF,<code>RcppML</code> is both faster and simpler to use.
+Its L1 penalty (which, we emphasize, functions much differently from the
+L1 penalty of <code>NNLM</code>) ranges from 0 to 1, so we could use a
+straightforward grid-based approach.</p>
+<pre class="r"><code>rcppml_k4_plots &lt;- list()
+rcppml_k4_t &lt;- numeric()
+for (L1pen in c(.01, seq(0.1, 0.8, by = 0.1))) {
+  next_res &lt;- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = L1pen)
+  next_p &lt;- plot_nmf(next_res$fit, L, pops, paste0(&quot;L1 penalty = &quot;, L1pen))
+  rcppml_k4_plots &lt;- c(rcppml_k4_plots, list(next_p))
+  rcppml_k4_t &lt;- c(rcppml_k4_t, next_res$t[3])
+}
+plot_grid(plotlist = rcppml_k4_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/rcppml_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Setting the L1 penalty between 0.1 and 0.3 gives us almost exactly
+the representation we desire. Larger settings give poor results (between
+0.4 and 0.7, the third and fourth populations are no longer
+distinguished). So the quality of the representation very much depends
+on getting the L1 penalty “correct.”</p>
+<p>Another option is to use the Hoyer penalty:</p>
+<pre class="r"><code>hoyer_k4_plots &lt;- list()
+for (i in 1:9) {
+  next_res &lt;- readMat(paste0(&quot;matlab/simdata_scenario1_k=4_sW=0.&quot;, i, &quot;.mat&quot;))
+  hoyer_k4_plots[[i]] &lt;- plot_nmf(next_res, L, pops, paste0(&quot;sW = 0.&quot;, i))
+}
+plot_grid(plotlist = hoyer_k4_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/hoyer_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>For sW under 0.6, results are very similar. Setting sW = 0.6 gives a
+good result, with some noise remaining in the blue and red components.
+Above sW = 0.6, results are very poor. So again, we can get a good
+representation, but choosing the “correct” setting of sW is crucial.</p>
+</div>
+<div id="sparse-nmf-8-topics" class="section level3">
+<h3>Sparse NMF, 8 topics</h3>
+<p>With <span class="math inline">\(K = 8\)</span>, we can again get
+excellent results <em>provided that we set the sparsity parameter
+“correctly”</em>.</p>
+<p>Using <code>NNLM</code>:</p>
+<pre class="r"><code>nnlm_k8_plots &lt;- list()
+nnlm_k8_t &lt;- numeric()
+for (L1pen in c(.001, .01, .1, 1, 2, 4)) {
+  next_res &lt;- run_sparse_nmf(Ynorm, k = 8, L1pen = L1pen)
+  next_p &lt;- plot_nmf(next_res$fit, L, pops, paste0(&quot;L1 penalty = &quot;, L1pen))
+  nnlm_k8_plots &lt;- c(nnlm_k8_plots, list(next_p))
+  nnlm_k8_t &lt;- c(nnlm_k8_t, next_res$t[3])
+}
+plot_grid(plotlist = nnlm_k8_plots, nrow = 2, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/nnlm_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><code>RcppML</code>:</p>
+<pre class="r"><code>rcppml_k8_plots &lt;- list()
+rcppml_k8_t &lt;- numeric()
+for (L1pen in seq(0.1, 0.9, by = 0.1)) {
+  next_res &lt;- run_RcppML_sparse_nmf(Ynorm, k = 8, L1pen = L1pen)
+  next_p &lt;- plot_nmf(next_res$fit, L, pops, paste0(&quot;L1 penalty = &quot;, L1pen))
+  rcppml_k8_plots &lt;- c(rcppml_k8_plots, list(next_p))
+  rcppml_k8_t &lt;- c(rcppml_k8_t, next_res$t[3])
+}
+plot_grid(plotlist = rcppml_k8_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/rcppml_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>Hoyer:</p>
+<pre class="r"><code>hoyer_k8_plots &lt;- list()
+for (i in 1:9) {
+  next_res &lt;- readMat(paste0(&quot;matlab/simdata_scenario1_k=8_sW=0.&quot;, i, &quot;.mat&quot;))
+  hoyer_k8_plots[[i]] &lt;- plot_nmf(next_res, L, pops, paste0(&quot;sW = 0.&quot;, i))
+}
+plot_grid(plotlist = hoyer_k8_plots, nrow = 3, ncol = 3)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/hoyer_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebnmf-nmf-initialization" class="section level3">
+<h3>EBNMF (NMF initialization)</h3>
+<p>Next we run EBNMF, initializing using NMF results:</p>
+<pre class="r"><code>ebnmf_nmfinit_k4_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 2)
+ebnmf_nmfinit_k4_p &lt;- plot_fl(
+  ebnmf_nmfinit_k4_res$fit, L, pops, 
+  paste0(&quot;NMF init., Kmax = 4 (ELBO = &quot;, round(ebnmf_nmfinit_k4_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+ebnmf_nmfinit_k8_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 2)
+ebnmf_nmfinit_k8_p &lt;- plot_fl(
+  ebnmf_nmfinit_k8_res$fit, L, pops, 
+  paste0(&quot;NMF init., Kmax = 8 (ELBO = &quot;, round(ebnmf_nmfinit_k8_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, nrow = 1)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/ebnmf_nmfinit_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre><code>#   --Estimate of factor 8 is numerically zero!
+#   --Estimate of factor 8 is numerically zero!
+#   --Estimate of factor 6 is numerically zero!
+#   --Estimate of factor 6 is numerically zero!
+#   --Estimate of factor 3 is numerically zero!
+#   --Estimate of factor 7 is numerically zero!
+#   --Estimate of factor 7 is numerically zero!</code></pre>
+<p>Somewhat surprisingly, we get better results using the NMF
+initialization with the <em>incorrect</em> number of components. Indeed,
+the fit initialized using the 8-topic NMF fit appears as good as or
+better than all of the sparse NMF fits we obtained using <span
+class="math inline">\(K = 8\)</span>. And we didn’t need to set any
+sparsity parameters!</p>
+</div>
+<div id="ebnmf-other-approaches" class="section level3">
+<h3>EBNMF (other approaches)</h3>
+<p>In our simulations, we’ll consider a few other EBNMF methods:</p>
+<ol style="list-style-type: decimal">
+<li><p>Wang and Stephens suggest using a “greedy” approach to initialize
+factors, and then “backfitting” to refine the EBNMF fit. We refer to
+this approach as “greedy + backfit.”</p></li>
+<li><p>We’ve found with NMF that the greedy approach occasionally
+doesn’t add enough factors. Intuitively, additional components can only
+increase the fitted values, so that if one component “overshoots” it
+cannot be adjusted downward until components are backfitted. Thus it can
+be useful to repeat the “greedy + backfit” approach multiple times until
+the greedy step no longer adds any new factors. We refer to this method
+as the “bulk alternating” approach.</p></li>
+<li><p>Instead of adding multiple greedy components before backfitting,
+we might backfit after <em>each</em> new component is added (add one
+component greedily, backfit, and repeat until the greedy step fails). We
+refer to this last method as the “strict alternating,” or more simply
+the “alternating” approach.</p></li>
+</ol>
+<p>These approaches yield the following results. For illustration, we
+also show some intermediate fits.</p>
+<pre class="r"><code>fl_g &lt;- flash(Ynorm, var_type = 2, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_b &lt;- fl_g |&gt; flash_backfit(verbose = 0) 
+p_g &lt;- plot_fl(fl_g, L, pops, paste0(&quot;Greedy (ELBO = &quot;, round(fl_g$elbo, 2), &quot;)&quot;))
+p_b &lt;- plot_fl(fl_b, L, pops, paste0(&quot;Backfit (ELBO = &quot;, round(fl_b$elbo, 2), &quot;)&quot;))
+
+fl_bulkalt_g &lt;- fl_b |&gt; flash_greedy(Kmax = 4, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_bulkalt_b &lt;- fl_bulkalt_g |&gt; flash_backfit(verbose = 0)
+# Further iterations do not yield any new factors.
+p_bulkalt_g &lt;- plot_fl(fl_bulkalt_g, L, pops, 
+                       paste0(&quot;Second greedy (ELBO = &quot;, round(fl_bulkalt_g$elbo, 2), &quot;)&quot;))
+p_bulkalt_b &lt;- plot_fl(fl_bulkalt_b, L, pops, 
+                       paste0(&quot;Second backfit (ELBO = &quot;, round(fl_bulkalt_b$elbo, 2), &quot;)&quot;))
+
+fl_alt_k4 &lt;- run_alternating(Ynorm, Kmax = 4, var_type = 2)
+fl_alt_k8 &lt;- run_alternating(Ynorm, Kmax = 8, var_type = 2)
+p_alt_k4 &lt;- plot_fl(fl_alt_k4$fit, L, pops, 
+                    paste0(&quot;Alternating, Kmax = 4 (ELBO = &quot;, round(fl_alt_k4$fit$elbo, 2), &quot;)&quot;))
+p_alt_k8 &lt;- plot_fl(fl_alt_k8$fit, L, pops, 
+                     paste0(&quot;Alternating, Kmax = 8 (ELBO = &quot;, round(fl_alt_k8$fit$elbo, 2), &quot;)&quot;))
+
+plot_grid(p_g, p_b, p_bulkalt_g, p_bulkalt_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/ebnmf_other-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre><code>#   --Estimate of factor 2 is numerically zero!
+#   --Estimate of factor 3 is numerically zero!
+#   --Estimate of factor 4 is numerically zero!</code></pre>
+</div>
+<div id="ebnmf-unnormalized-data" class="section level3">
+<h3>EBNMF, unnormalized data</h3>
+<p>Since EBNMF can perform column-wise variance estimation, we don’t
+actually need to normalize the count matrix in advance. Running EBNMF on
+the unnormalized data yields the following:</p>
+<pre class="r"><code>ebnmf_nmfinit_k4_res &lt;- run_ebnmf_from_nmf(Y, nmf_k4_res$fit, var_type = 2)
+ebnmf_nmfinit_k4_p &lt;- plot_fl(
+  ebnmf_nmfinit_k4_res$fit, L, pops, 
+  paste0(&quot;NMF initialization, Kmax = 4 (&quot;, round(ebnmf_nmfinit_k4_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+ebnmf_nmfinit_k8_res &lt;- run_ebnmf_from_nmf(Y, nmf_k8_res$fit, var_type = 2)
+ebnmf_nmfinit_k8_p &lt;- plot_fl(
+  ebnmf_nmfinit_k8_res$fit, L, pops, 
+  paste0(&quot;NMF initialization, Kmax = 8 (&quot;, round(ebnmf_nmfinit_k8_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+fl_g &lt;- flash(Y, var_type = 2, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_b &lt;- fl_g |&gt; flash_backfit(verbose = 0) 
+p_g &lt;- plot_fl(fl_g, L, pops, paste0(&quot;Greedy (ELBO = &quot;, round(fl_g$elbo, 2), &quot;)&quot;))
+p_b &lt;- plot_fl(fl_b, L, pops, paste0(&quot;Backfit (ELBO = &quot;, round(fl_b$elbo, 2), &quot;)&quot;))
+# Further iterations do not yield any new factors.
+
+fl_alt_k4 &lt;- run_alternating(Y, Kmax = 4, var_type = 2)
+fl_alt_k8 &lt;- run_alternating(Y, Kmax = 8, var_type = 2)
+p_alt_k4 &lt;- plot_fl(fl_alt_k4$fit, L, pops, 
+                    paste0(&quot;Alternating, Kmax = 4 (ELBO = &quot;, round(fl_alt_k4$fit$elbo, 2), &quot;)&quot;))
+p_alt_k8 &lt;- plot_fl(fl_alt_k8$fit, L, pops, 
+                     paste0(&quot;Alternating, Kmax = 8 (ELBO = &quot;, round(fl_alt_k8$fit$elbo, 2), &quot;)&quot;))
+
+plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, p_g, p_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/ebnmf_nonorm-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre><code>#   --Estimate of factor 2 is numerically zero!
+#   --Estimate of factor 5 is numerically zero!
+#   --Estimate of factor 5 is numerically zero!
+#   --Estimate of factor 8 is numerically zero!
+#   --Estimate of factor 8 is numerically zero!</code></pre>
+<p>Note that unlike with normalization, the magnitudes of the four
+components are similar (as they should be!). Further, the greedy +
+backfit and alternating approaches choose the correct number of
+components.</p>
+</div>
+<div id="looking-ahead" class="section level3">
+<h3>Looking ahead</h3>
+<p>Part 2 of this analysis will continue with the “fully separated
+topics” scenario. We’ll compare some of these methods using objective
+measures over a range of different simulation settings.</p>
+<p>For all NMF and sparse NMF methods, we’ll use package
+<code>RcppML</code>, both because it is much faster than package
+<code>NNLM</code> and because its results appear to be somewhat more
+robust to the setting of the sparsity parameter. (In the examples above,
+the update method does not seem to make much of a difference.) As is
+common practice, we’ll do 10 trials and choose the fit with the lowest
+reconstruction error. We’ll consider results with the L1 penalty set to
+0 (i.e., vanilla NMF), 0.1 (a conservative approach), 0.3 (more
+aggressive), 0.5 (very aggressive), and 0.7 (probably too aggressive,
+especially when <span class="math inline">\(K = 4\)</span>). In each
+case, we’ll normalize the data before running NMF. This gives five NMF
+and sparse NMF methods.</p>
+<p>Additionally, we’ll consider the following EBNMF approaches: NMF
+initialization; bulk alternating; and strict alternating. For the
+alternating methods, we’ll consider results for both normalized and
+unnormalized data. This gives five EBNMF methods.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.5.1 (2025-06-13)
+# Platform: aarch64-apple-darwin20
+# Running under: macOS Sequoia 15.5
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/New_York
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+#  [1] RcppML_0.3.7       fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34       
+#  [5] cowplot_1.2.0      ggplot2_3.5.2      stringr_1.5.1      tidyr_1.3.1       
+#  [9] dplyr_1.1.4        tibble_3.3.0       R.matlab_3.7.0     workflowr_1.7.1   
+# 
+# loaded via a namespace (and not attached):
+#  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.2        
+#  [4] R.utils_2.13.0       fastmap_1.2.0        lazyeval_0.2.2      
+#  [7] promises_1.3.3       digest_0.6.37        lifecycle_1.0.4     
+# [10] processx_3.8.6       invgamma_1.2         magrittr_2.0.3      
+# [13] compiler_4.5.1       rlang_1.1.6          sass_0.4.10         
+# [16] progress_1.2.3       tools_4.5.1          yaml_2.3.10         
+# [19] data.table_1.17.8    knitr_1.50           labeling_0.4.3      
+# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
+# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
+# [28] purrr_1.1.0          R.oo_1.27.1          grid_4.5.1          
+# [31] git2r_0.36.2         colorspace_2.1-1     scales_1.4.0        
+# [34] gtools_3.9.5         cli_3.6.5            rmarkdown_2.29      
+# [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
+# [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
+# [43] cachem_1.1.0         splines_4.5.1        parallel_4.5.1      
+# [46] softImpute_1.4-3     vctrs_0.6.5          Matrix_1.7-3        
+# [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
+# [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
+# [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
+# [58] jquerylib_0.1.4      glue_1.8.0           ps_1.9.1            
+# [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
+# [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
+# [67] NNLM_0.4.4           pillar_1.11.0        htmltools_0.5.8.1   
+# [70] truncnorm_1.0-9      R6_2.6.1             rprojroot_2.1.0     
+# [73] evaluate_1.0.4       lattice_0.22-7       R.methodsS3_1.8.2   
+# [76] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-63         
+# [79] httpuv_1.6.16        bslib_0.9.0          Rcpp_1.1.0          
+# [82] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.52           
+# [85] fs_1.6.6             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
