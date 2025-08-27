@@ -368,7 +368,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -379,8 +379,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -389,13 +389,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-26
+<strong>Last updated:</strong> 2025-08-27
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
@@ -489,42 +489,16 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
-<div id="strongCachestrongdetected" class="panel-collapse collapse">
+<div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-The following chunks had caches available:
-<ul>
-<li>
-unnamed-chunk-10
-</li>
-<li>
-unnamed-chunk-13
-</li>
-<li>
-unnamed-chunk-2
-</li>
-<li>
-unnamed-chunk-4
-</li>
-<li>
-unnamed-chunk-5
-</li>
-<li>
-unnamed-chunk-6
-</li>
-<li>
-unnamed-chunk-8
-</li>
-</ul>
-<p>To ensure reproducibility of the results, delete the cache directory
-<code>sim_scenario1_cache</code> and re-run the analysis. To have
-workflowr automatically delete the cache directory prior to building the
-file, set <code>delete_cache = TRUE</code> when running
-<code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
 </div>
 </div>
 </div>
@@ -546,15 +520,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree17444fc0bf5323f2dccb3803846d1caac53652b3targetblank17444fca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree76212d978e7c86f3ad94f37772ee5902a02cb53dtargetblank76212d9a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/17444fc0bf5323f2dccb3803846d1caac53652b3" target="_blank">17444fc</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/76212d978e7c86f3ad94f37772ee5902a02cb53d" target="_blank">76212d9</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree17444fc0bf5323f2dccb3803846d1caac53652b3targetblank17444fca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree76212d978e7c86f3ad94f37772ee5902a02cb53dtargetblank76212d9a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -564,7 +538,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/17444fc0bf5323f2dccb3803846d1caac53652b3" target="_blank">17444fc</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/76212d978e7c86f3ad94f37772ee5902a02cb53d" target="_blank">76212d9</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -584,6 +558,7 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
+    Ignored:    analysis/sim_scenario1b_cache/
     Ignored:    analysis/sim_scenario2_cache/
     Ignored:    analysis/sim_scenario3_cache/
 
@@ -695,8 +670,8 @@ have uncommitted changes.
 <div id="versions" class="tab-pane fade">
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/sim_scenario1.Rmd</code>) and
-HTML (<code>docs/sim_scenario1.html</code>) files. If you’ve configured
+made to the R Markdown (<code>analysis/sim_scenario1b.Rmd</code>) and
+HTML (<code>docs/sim_scenario1b.html</code>) files. If you’ve configured
 a remote Git repository (see <code>?wflow_git_remote</code>), click on
 the hyperlinks in the table below to view the files as they were in that
 past version.
@@ -728,7 +703,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/17444fc0bf5323f2dccb3803846d1caac53652b3/analysis/sim_scenario1.Rmd" target="_blank">17444fc</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/76212d978e7c86f3ad94f37772ee5902a02cb53d/analysis/sim_scenario1b.Rmd" target="_blank">76212d9</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -737,7 +712,8 @@ Jason Willwerscheid
 2025-08-26
 </td>
 <td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+workflowr::wflow_rename("sim_scenario1b.Rmd",
+"analysis/sim_scenario1b.Rmd")
 </td>
 </tr>
 <tr>
@@ -745,237 +721,17 @@ workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/1165151731e6730fa2c576dc4f9ddfe61c6d8ba2/docs/sim_scenario1.html" target="_blank">1165151</a>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/sim_scenario1b.html" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-26
 </td>
 <td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/e309769b684d506b27f780ca48155967c42e5f55/analysis/sim_scenario1.Rmd" target="_blank">e309769</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-22
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/sim_scenario1.html" target="_blank">bcf66b1</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/27544909aceed5086b6e387b195149391fbdff11/analysis/sim_scenario1.Rmd" target="_blank">2754490</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-22
-</td>
-<td>
-wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/sim_scenario1.html" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/26d905dbcfb51ad1629362dff30cb808711ede25/analysis/sim_scenario1.Rmd" target="_blank">26d905d</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/e2631ba8f9628d85934c887528941c70687c4f7c/docs/sim_scenario1.html" target="_blank">e2631ba</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-15
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6a08f4c51b9844d548d05a3d1f0ea7940dfb5288/analysis/sim_scenario1.Rmd" target="_blank">6a08f4c</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-15
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/917b6ad4f73e56b22464f281d9ffbd278cdfe272/docs/sim_scenario1.html" target="_blank">917b6ad</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/4e7af00e394f8362407875c62f53b777608c5063/analysis/sim_scenario1.Rmd" target="_blank">4e7af00</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/sim_scenario1.html" target="_blank">c5dbc64</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bbe6d4aa616637ccc718e016921ae480c8600ea8/analysis/sim_scenario1.Rmd" target="_blank">bbe6d4a</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/sim_scenario1.html" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/dbbc79099f35d8fa723a29aae2e61edcf2223e20/analysis/sim_scenario1.Rmd" target="_blank">dbbc790</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-<td>
-workflowr::wflow_publish("analysis/sim_scenario1.Rmd")
+workflowr::wflow_rename("analysis/sim_scenario1.Rmd",
+"sim_scenario1b.Rmd")
 </td>
 </tr>
 </tbody>
@@ -1310,7 +1066,7 @@ norm_lvls &lt;- c(&quot;NMF&quot;, &quot;SpNMF0.1&quot;, &quot;SpNMF0.3&quot;, &
 raw_lvls &lt;- c(&quot;NMFraw&quot;, &quot;SpNMF0.1raw&quot;, &quot;SpNMF0.3raw&quot;, &quot;SpNMF0.5raw&quot;, &quot;SpNMF0.7raw&quot;, &quot;NMF-EBNMFraw&quot;, &quot;EBNMFgbraw&quot;, &quot;EBNMFaltraw&quot;)
 lvls &lt;- norm_lvls
 make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
 Past versions of unnamed-chunk-3-1.png
@@ -1335,13 +1091,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-3-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-3-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1351,7 +1107,7 @@ Jason Willwerscheid
 <p>Cosine similarities for <code>L</code> (non-normalized data):</p>
 <pre class="r"><code>lvls &lt;- raw_lvls
 make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
 Past versions of unnamed-chunk-4-1.png
@@ -1376,13 +1132,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-4-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-4-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1391,7 +1147,7 @@ Jason Willwerscheid
 </div>
 <p>Cosine similarities for <code>F</code> (non-normalized data):</p>
 <pre class="r"><code>make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, &quot;FFcos&quot;)), &quot;Cos. sim. w/ true F&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
 Past versions of unnamed-chunk-5-1.png
@@ -1416,46 +1172,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-5-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">c5dbc64</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-5-1.png" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1521,7 +1244,7 @@ ex_plots_k4[[4]] &lt;- plot_nmf(nmf_raw_res_k4$fit, L, pops, &quot;NMF (raw)&quo
 ex_plots_k4[[5]] &lt;- plot_nmf(spnmf_raw_res_k4$fit, L, pops, &quot;Sparse NMF (raw)&quot;)
 ex_plots_k4[[6]] &lt;- plot_fl(ebnmf_raw_res_k4$fit, L, pops, &quot;Alt. EBNMF (raw)&quot;)
 plot_grid(plotlist = ex_plots_k4, nrow = 2, ncol = 3)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
 Past versions of unnamed-chunk-7-1.png
@@ -1546,46 +1269,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-7-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">c5dbc64</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-7-1.png" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1601,7 +1291,7 @@ component.</p>
 <p>Cosine similarities for <code>L</code> (normalized data):</p>
 <pre class="r"><code>lvls &lt;- norm_lvls
 make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
 Past versions of unnamed-chunk-8-1.png
@@ -1626,46 +1316,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-8-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/c5dbc644a00ae4d750b302ab471e9b359cc188eb/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">c5dbc64</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-8-1.png" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1675,7 +1332,7 @@ Jason Willwerscheid
 <p>Cosine similarities for <code>L</code> (non-normalized data):</p>
 <pre class="r"><code>lvls &lt;- raw_lvls
 make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;LLcos&quot;)), &quot;Cos. sim. w/ true L&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
 Past versions of unnamed-chunk-9-1.png
@@ -1700,35 +1357,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-9-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-9-1.png" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1737,7 +1372,7 @@ Jason Willwerscheid
 </div>
 <p>Cosine similarities for <code>F</code> (non-normalized data):</p>
 <pre class="r"><code>make_cosplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;FFcos&quot;)), &quot;Cos. sim. w/ true F&quot;)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
 Past versions of unnamed-chunk-10-1.png
@@ -1762,35 +1397,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-10-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9e1347f2a7140dbaec784e3e535394951e2a0054/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">9e1347f</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-19
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/8aded61aecf4ac1c0804669e97c7ca57dacf7b7f/docs/figure/sim_scenario1.Rmd/unnamed-chunk-10-1.png" target="_blank">8aded61</a>
-</td>
-<td>
-Jason Willwerscheid
-</td>
-<td>
-2025-08-14
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1803,7 +1416,7 @@ the top row.</p>
 <p>Normalized data:</p>
 <pre class="r"><code>lvls &lt;- norm_lvls
 make_scaleplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
 Past versions of unnamed-chunk-11-1.png
@@ -1828,13 +1441,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-11-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-11-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1844,7 +1457,7 @@ Jason Willwerscheid
 <p>Non-normalized data:</p>
 <pre class="r"><code>lvls &lt;- raw_lvls
 make_scaleplot(all_res |&gt; filter(method %in% lvls, Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
 Past versions of unnamed-chunk-12-1.png
@@ -1869,13 +1482,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/bcf66b1209be60264dc507476d2a810229fd7d5e/docs/figure/sim_scenario1.Rmd/unnamed-chunk-12-1.png" target="_blank">bcf66b1</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-12-1.png" target="_blank">40f241a</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-26
 </td>
 </tr>
 </tbody>
@@ -1937,7 +1550,44 @@ ex_plots_k8[[6]] &lt;- plot_nmf(spnmf_raw_res_k8$fit, L, pops, &quot;Sparse NMF 
 ex_plots_k8[[7]] &lt;- plot_fl(nmf_ebnmf_raw_res_k8$fit, L, pops, &quot;NMF-EBNMF (raw)&quot;)
 ex_plots_k8[[8]] &lt;- plot_fl(ebnmf_raw_res_k8$fit, L, pops, &quot;Alt. EBNMF (raw)&quot;)
 plot_grid(plotlist = ex_plots_k8, nrow = 2, ncol = 4)</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-14-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-14-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-14-1.png" target="_blank">40f241a</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The NMF-initialization results appear pretty unsatisfactory. The
 columnwise-variance alternating result does slightly less well in
 estimating the fourth component, but overall the cleanness of the
@@ -1963,7 +1613,44 @@ ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
   labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
   theme(axis.text.x = element_text(angle = 45)) + 
   theme(strip.text = element_text(size = 8))</code></pre>
-<p><img src="figure/sim_scenario1.Rmd/unnamed-chunk-15-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/sim_scenario1b.Rmd/unnamed-chunk-15-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/40f241a678545a43fcc5e107cabc1f34bdf6ec30/docs/figure/sim_scenario1b.Rmd/unnamed-chunk-15-1.png" target="_blank">40f241a</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2015,16 +1702,16 @@ Session information
 # [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
 # [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
 # [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
-# [58] jquerylib_0.1.4      glue_1.8.0           ps_1.9.1            
-# [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
-# [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
-# [67] pillar_1.11.0        htmltools_0.5.8.1    truncnorm_1.0-9     
-# [70] R6_2.6.1             rprojroot_2.1.0      evaluate_1.0.4      
-# [73] lattice_0.22-7       R.methodsS3_1.8.2    RhpcBLASctl_0.23-42 
-# [76] SQUAREM_2021.1       ashr_2.2-63          httpuv_1.6.16       
-# [79] bslib_0.9.0          Rcpp_1.1.0           deconvolveR_1.2-1   
-# [82] whisker_0.4.1        xfun_0.52            fs_1.6.6            
-# [85] getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+# [58] jquerylib_0.1.4      glue_1.8.0           codetools_0.2-20    
+# [61] ps_1.9.1             uwot_0.2.3           stringi_1.8.7       
+# [64] Polychrome_1.5.4     gtable_0.3.6         later_1.4.2         
+# [67] quadprog_1.5-8       pillar_1.11.0        htmltools_0.5.8.1   
+# [70] truncnorm_1.0-9      R6_2.6.1             rprojroot_2.1.0     
+# [73] evaluate_1.0.4       lattice_0.22-7       R.methodsS3_1.8.2   
+# [76] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-63         
+# [79] httpuv_1.6.16        bslib_0.9.0          Rcpp_1.1.0          
+# [82] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.52           
+# [85] fs_1.6.6             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 </div>
