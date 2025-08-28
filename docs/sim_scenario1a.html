@@ -12,7 +12,7 @@
 <meta name="author" content="Jason Willwerscheid and Peter Carbonetto" />
 
 
-<title>NMF analyses of simulated data, Scenario 1 (fully separated topics), Part 1</title>
+<title>NMF analyses of simulated data, Scenario 1 (fully separated clusters), Part 1</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -359,7 +359,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">NMF analyses of simulated data, Scenario 1
-(fully separated topics), Part 1</h1>
+(fully separated clusters), Part 1</h1>
 <h4 class="author">Jason Willwerscheid and Peter Carbonetto</h4>
 
 </div>
@@ -368,7 +368,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -379,8 +379,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -389,13 +389,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-26
+<strong>Last updated:</strong> 2025-08-28
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>ebnmf-paper/</code> <span
@@ -489,16 +489,24 @@ versions is critical for reproducibility.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongdetected">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 </p>
 </div>
-<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div id="strongCachestrongdetected" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be
-confident that you successfully produced the results during this
-run.</p>
+The following chunks had caches available:
+<ul>
+<li>
+spnmf_reconstruction
+</li>
+</ul>
+<p>To ensure reproducibility of the results, delete the cache directory
+<code>sim_scenario1a_cache</code> and re-run the analysis. To have
+workflowr automatically delete the cache directory prior to building the
+file, set <code>delete_cache = TRUE</code> when running
+<code>wflow_build()</code> or <code>wflow_publish()</code>.</p>
 </div>
 </div>
 </div>
@@ -520,15 +528,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee2e1b489431d22d20854f1421cb86499b6b99e2ctargetblanke2e1b48a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree5052727e911300acdae5a7c5a120e1abc4dc6e56targetblank5052727a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e2e1b489431d22d20854f1421cb86499b6b99e2c" target="_blank">e2e1b48</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/5052727e911300acdae5a7c5a120e1abc4dc6e56" target="_blank">5052727</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee2e1b489431d22d20854f1421cb86499b6b99e2ctargetblanke2e1b48a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree5052727e911300acdae5a7c5a120e1abc4dc6e56targetblank5052727a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -538,7 +546,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e2e1b489431d22d20854f1421cb86499b6b99e2c" target="_blank">e2e1b48</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/5052727e911300acdae5a7c5a120e1abc4dc6e56" target="_blank">5052727</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,8 +564,11 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
+    Ignored:    analysis/sim_scenario1a_cache/
+    Ignored:    analysis/sim_scenario1b_cache/
     Ignored:    analysis/sim_scenario2_cache/
     Ignored:    analysis/sim_scenario3_cache/
 
@@ -649,7 +660,7 @@ Untracked files:
     Untracked:  output/sim_scenario1.rds
 
 Unstaged changes:
-    Modified:   analysis/sim_scenario1.Rmd
+    Modified:   analysis/sim_scenario1b.Rmd
     Modified:   analysis/sim_scenario3.Rmd
     Modified:   analysis/simdata2.Rmd
     Modified:   code/sim_functions.R
@@ -703,6 +714,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5052727e911300acdae5a7c5a120e1abc4dc6e56/analysis/sim_scenario1a.Rmd" target="_blank">5052727</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-28
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1a.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/64457752b64261871f0899e0079f37f44d7f5fe1/docs/sim_scenario1a.html" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/e2e1b489431d22d20854f1421cb86499b6b99e2c/analysis/sim_scenario1a.Rmd" target="_blank">e2e1b48</a>
 </td>
 <td>
@@ -733,21 +778,22 @@ library(ebnm)
 library(flashier)
 library(fastTopics)
 library(RcppML)
+library(Matrix)
 source(&quot;./code/sim_functions.R&quot;)</code></pre>
 <div id="scenario" class="section level3">
 <h3>Scenario</h3>
 <p>To allow for objective comparisons among methods, we restrict
-ourselves to scenarios where the matrix of true means is separable. In
+ourselves to scenarios where the matrix of “true means” is separable. In
 topic modeling terms, each topic must feature at least one “anchor word”
 (a word that appears in that topic and nowhere else) and there must be
 at least one “pure” document per topic. In the simplest such scenario,
 which we will consider here, <em>all</em> documents are pure.</p>
-<p>To begin, let there be four populations, respectively consisting of
-1175, 250, 50, and 25 “pure” documents. We code population memberships
+<p>To begin, let there be four clusters, respectively consisting of
+1175, 250, 50, and 25 “pure” documents. We code cluster memberships
 using a binary <span class="math inline">\(1500 \times 4\)</span>
 component matrix <span class="math inline">\(L\)</span>, with <span
 class="math inline">\(L_{ik} = 1\)</span> if document <span
-class="math inline">\(i\)</span> belongs to population <span
+class="math inline">\(i\)</span> belongs to cluster <span
 class="math inline">\(k\)</span> and <span class="math inline">\(L_{ik}
 = 0\)</span> otherwise. Topics are given by a <span
 class="math inline">\(2000 \times 4\)</span> component matrix <span
@@ -769,7 +815,11 @@ class="math inline">\(Y\)</span> using a <code>log1p</code> link
 function; that is, we simulate count <span
 class="math inline">\(X_{ij}\)</span> from a Poisson distribution with
 mean <span class="math inline">\(e^{\mu_{ij}} - 1\)</span>, then set
-<span class="math inline">\(Y_{ij} = \log(X_{ij} + 1)\)</span>.</p>
+<span class="math inline">\(Y_{ij} = \log(X_{ij} + 1)\)</span>. (We note
+that the expectation of the random variable <span
+class="math inline">\(Y_{ij}\)</span> is not exactly <span
+class="math inline">\(\mu_{ij}\)</span>, but it is close, especially for
+large <span class="math inline">\(\mu_{ij}\)</span>.)</p>
 <pre class="r"><code>sim_data &lt;- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
   pops &lt;- rep(LETTERS[1:length(ns)], times = ns)
   
@@ -809,8 +859,45 @@ nmf_k4_p2 &lt;- plot_nmf(
 )
 plot_grid(nmf_k4_p1, nmf_k4_p2, nrow = 1)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nmf_k4_plots-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nmf_k4_plots-1">
+Past versions of nmf_k4_plots-1.png
+</button>
+</p>
+<div id="fig-nmf_k4_plots-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nmf_k4_plots-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Even though we set our simulation parameters so that counts are
-similar in magnitude across words, normalization helps:</p>
+similar in magnitude across words, normalization seems to help:</p>
 <pre class="r"><code>nmf_norm_k4_res &lt;- run_nmf(Ynorm, k = 4)
 nmf_norm_k4_worst_res &lt;- run_nmf(Ynorm, k = 4, seeds = which.max(nmf_norm_k4_res$all_mse))
 nmf_norm_k4_p1 &lt;- plot_nmf(
@@ -823,8 +910,45 @@ nmf_norm_k4_p2 &lt;- plot_nmf(
 )
 plot_grid(nmf_norm_k4_p1, nmf_norm_k4_p2, nrow = 1)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nmf_norm_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nmf_norm_k4-1">
+Past versions of nmf_norm_k4-1.png
+</button>
+</p>
+<div id="fig-nmf_norm_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nmf_norm_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The best fit here comes close to the representation we’re looking
-for: one separate topic for each of the four populations.</p>
+for: one separate topic for each of the four clusters.</p>
 <p>To improve upon these results, it should suffice merely to “sparsify”
 the components. Lee and Seung’s multiplicative updates are known to
 sometimes produce sparser “parts-based” representations, so let’s see
@@ -841,7 +965,44 @@ nmf_lee_k4_p2 &lt;- plot_nmf(
 )
 plot_grid(nmf_lee_k4_p1, nmf_lee_k4_p2, nrow = 1)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nmf_lee_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>Results are very similar.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nmf_lee_k4-1">
+Past versions of nmf_lee_k4-1.png
+</button>
+</p>
+<div id="fig-nmf_lee_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nmf_lee_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The update function doesn’t make much of a difference.</p>
 </div>
 <div id="nmf-8-topics" class="section level3">
 <h3>NMF, 8 topics</h3>
@@ -853,13 +1014,13 @@ much more difficult to find:</p>
 <pre class="r"><code>nmf_k8_res &lt;- run_nmf(Y, k = 8)
 nmf_k8_p &lt;- plot_nmf(
   nmf_k8_res$fit, L, pops, 
-  paste0(&quot;Unnormalized, SCD&quot;)
+  paste0(&quot;Unnormalized, SCD updates&quot;)
 )
 
 nmf_norm_k8_res &lt;- run_nmf(Ynorm, k = 8)
 nmf_norm_k8_p &lt;- plot_nmf(
   nmf_norm_k8_res$fit, L, pops,
-  paste0(&quot;Normalized, SCD&quot;)
+  paste0(&quot;Normalized, SCD updates&quot;)
 )
 
 nmf_lee_k8_res &lt;- run_nmf(Ynorm, k = 8, method = &quot;lee&quot;)
@@ -870,6 +1031,43 @@ nmf_lee_k8_p &lt;- plot_nmf(
 
 plot_grid(nmf_k8_p, nmf_norm_k8_p, nmf_lee_k8_p, nrow = 1)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nmf_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nmf_k8-1">
+Past versions of nmf_k8-1.png
+</button>
+</p>
+<div id="fig-nmf_k8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nmf_k8-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>In general, then, we’d like not only to sparsify the “true”
 components, but also to minimize or eliminate redundant components.</p>
 </div>
@@ -901,6 +1099,43 @@ for (L1pen in c(.001, .01, .1, 1, 2, 5)) {
 }
 plot_grid(plotlist = nnlm_k4_plots, nrow = 2, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nnlm_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nnlm_k4-1">
+Past versions of nnlm_k4-1.png
+</button>
+</p>
+<div id="fig-nnlm_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nnlm_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>So <code>NNLM</code> achieves some sparsification. We were however
 unable to find a setting of the L1 penalty that completely sparsifies
 the blue and yellow components. (Setting the L1 penalty much larger than
@@ -919,12 +1154,50 @@ for (L1pen in c(.01, seq(0.1, 0.8, by = 0.1))) {
 }
 plot_grid(plotlist = rcppml_k4_plots, nrow = 3, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/rcppml_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-rcppml_k4-1">
+Past versions of rcppml_k4-1.png
+</button>
+</p>
+<div id="fig-rcppml_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/rcppml_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Setting the L1 penalty between 0.1 and 0.3 gives us almost exactly
 the representation we desire. Larger settings give poor results (between
-0.4 and 0.7, the third and fourth populations are no longer
-distinguished). So the quality of the representation very much depends
-on getting the L1 penalty “correct.”</p>
-<p>Another option is to use the Hoyer penalty:</p>
+0.4 and 0.7, the third and fourth clusters are no longer distinguished).
+So the quality of the representation very much depends on getting the L1
+penalty “correct.”</p>
+<p>Another option is to use the penalty proposed by Hoyer (2004). The
+author provides a MATLAB implementation:</p>
 <pre class="r"><code>hoyer_k4_plots &lt;- list()
 for (i in 1:9) {
   next_res &lt;- readMat(paste0(&quot;matlab/simdata_scenario1_k=4_sW=0.&quot;, i, &quot;.mat&quot;))
@@ -932,6 +1205,43 @@ for (i in 1:9) {
 }
 plot_grid(plotlist = hoyer_k4_plots, nrow = 3, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/hoyer_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hoyer_k4-1">
+Past versions of hoyer_k4-1.png
+</button>
+</p>
+<div id="fig-hoyer_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/hoyer_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>For sW under 0.6, results are very similar. Setting sW = 0.6 gives a
 good result, with some noise remaining in the blue and red components.
 Above sW = 0.6, results are very poor. So again, we can get a good
@@ -941,7 +1251,7 @@ representation, but choosing the “correct” setting of sW is crucial.</p>
 <h3>Sparse NMF, 8 topics</h3>
 <p>With <span class="math inline">\(K = 8\)</span>, we can again get
 excellent results <em>provided that we set the sparsity parameter
-“correctly”</em>.</p>
+“correctly.”</em></p>
 <p>Using <code>NNLM</code>:</p>
 <pre class="r"><code>nnlm_k8_plots &lt;- list()
 nnlm_k8_t &lt;- numeric()
@@ -953,6 +1263,43 @@ for (L1pen in c(.001, .01, .1, 1, 2, 4)) {
 }
 plot_grid(plotlist = nnlm_k8_plots, nrow = 2, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/nnlm_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nnlm_k8-1">
+Past versions of nnlm_k8-1.png
+</button>
+</p>
+<div id="fig-nnlm_k8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/nnlm_k8-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><code>RcppML</code>:</p>
 <pre class="r"><code>rcppml_k8_plots &lt;- list()
 rcppml_k8_t &lt;- numeric()
@@ -964,6 +1311,43 @@ for (L1pen in seq(0.1, 0.9, by = 0.1)) {
 }
 plot_grid(plotlist = rcppml_k8_plots, nrow = 3, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/rcppml_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-rcppml_k8-1">
+Past versions of rcppml_k8-1.png
+</button>
+</p>
+<div id="fig-rcppml_k8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/rcppml_k8-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Hoyer:</p>
 <pre class="r"><code>hoyer_k8_plots &lt;- list()
 for (i in 1:9) {
@@ -972,32 +1356,177 @@ for (i in 1:9) {
 }
 plot_grid(plotlist = hoyer_k8_plots, nrow = 3, ncol = 3)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/hoyer_k8-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-hoyer_k8-1">
+Past versions of hoyer_k8-1.png
+</button>
+</p>
+<div id="fig-hoyer_k8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/hoyer_k8-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="sparse-nmf-reconstruction-error" class="section level3">
+<h3>Sparse NMF, reconstruction error</h3>
+<p>Since, as seen above, sparse NMF can give good results, we’re
+motivated to try to find a “best” setting for the sparseness penalty
+parameter. One approach that comes to mind is to use some form of
+cross-validation: delete <span class="math inline">\(m\)</span> entries
+from <span class="math inline">\(Y\)</span>; perform sparse NMF on the
+incomplete matrix (of course, this requires that the sparse NMF method
+be able to handle missing data); impute the missing entries using the
+estimated component matrices, <span class="math inline">\(\hat{Y} =
+LF&#39;\)</span>; and measure the reconstruction error over the missing
+entries, <span class="math inline">\(\sum_{i, j: y_{ij} = \text{NA}}
+(\hat{y}_{ij} - y_{ij})^2\)</span>.</p>
+<p>Package <code>NNLM</code> is prohibitively slow, and neither
+<code>RcppML</code> or Hoyer’s implementation can easily handle missing
+data. However, we can “hack” <code>RcppML</code> by coding zeros as some
+small value (we chose <span class="math inline">\(0.001\)</span>),
+coding missing data as exact zeros, and using option
+<code>mask_zeros</code> so that that the exact zeros are treated as
+missing.</p>
+<p>Here, we perform 10 trials, deleting 1% of entries <span
+class="math inline">\(Y_{ij}\)</span> each time.</p>
+<pre class="r"><code>set.seed(1)
+spnmf_cv_L1 &lt;- c(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.35, 0.5, 0.6, 0.75, 0.99)
+spnmf_cv_res &lt;- run_RcppML_cv(Ynorm, k = 8, L1pens = spnmf_cv_L1, nfolds = 100, ntrials = 10)
+ggplot(spnmf_cv_res, aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  labs(x = &quot;L1 penalty (RcppML)&quot;) +
+  theme_minimal()</code></pre>
+<img src="figure/sim_scenario1a.Rmd/spnmf_reconstruction-1.png" width="840" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>The reconstruction error (RMSE) appears to be monotonically
+increasing, and is certainly increasing over the region that appeared to
+give us the best results (L1 penalties between 0.3 and 0.6).</p>
 </div>
 <div id="ebnmf-nmf-initialization" class="section level3">
 <h3>EBNMF (NMF initialization)</h3>
-<p>Next we run EBNMF, initializing using NMF results:</p>
+<p>We turn to EBNMF. First, we’ll initialize using NMF results. We can
+assume constant variance across residuals or column-wise variance (we
+won’t test the row-wise variance structure, which makes much less sense
+here).</p>
 <pre class="r"><code>ebnmf_nmfinit_k4_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 2)
 ebnmf_nmfinit_k4_p &lt;- plot_fl(
   ebnmf_nmfinit_k4_res$fit, L, pops, 
-  paste0(&quot;NMF init., Kmax = 4 (ELBO = &quot;, round(ebnmf_nmfinit_k4_res$fit$elbo, 2), &quot;)&quot;)
+  paste0(&quot;Colwise var., Kmax = 4 (ELBO = &quot;, round(ebnmf_nmfinit_k4_res$fit$elbo, 2), &quot;)&quot;)
 )
 
 ebnmf_nmfinit_k8_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 2)
 ebnmf_nmfinit_k8_p &lt;- plot_fl(
   ebnmf_nmfinit_k8_res$fit, L, pops, 
-  paste0(&quot;NMF init., Kmax = 8 (ELBO = &quot;, round(ebnmf_nmfinit_k8_res$fit$elbo, 2), &quot;)&quot;)
+  paste0(&quot;Colwise var., Kmax = 8 (ELBO = &quot;, round(ebnmf_nmfinit_k8_res$fit$elbo, 2), &quot;)&quot;)
 )
 
-plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, nrow = 1)</code></pre>
+ebnmf_nmfinit_k4_vt0_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 0)
+ebnmf_nmfinit_k4_vt0_p &lt;- plot_fl(
+  ebnmf_nmfinit_k4_vt0_res$fit, L, pops, 
+  paste0(&quot;Const var., Kmax = 4 (ELBO = &quot;, round(ebnmf_nmfinit_k4_vt0_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+ebnmf_nmfinit_k8_vt0_res &lt;- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 0)
+ebnmf_nmfinit_k8_vt0_p &lt;- plot_fl(
+  ebnmf_nmfinit_k8_vt0_res$fit, L, pops, 
+  paste0(&quot;Const var., Kmax = 8 (ELBO = &quot;, round(ebnmf_nmfinit_k8_vt0_res$fit$elbo, 2), &quot;)&quot;)
+)
+
+plot_grid(ebnmf_nmfinit_k4_vt0_p, ebnmf_nmfinit_k8_vt0_p,
+          ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, 
+          nrow = 2, ncol = 2)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/ebnmf_nmfinit_k4-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ebnmf_nmfinit_k4-1">
+Past versions of ebnmf_nmfinit_k4-1.png
+</button>
+</p>
+<div id="fig-ebnmf_nmfinit_k4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/ebnmf_nmfinit_k4-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>#   --Estimate of factor 8 is numerically zero!
 #   --Estimate of factor 8 is numerically zero!
 #   --Estimate of factor 6 is numerically zero!
 #   --Estimate of factor 6 is numerically zero!
 #   --Estimate of factor 3 is numerically zero!
 #   --Estimate of factor 7 is numerically zero!
+#   --Estimate of factor 7 is numerically zero!
+#   --Estimate of factor 6 is numerically zero!
+#   --Estimate of factor 8 is numerically zero!
+#   --Estimate of factor 3 is numerically zero!
 #   --Estimate of factor 7 is numerically zero!</code></pre>
-<p>Somewhat surprisingly, we get better results using the NMF
+<p>We note, first, that the constant variance structure appears to be
+far less effective in eliminating redundant components. We also note,
+somewhat surprisingly, that we get better results using the NMF
 initialization with the <em>incorrect</em> number of components. Indeed,
 the fit initialized using the 8-topic NMF fit appears as good as or
 better than all of the sparse NMF fits we obtained using <span
@@ -1006,26 +1535,28 @@ sparsity parameters!</p>
 </div>
 <div id="ebnmf-other-approaches" class="section level3">
 <h3>EBNMF (other approaches)</h3>
-<p>In our simulations, we’ll consider a few other EBNMF methods:</p>
+<p>In this and other scenarios, we’ll consider a few other EBNMF
+methods:</p>
 <ol style="list-style-type: decimal">
 <li><p>Wang and Stephens suggest using a “greedy” approach to initialize
 factors, and then “backfitting” to refine the EBNMF fit. We refer to
 this approach as “greedy + backfit.”</p></li>
-<li><p>We’ve found with NMF that the greedy approach occasionally
-doesn’t add enough factors. Intuitively, additional components can only
-increase the fitted values, so that if one component “overshoots” it
-cannot be adjusted downward until components are backfitted. Thus it can
-be useful to repeat the “greedy + backfit” approach multiple times until
-the greedy step no longer adds any new factors. We refer to this method
-as the “bulk alternating” approach.</p></li>
+<li><p>We’ve found that the greedy approach sometimes doesn’t add enough
+factors. Intuitively, additional components can only increase the fitted
+values, so that if one component “overshoots” it cannot be adjusted
+downward until components are backfitted. Thus it can be useful to
+repeat the “greedy + backfit” approach multiple times until the greedy
+step no longer adds any new factors. We refer to this method as the
+“bulk alternating” approach.</p></li>
 <li><p>Instead of adding multiple greedy components before backfitting,
 we might backfit after <em>each</em> new component is added (add one
 component greedily, backfit, and repeat until the greedy step fails). We
 refer to this last method as the “strict alternating,” or more simply
 the “alternating” approach.</p></li>
 </ol>
-<p>These approaches yield the following results. For illustration, we
-also show some intermediate fits.</p>
+<p>With a column-wise variance structure, these approaches yield the
+following results. For illustration, we also show some intermediate
+fits.</p>
 <pre class="r"><code>fl_g &lt;- flash(Ynorm, var_type = 2, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
 fl_b &lt;- fl_g |&gt; flash_backfit(verbose = 0) 
 p_g &lt;- plot_fl(fl_g, L, pops, paste0(&quot;Greedy (ELBO = &quot;, round(fl_g$elbo, 2), &quot;)&quot;))
@@ -1048,15 +1579,80 @@ p_alt_k8 &lt;- plot_fl(fl_alt_k8$fit, L, pops,
 
 plot_grid(p_g, p_b, p_bulkalt_g, p_bulkalt_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/ebnmf_other-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ebnmf_other-1">
+Past versions of ebnmf_other-1.png
+</button>
+</p>
+<div id="fig-ebnmf_other-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/ebnmf_other-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>#   --Estimate of factor 2 is numerically zero!
 #   --Estimate of factor 3 is numerically zero!
 #   --Estimate of factor 4 is numerically zero!</code></pre>
+<p>We can compare with results that use a constant variance
+structure:</p>
+<pre class="r"><code>fl_g_vt0 &lt;- flash(Ynorm, var_type = 0, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_b_vt0 &lt;- fl_g_vt0 |&gt; flash_backfit(verbose = 0) 
+p_g_vt0 &lt;- plot_fl(fl_g_vt0, L, pops, paste0(&quot;Greedy (ELBO = &quot;, round(fl_g_vt0$elbo, 2), &quot;)&quot;))
+p_b_vt0 &lt;- plot_fl(fl_b_vt0, L, pops, paste0(&quot;Backfit (ELBO = &quot;, round(fl_b_vt0$elbo, 2), &quot;)&quot;))
+
+fl_bulkalt_g_vt0 &lt;- fl_b_vt0 |&gt; flash_greedy(Kmax = 4, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_bulkalt_b_vt0 &lt;- fl_bulkalt_g_vt0 |&gt; flash_backfit(verbose = 0)
+p_bulkalt_g_vt0 &lt;- plot_fl(fl_bulkalt_g_vt0, L, pops, 
+                           paste0(&quot;Second greedy (ELBO = &quot;, round(fl_bulkalt_g_vt0$elbo, 2), &quot;)&quot;))
+p_bulkalt_b_vt0 &lt;- plot_fl(fl_bulkalt_b_vt0, L, pops, 
+                           paste0(&quot;Second backfit (ELBO = &quot;, round(fl_bulkalt_b_vt0$elbo, 2), &quot;)&quot;))
+
+fl_alt_k4_vt0 &lt;- run_alternating(Ynorm, Kmax = 4, var_type = 0)
+fl_alt_k8_vt0 &lt;- run_alternating(Ynorm, Kmax = 8, var_type = 0)
+p_alt_k4_vt0 &lt;- plot_fl(fl_alt_k4_vt0$fit, L, pops, 
+                        paste0(&quot;Alternating, Kmax = 4 (ELBO = &quot;, round(fl_alt_k4_vt0$fit$elbo, 2), &quot;)&quot;))
+p_alt_k8_vt0 &lt;- plot_fl(fl_alt_k8_vt0$fit, L, pops, 
+                        paste0(&quot;Alternating, Kmax = 8 (ELBO = &quot;, round(fl_alt_k8_vt0$fit$elbo, 2), &quot;)&quot;))
+
+plot_grid(p_g_vt0, p_b_vt0, p_bulkalt_g_vt0, p_bulkalt_b_vt0, p_alt_k4_vt0, p_alt_k8_vt0, nrow = 3, ncol = 2)</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/ebnmf_other_const-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre><code>#   --Estimate of factor 4 is numerically zero!
+#   --Estimate of factor 4 is numerically zero!
+#   --Estimate of factor 4 is numerically zero!</code></pre>
+<p>Again, the constant variance structure appears to be less effective
+at removing noisy or redundant components.</p>
 </div>
 <div id="ebnmf-unnormalized-data" class="section level3">
 <h3>EBNMF, unnormalized data</h3>
-<p>Since EBNMF can perform column-wise variance estimation, we don’t
-actually need to normalize the count matrix in advance. Running EBNMF on
-the unnormalized data yields the following:</p>
+<p>Note that since EBNMF can perform column-wise variance estimation, we
+don’t actually need to normalize the count matrix in advance. Running
+EBNMF on the unnormalized data yields the following:</p>
 <pre class="r"><code>ebnmf_nmfinit_k4_res &lt;- run_ebnmf_from_nmf(Y, nmf_k4_res$fit, var_type = 2)
 ebnmf_nmfinit_k4_p &lt;- plot_fl(
   ebnmf_nmfinit_k4_res$fit, L, pops, 
@@ -1084,37 +1680,92 @@ p_alt_k8 &lt;- plot_fl(fl_alt_k8$fit, L, pops,
 
 plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, p_g, p_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)</code></pre>
 <p><img src="figure/sim_scenario1a.Rmd/ebnmf_nonorm-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-ebnmf_nonorm-1">
+Past versions of ebnmf_nonorm-1.png
+</button>
+</p>
+<div id="fig-ebnmf_nonorm-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/64457752b64261871f0899e0079f37f44d7f5fe1/docs/figure/sim_scenario1a.Rmd/ebnmf_nonorm-1.png" target="_blank">6445775</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>#   --Estimate of factor 2 is numerically zero!
 #   --Estimate of factor 5 is numerically zero!
 #   --Estimate of factor 5 is numerically zero!
 #   --Estimate of factor 8 is numerically zero!
 #   --Estimate of factor 8 is numerically zero!</code></pre>
-<p>Note that unlike with normalization, the magnitudes of the four
-components are similar (as they should be!). Further, the greedy +
-backfit and alternating approaches choose the correct number of
-components.</p>
+<p>Here, the magnitudes of the four components are similar (as they
+should be!). Further, while normalized data introduced an unnecessary
+fifth component in the bulk alternating and strictly alternating
+approaches above, here these approaches yield the correct number of
+components (and thus results for these approaches are identical for Kmax
+= 4 and Kmax = 8).</p>
+</div>
+<div id="ebnmf-reconstruction-error" class="section level3">
+<h3>EBNMF, reconstruction error</h3>
+<p>Finally, we show that EBNMF achieves a lower reconstruction error
+than sparse NMF using <em>any</em> setting of the L1 penalty parameter
+(including setting the penalty parameter to 0, which is equivalent to
+running vanilla NMF). We use the alternating EBNMF approach with a
+column-wise variance structure:</p>
+<pre class="r"><code>set.seed(1)
+ebnmf_cv_res &lt;- run_ebnmf_cv(Ynorm, k = 8, nfolds = 100, ntrials = 10)
+ggplot(spnmf_cv_res |&gt; filter(L1pen &lt; 0.3), aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  geom_hline(yintercept = ebnmf_cv_res, linetype = &quot;dashed&quot;) +
+  annotate(&quot;text&quot;, 0, ebnmf_cv_res, label = &quot;EBNMF&quot;) +
+  labs(x = &quot;L1 penalty (RcppML)&quot;) +
+  theme_minimal()</code></pre>
+<img src="figure/sim_scenario1a.Rmd/ebnmf_cv-1.png" width="840" style="display: block; margin: auto;" />
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
 </div>
 <div id="looking-ahead" class="section level3">
 <h3>Looking ahead</h3>
 <p>Part 2 of this analysis will continue with the “fully separated
-topics” scenario. We’ll compare some of these methods using objective
-measures over a range of different simulation settings.</p>
-<p>For all NMF and sparse NMF methods, we’ll use package
-<code>RcppML</code>, both because it is much faster than package
-<code>NNLM</code> and because its results appear to be somewhat more
-robust to the setting of the sparsity parameter. (In the examples above,
-the update method does not seem to make much of a difference.) As is
-common practice, we’ll do 10 trials and choose the fit with the lowest
-reconstruction error. We’ll consider results with the L1 penalty set to
-0 (i.e., vanilla NMF), 0.1 (a conservative approach), 0.3 (more
-aggressive), 0.5 (very aggressive), and 0.7 (probably too aggressive,
-especially when <span class="math inline">\(K = 4\)</span>). In each
-case, we’ll normalize the data before running NMF. This gives five NMF
-and sparse NMF methods.</p>
-<p>Additionally, we’ll consider the following EBNMF approaches: NMF
-initialization; bulk alternating; and strict alternating. For the
-alternating methods, we’ll consider results for both normalized and
-unnormalized data. This gives five EBNMF methods.</p>
+clusters” scenario, but instead of doing a deep dive into one dataset
+we’ll vary simulation settings and compare methods using more objective
+measures.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1142,9 +1793,10 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-#  [1] RcppML_0.3.7       fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34       
-#  [5] cowplot_1.2.0      ggplot2_3.5.2      stringr_1.5.1      tidyr_1.3.1       
-#  [9] dplyr_1.1.4        tibble_3.3.0       R.matlab_3.7.0     workflowr_1.7.1   
+#  [1] Matrix_1.7-3       RcppML_0.3.7       fastTopics_0.6-192 flashier_1.0.56   
+#  [5] ebnm_1.1-34        cowplot_1.2.0      ggplot2_3.5.2      stringr_1.5.1     
+#  [9] tidyr_1.3.1        dplyr_1.1.4        tibble_3.3.0       R.matlab_3.7.0    
+# [13] workflowr_1.7.1   
 # 
 # loaded via a namespace (and not attached):
 #  [1] tidyselect_1.2.1     viridisLite_0.4.2    farver_2.1.2        
@@ -1162,11 +1814,11 @@ Session information
 # [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
 # [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
 # [43] cachem_1.1.0         splines_4.5.1        parallel_4.5.1      
-# [46] softImpute_1.4-3     vctrs_0.6.5          Matrix_1.7-3        
-# [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
-# [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
-# [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
-# [58] jquerylib_0.1.4      glue_1.8.0           ps_1.9.1            
+# [46] softImpute_1.4-3     vctrs_0.6.5          jsonlite_2.0.0      
+# [49] callr_3.7.6          hms_1.1.3            mixsqp_0.3-54       
+# [52] ggrepel_0.9.6        irlba_2.3.5.1        horseshoe_0.2.0     
+# [55] trust_0.1-8          plotly_4.11.0        jquerylib_0.1.4     
+# [58] glue_1.8.0           codetools_0.2-20     ps_1.9.1            
 # [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
 # [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
 # [67] NNLM_0.4.4           pillar_1.11.0        htmltools_0.5.8.1   
