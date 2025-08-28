@@ -531,15 +531,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree3a120087e916209d903434330139957f98446828targetblank3a12008a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee565d10795153dbaa30faeda5f330ee8179b7259targetblanke565d10a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/3a120087e916209d903434330139957f98446828" target="_blank">3a12008</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e565d10795153dbaa30faeda5f330ee8179b7259" target="_blank">e565d10</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree3a120087e916209d903434330139957f98446828targetblank3a12008a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreee565d10795153dbaa30faeda5f330ee8179b7259targetblanke565d10a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -549,7 +549,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/3a120087e916209d903434330139957f98446828" target="_blank">3a12008</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/e565d10795153dbaa30faeda5f330ee8179b7259" target="_blank">e565d10</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -567,6 +567,7 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
     Ignored:    analysis/sim_scenario1a_cache/
@@ -711,6 +712,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/e565d10795153dbaa30faeda5f330ee8179b7259/analysis/sim_scenario1a.Rmd" target="_blank">e565d10</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-28
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario1a.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/726adb5ce953fc7f7ab0ffe75f2e6fe9b75ffdf6/docs/sim_scenario1a.html" target="_blank">726adb5</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1448,12 +1483,7 @@ missing.</p>
 class="math inline">\(Y_{ij}\)</span> each time.</p>
 <pre class="r"><code>set.seed(1)
 spnmf_cv_L1 &lt;- c(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.35, 0.5, 0.6, 0.75, 0.99)
-spnmf_cv_res &lt;- run_RcppML_cv(Ynorm, k = 8, L1pens = spnmf_cv_L1, nfolds = 100, ntrials = 10)
-ggplot(spnmf_cv_res, aes(x = L1pen, y = RMSE)) + 
-  geom_point() + geom_line() + 
-  labs(x = &quot;L1 penalty (RcppML)&quot;) +
-  theme_minimal()</code></pre>
-<img src="figure/sim_scenario1a.Rmd/spnmf_reconstruction-1.png" width="840" style="display: block; margin: auto;" />
+spnmf_cv_res &lt;- run_RcppML_cv(Ynorm, k = 8, L1pens = spnmf_cv_L1, nfolds = 100, ntrials = 10)</code></pre>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1468,6 +1498,11 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
+<pre class="r"><code>ggplot(spnmf_cv_res, aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  labs(x = &quot;L1 penalty (RcppML)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/spnmf_reconstruction_plot-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>The reconstruction error (RMSE) appears to be monotonically
 increasing, and is certainly increasing over the region that appeared to
 give us the best results (L1 penalties between 0.3 and 0.6).</p>
@@ -1815,14 +1850,7 @@ than sparse NMF using <em>any</em> setting of the L1 penalty parameter
 running vanilla NMF). We use the alternating EBNMF approach with a
 column-wise variance structure:</p>
 <pre class="r"><code>set.seed(1)
-ebnmf_cv_res &lt;- run_ebnmf_cv(Ynorm, k = 8, nfolds = 100, ntrials = 10)
-ggplot(spnmf_cv_res |&gt; filter(L1pen &lt; 0.3), aes(x = L1pen, y = RMSE)) + 
-  geom_point() + geom_line() + 
-  geom_hline(yintercept = ebnmf_cv_res, linetype = &quot;dashed&quot;) +
-  annotate(&quot;text&quot;, 0, ebnmf_cv_res, label = &quot;EBNMF&quot;) +
-  labs(x = &quot;L1 penalty (RcppML)&quot;) +
-  theme_minimal()</code></pre>
-<img src="figure/sim_scenario1a.Rmd/ebnmf_cv-1.png" width="840" style="display: block; margin: auto;" />
+ebnmf_cv_res &lt;- run_ebnmf_cv(Ynorm, k = 8, nfolds = 100, ntrials = 10)</code></pre>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1837,6 +1865,13 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
+<pre class="r"><code>ggplot(spnmf_cv_res |&gt; filter(L1pen &lt; 0.3), aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  geom_hline(yintercept = ebnmf_cv_res, linetype = &quot;dashed&quot;) +
+  annotate(&quot;text&quot;, 0, ebnmf_cv_res, label = &quot;EBNMF&quot;) +
+  labs(x = &quot;L1 penalty (RcppML)&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="figure/sim_scenario1a.Rmd/ebnmf_cv_plot-1.png" width="840" style="display: block; margin: auto;" /></p>
 </div>
 <div id="looking-ahead" class="section level3">
 <h3>Looking ahead</h3>
@@ -1896,16 +1931,16 @@ Session information
 # [49] callr_3.7.6          hms_1.1.3            mixsqp_0.3-54       
 # [52] ggrepel_0.9.6        irlba_2.3.5.1        horseshoe_0.2.0     
 # [55] trust_0.1-8          plotly_4.11.0        jquerylib_0.1.4     
-# [58] glue_1.8.0           ps_1.9.1             uwot_0.2.3          
-# [61] stringi_1.8.7        Polychrome_1.5.4     gtable_0.3.6        
-# [64] later_1.4.2          quadprog_1.5-8       NNLM_0.4.4          
-# [67] pillar_1.11.0        htmltools_0.5.8.1    truncnorm_1.0-9     
-# [70] R6_2.6.1             rprojroot_2.1.0      evaluate_1.0.4      
-# [73] lattice_0.22-7       R.methodsS3_1.8.2    RhpcBLASctl_0.23-42 
-# [76] SQUAREM_2021.1       ashr_2.2-63          httpuv_1.6.16       
-# [79] bslib_0.9.0          Rcpp_1.1.0           deconvolveR_1.2-1   
-# [82] whisker_0.4.1        xfun_0.52            fs_1.6.6            
-# [85] getPass_0.2-4        pkgconfig_2.0.3</code></pre>
+# [58] glue_1.8.0           codetools_0.2-20     ps_1.9.1            
+# [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
+# [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
+# [67] NNLM_0.4.4           pillar_1.11.0        htmltools_0.5.8.1   
+# [70] truncnorm_1.0-9      R6_2.6.1             rprojroot_2.1.0     
+# [73] evaluate_1.0.4       lattice_0.22-7       R.methodsS3_1.8.2   
+# [76] RhpcBLASctl_0.23-42  SQUAREM_2021.1       ashr_2.2-63         
+# [79] httpuv_1.6.16        bslib_0.9.0          Rcpp_1.1.0          
+# [82] deconvolveR_1.2-1    whisker_0.4.1        xfun_0.52           
+# [85] fs_1.6.6             getPass_0.2-4        pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 </div>
