@@ -259,10 +259,13 @@ Package `NNLM` is prohibitively slow, and neither `RcppML` or Hoyer's implementa
 
 Here, we perform 10 trials, deleting 1% of entries $Y_{ij}$ each time.
 
-```{r spnmf_reconstruction, cache=TRUE}
+```{r spnmf_reconstruction, cache = TRUE}
 set.seed(1)
 spnmf_cv_L1 <- c(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.35, 0.5, 0.6, 0.75, 0.99)
 spnmf_cv_res <- run_RcppML_cv(Ynorm, k = 8, L1pens = spnmf_cv_L1, nfolds = 100, ntrials = 10)
+```
+
+```{r spnmf_reconstruction_plot}
 ggplot(spnmf_cv_res, aes(x = L1pen, y = RMSE)) + 
   geom_point() + geom_line() + 
   labs(x = "L1 penalty (RcppML)") +
@@ -412,9 +415,12 @@ Here, the magnitudes of the four components are similar (as they should be!). Fu
 
 Finally, we show that EBNMF achieves a lower reconstruction error than sparse NMF using *any* setting of the L1 penalty parameter (including setting the penalty parameter to 0, which is equivalent to running vanilla NMF). We use the alternating EBNMF approach with a column-wise variance structure:
 
-```{r ebnmf_cv, cache=TRUE}
+```{r ebnmf_cv, cache = TRUE}
 set.seed(1)
 ebnmf_cv_res <- run_ebnmf_cv(Ynorm, k = 8, nfolds = 100, ntrials = 10)
+```
+
+```{r ebnmf_cv_plot}
 ggplot(spnmf_cv_res |> filter(L1pen < 0.3), aes(x = L1pen, y = RMSE)) + 
   geom_point() + geom_line() + 
   geom_hline(yintercept = ebnmf_cv_res, linetype = "dashed") +
