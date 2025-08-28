@@ -1,5 +1,5 @@
 ---
-title: NMF analyses of simulated data, Scenario 1 (fully separated topics), Part 1
+title: NMF analyses of simulated data, Scenario 1 (fully separated clusters), Part 1
 author: Jason Willwerscheid and Peter Carbonetto
 output:
   workflowr::wflow_html:
@@ -29,14 +29,15 @@ library(ebnm)
 library(flashier)
 library(fastTopics)
 library(RcppML)
+library(Matrix)
 source("./code/sim_functions.R")
 ```
 
 ### Scenario
 
-To allow for objective comparisons among methods, we restrict ourselves to scenarios where the matrix of true means is separable. In topic modeling terms, each topic must feature at least one "anchor word" (a word that appears in that topic and nowhere else) and there must be at least one "pure" document per topic. In the simplest such scenario, which we will consider here, *all* documents are pure.
+To allow for objective comparisons among methods, we restrict ourselves to scenarios where the matrix of "true means" is separable. In topic modeling terms, each topic must feature at least one "anchor word" (a word that appears in that topic and nowhere else) and there must be at least one "pure" document per topic. In the simplest such scenario, which we will consider here, *all* documents are pure.
 
-To begin, let there be four populations, respectively consisting of 1175, 250, 50, and 25 "pure" documents. We code population memberships using a binary $1500 \times 4$ component matrix $L$, with $L_{ik} = 1$ if document $i$ belongs to population $k$ and $L_{ik} = 0$ otherwise. Topics are given by a $2000 \times 4$ component matrix $F$. For separability, we include 10 anchor words per topic. For these 40 words, $F_{jk} = 1$ if word $j$ is an anchor word for topic $k$ and $F_{jk} = 0$ otherwise. The remaining $1960 \times 4$ entries $F_{jk}$ are simulated from a Gamma distribution with shape parameter $2$ and scale parameter $1/2$ (i.e., mean $1$ and variance $1/2$), so that all entries $F_{jk}$ are similar in magnitude. We define the matrix of "true means" as $\mu = LF'$. We then simulate the data matrix $Y$ using a `log1p` link function; that is, we simulate count $X_{ij}$ from a Poisson distribution with mean $e^{\mu_{ij}} - 1$, then set $Y_{ij} = \log(X_{ij} + 1)$.
+To begin, let there be four clusters, respectively consisting of 1175, 250, 50, and 25 "pure" documents. We code cluster memberships using a binary $1500 \times 4$ component matrix $L$, with $L_{ik} = 1$ if document $i$ belongs to cluster $k$ and $L_{ik} = 0$ otherwise. Topics are given by a $2000 \times 4$ component matrix $F$. For separability, we include 10 anchor words per topic. For these 40 words, $F_{jk} = 1$ if word $j$ is an anchor word for topic $k$ and $F_{jk} = 0$ otherwise. The remaining $1960 \times 4$ entries $F_{jk}$ are simulated from a Gamma distribution with shape parameter $2$ and scale parameter $1/2$ (i.e., mean $1$ and variance $1/2$), so that all entries $F_{jk}$ are similar in magnitude. We define the matrix of "true means" as $\mu = LF'$. We then simulate the data matrix $Y$ using a `log1p` link function; that is, we simulate count $X_{ij}$ from a Poisson distribution with mean $e^{\mu_{ij}} - 1$, then set $Y_{ij} = \log(X_{ij} + 1)$. (We note that the expectation of the random variable $Y_{ij}$ is not exactly $\mu_{ij}$, but it is close, especially for large $\mu_{ij}$.)
 
 ```{r sim_dat}
 sim_data <- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
@@ -86,7 +87,7 @@ nmf_k4_p2 <- plot_nmf(
 plot_grid(nmf_k4_p1, nmf_k4_p2, nrow = 1)
 ```
 
-Even though we set our simulation parameters so that counts are similar in magnitude across words, normalization helps:
+Even though we set our simulation parameters so that counts are similar in magnitude across words, normalization seems to help:
 
 ```{r nmf_norm_k4}
 nmf_norm_k4_res <- run_nmf(Ynorm, k = 4)
@@ -102,7 +103,7 @@ nmf_norm_k4_p2 <- plot_nmf(
 plot_grid(nmf_norm_k4_p1, nmf_norm_k4_p2, nrow = 1)
 ```
 
-The best fit here comes close to the representation we're looking for: one separate topic for each of the four populations. 
+The best fit here comes close to the representation we're looking for: one separate topic for each of the four clusters. 
 
 To improve upon these results, it should suffice merely to "sparsify" the components. Lee and Seung's multiplicative updates are known to sometimes produce sparser "parts-based" representations, so let's see whether results differ using their method:
 
@@ -120,7 +121,7 @@ nmf_lee_k4_p2 <- plot_nmf(
 plot_grid(nmf_lee_k4_p1, nmf_lee_k4_p2, nrow = 1)
 ```
 
-Results are very similar.
+The update function doesn't make much of a difference.
 
 ### NMF, 8 topics
 
@@ -130,13 +131,13 @@ In practice, of course, the "true" number of components $K$ will almost always b
 nmf_k8_res <- run_nmf(Y, k = 8)
 nmf_k8_p <- plot_nmf(
   nmf_k8_res$fit, L, pops, 
-  paste0("Unnormalized, SCD")
+  paste0("Unnormalized, SCD updates")
 )
 
 nmf_norm_k8_res <- run_nmf(Ynorm, k = 8)
 nmf_norm_k8_p <- plot_nmf(
   nmf_norm_k8_res$fit, L, pops,
-  paste0("Normalized, SCD")
+  paste0("Normalized, SCD updates")
 )
 
 nmf_lee_k8_res <- run_nmf(Ynorm, k = 8, method = "lee")
@@ -185,9 +186,9 @@ for (L1pen in c(.01, seq(0.1, 0.8, by = 0.1))) {
 plot_grid(plotlist = rcppml_k4_plots, nrow = 3, ncol = 3)
 ```
 
-Setting the L1 penalty between 0.1 and 0.3 gives us almost exactly the representation we desire. Larger settings give poor results (between 0.4 and 0.7, the third and fourth populations are no longer distinguished). So the quality of the representation very much depends on getting the L1 penalty "correct."
+Setting the L1 penalty between 0.1 and 0.3 gives us almost exactly the representation we desire. Larger settings give poor results (between 0.4 and 0.7, the third and fourth clusters are no longer distinguished). So the quality of the representation very much depends on getting the L1 penalty "correct."
 
-Another option is to use the Hoyer penalty:
+Another option is to use the penalty proposed by Hoyer (2004). The author provides a MATLAB implementation:
 
 ```{r eval=FALSE, include=FALSE}
 writeMat(
@@ -209,7 +210,7 @@ For sW under 0.6, results are very similar. Setting sW = 0.6 gives a good result
 
 ### Sparse NMF, 8 topics
 
-With $K = 8$, we can again get excellent results *provided that we set the sparsity parameter "correctly"*.
+With $K = 8$, we can again get excellent results *provided that we set the sparsity parameter "correctly."*
 
 Using `NNLM`:
 
@@ -250,39 +251,74 @@ for (i in 1:9) {
 plot_grid(plotlist = hoyer_k8_plots, nrow = 3, ncol = 3)
 ```
 
+### Sparse NMF, reconstruction error
+
+Since, as seen above, sparse NMF can give good results, we're motivated to try to find a "best" setting for the sparseness penalty parameter. One approach that comes to mind is to use some form of cross-validation: delete $m$ entries from $Y$; perform sparse NMF on the incomplete matrix (of course, this requires that the sparse NMF method be able to handle missing data); impute the missing entries using the estimated component matrices, $\hat{Y} = LF'$; and measure the reconstruction error over the missing entries, $\sum_{i, j: y_{ij} = \text{NA}} (\hat{y}_{ij} - y_{ij})^2$.
+
+Package `NNLM` is prohibitively slow, and neither `RcppML` or Hoyer's implementation can easily handle missing data. However, we can "hack" `RcppML` by coding zeros as some small value (we chose $0.001$), coding missing data as exact zeros, and using option `mask_zeros` so that that the exact zeros are treated as missing.
+
+Here, we perform 10 trials, deleting 1% of entries $Y_{ij}$ each time.
+
+```{r spnmf_reconstruction, cache=TRUE}
+set.seed(1)
+spnmf_cv_L1 <- c(0, 0.001, 0.01, 0.05, 0.1, 0.2, 0.35, 0.5, 0.6, 0.75, 0.99)
+spnmf_cv_res <- run_RcppML_cv(Ynorm, k = 8, L1pens = spnmf_cv_L1, nfolds = 100, ntrials = 10)
+ggplot(spnmf_cv_res, aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  labs(x = "L1 penalty (RcppML)") +
+  theme_minimal()
+```
+
+The reconstruction error (RMSE) appears to be monotonically increasing, and is certainly increasing over the region that appeared to give us the best results (L1 penalties between 0.3 and 0.6).
+
+
 ### EBNMF (NMF initialization) 
 
-Next we run EBNMF, initializing using NMF results:
+We turn to EBNMF. First, we'll initialize using NMF results. We can assume constant variance across residuals or column-wise variance (we won't test the row-wise variance structure, which makes much less sense here).
 
 ```{r ebnmf_nmfinit_k4}
 ebnmf_nmfinit_k4_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 2)
 ebnmf_nmfinit_k4_p <- plot_fl(
   ebnmf_nmfinit_k4_res$fit, L, pops, 
-  paste0("NMF init., Kmax = 4 (ELBO = ", round(ebnmf_nmfinit_k4_res$fit$elbo, 2), ")")
+  paste0("Colwise var., Kmax = 4 (ELBO = ", round(ebnmf_nmfinit_k4_res$fit$elbo, 2), ")")
 )
 
 ebnmf_nmfinit_k8_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 2)
 ebnmf_nmfinit_k8_p <- plot_fl(
   ebnmf_nmfinit_k8_res$fit, L, pops, 
-  paste0("NMF init., Kmax = 8 (ELBO = ", round(ebnmf_nmfinit_k8_res$fit$elbo, 2), ")")
+  paste0("Colwise var., Kmax = 8 (ELBO = ", round(ebnmf_nmfinit_k8_res$fit$elbo, 2), ")")
 )
 
-plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, nrow = 1)
+ebnmf_nmfinit_k4_vt0_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 0)
+ebnmf_nmfinit_k4_vt0_p <- plot_fl(
+  ebnmf_nmfinit_k4_vt0_res$fit, L, pops, 
+  paste0("Const var., Kmax = 4 (ELBO = ", round(ebnmf_nmfinit_k4_vt0_res$fit$elbo, 2), ")")
+)
+
+ebnmf_nmfinit_k8_vt0_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 0)
+ebnmf_nmfinit_k8_vt0_p <- plot_fl(
+  ebnmf_nmfinit_k8_vt0_res$fit, L, pops, 
+  paste0("Const var., Kmax = 8 (ELBO = ", round(ebnmf_nmfinit_k8_vt0_res$fit$elbo, 2), ")")
+)
+
+plot_grid(ebnmf_nmfinit_k4_vt0_p, ebnmf_nmfinit_k8_vt0_p,
+          ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, 
+          nrow = 2, ncol = 2)
 ```
 
-Somewhat surprisingly, we get better results using the NMF initialization with the *incorrect* number of components. Indeed, the fit initialized using the 8-topic NMF fit appears as good as or better than all of the sparse NMF fits we obtained using $K = 8$. And we didn't need to set any sparsity parameters!
+We note, first, that the constant variance structure appears to be far less effective in eliminating redundant components. We also note, somewhat surprisingly, that we get better results using the NMF initialization with the *incorrect* number of components. Indeed, the fit initialized using the 8-topic NMF fit appears as good as or better than all of the sparse NMF fits we obtained using $K = 8$. And we didn't need to set any sparsity parameters!
 
 ### EBNMF (other approaches)
 
-In our simulations, we'll consider a few other EBNMF methods:
+In this and other scenarios, we'll consider a few other EBNMF methods:
 
 1. Wang and Stephens suggest using a "greedy" approach to initialize factors, and then "backfitting" to refine the EBNMF fit. We refer to this approach as "greedy + backfit."
 
-1. We've found with NMF that the greedy approach occasionally doesn't add enough factors. Intuitively, additional components can only increase the fitted values, so that if one component "overshoots" it cannot be adjusted downward until components are backfitted. Thus it can be useful to repeat the "greedy + backfit" approach multiple times until the greedy step no longer adds any new factors. We refer to this method as the "bulk alternating" approach.
+1. We've found that the greedy approach sometimes doesn't add enough factors. Intuitively, additional components can only increase the fitted values, so that if one component "overshoots" it cannot be adjusted downward until components are backfitted. Thus it can be useful to repeat the "greedy + backfit" approach multiple times until the greedy step no longer adds any new factors. We refer to this method as the "bulk alternating" approach.
 
 1. Instead of adding multiple greedy components before backfitting, we might backfit after *each* new component is added (add one component greedily, backfit, and repeat until the greedy step fails). We refer to this last method as the "strict alternating," or more simply the "alternating" approach. 
 
-These approaches yield the following results. For illustration, we also show some intermediate fits.
+With a column-wise variance structure, these approaches yield the following results. For illustration, we also show some intermediate fits.
 
 ```{r ebnmf_other}
 fl_g <- flash(Ynorm, var_type = 2, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
@@ -308,9 +344,37 @@ p_alt_k8 <- plot_fl(fl_alt_k8$fit, L, pops,
 plot_grid(p_g, p_b, p_bulkalt_g, p_bulkalt_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)
 ```
 
+We can compare with results that use a constant variance structure:
+
+```{r ebnmf_other_const}
+fl_g_vt0 <- flash(Ynorm, var_type = 0, greedy_Kmax = 8, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_b_vt0 <- fl_g_vt0 |> flash_backfit(verbose = 0) 
+p_g_vt0 <- plot_fl(fl_g_vt0, L, pops, paste0("Greedy (ELBO = ", round(fl_g_vt0$elbo, 2), ")"))
+p_b_vt0 <- plot_fl(fl_b_vt0, L, pops, paste0("Backfit (ELBO = ", round(fl_b_vt0$elbo, 2), ")"))
+
+fl_bulkalt_g_vt0 <- fl_b_vt0 |> flash_greedy(Kmax = 4, ebnm_fn = ebnm_point_exponential, verbose = 0)
+fl_bulkalt_b_vt0 <- fl_bulkalt_g_vt0 |> flash_backfit(verbose = 0)
+p_bulkalt_g_vt0 <- plot_fl(fl_bulkalt_g_vt0, L, pops, 
+                           paste0("Second greedy (ELBO = ", round(fl_bulkalt_g_vt0$elbo, 2), ")"))
+p_bulkalt_b_vt0 <- plot_fl(fl_bulkalt_b_vt0, L, pops, 
+                           paste0("Second backfit (ELBO = ", round(fl_bulkalt_b_vt0$elbo, 2), ")"))
+
+fl_alt_k4_vt0 <- run_alternating(Ynorm, Kmax = 4, var_type = 0)
+fl_alt_k8_vt0 <- run_alternating(Ynorm, Kmax = 8, var_type = 0)
+p_alt_k4_vt0 <- plot_fl(fl_alt_k4_vt0$fit, L, pops, 
+                        paste0("Alternating, Kmax = 4 (ELBO = ", round(fl_alt_k4_vt0$fit$elbo, 2), ")"))
+p_alt_k8_vt0 <- plot_fl(fl_alt_k8_vt0$fit, L, pops, 
+                        paste0("Alternating, Kmax = 8 (ELBO = ", round(fl_alt_k8_vt0$fit$elbo, 2), ")"))
+
+plot_grid(p_g_vt0, p_b_vt0, p_bulkalt_g_vt0, p_bulkalt_b_vt0, p_alt_k4_vt0, p_alt_k8_vt0, nrow = 3, ncol = 2)
+```
+
+Again, the constant variance structure appears to be less effective at removing noisy or redundant components.
+
+
 ### EBNMF, unnormalized data
 
-Since EBNMF can perform column-wise variance estimation, we don't actually need to normalize the count matrix in advance. Running EBNMF on the unnormalized data yields the following:
+Note that since EBNMF can perform column-wise variance estimation, we don't actually need to normalize the count matrix in advance. Running EBNMF on the unnormalized data yields the following:
 
 ```{r ebnmf_nonorm}
 ebnmf_nmfinit_k4_res <- run_ebnmf_from_nmf(Y, nmf_k4_res$fit, var_type = 2)
@@ -341,13 +405,25 @@ p_alt_k8 <- plot_fl(fl_alt_k8$fit, L, pops,
 plot_grid(ebnmf_nmfinit_k4_p, ebnmf_nmfinit_k8_p, p_g, p_b, p_alt_k4, p_alt_k8, nrow = 3, ncol = 2)
 ```
 
-Note that unlike with normalization, the magnitudes of the four components are similar (as they should be!). Further, the greedy + backfit and alternating approaches choose the correct number of components.
+Here, the magnitudes of the four components are similar (as they should be!). Further, while normalized data introduced an unnecessary fifth component in the bulk alternating and strictly alternating approaches above, here these approaches yield the correct number of components (and thus results for these approaches are identical for Kmax = 4 and Kmax = 8).
+
+
+### EBNMF, reconstruction error
+
+Finally, we show that EBNMF achieves a lower reconstruction error than sparse NMF using *any* setting of the L1 penalty parameter (including setting the penalty parameter to 0, which is equivalent to running vanilla NMF). We use the alternating EBNMF approach with a column-wise variance structure:
+
+```{r ebnmf_cv, cache=TRUE}
+set.seed(1)
+ebnmf_cv_res <- run_ebnmf_cv(Ynorm, k = 8, nfolds = 100, ntrials = 10)
+ggplot(spnmf_cv_res |> filter(L1pen < 0.3), aes(x = L1pen, y = RMSE)) + 
+  geom_point() + geom_line() + 
+  geom_hline(yintercept = ebnmf_cv_res, linetype = "dashed") +
+  annotate("text", 0, ebnmf_cv_res, label = "EBNMF") +
+  labs(x = "L1 penalty (RcppML)") +
+  theme_minimal()
+```
 
 
 ### Looking ahead
 
-Part 2 of this analysis will continue with the "fully separated topics" scenario. We'll compare some of these methods using objective measures over a range of different simulation settings. 
-
-For all NMF and sparse NMF methods, we'll use package `RcppML`, both because it is much faster than package `NNLM` and because its results appear to be somewhat more robust to the setting of the sparsity parameter. (In the examples above, the update method does not seem to make much of a difference.) As is common practice, we'll do 10 trials and choose the fit with the lowest reconstruction error. We'll consider results with the L1 penalty set to 0 (i.e., vanilla NMF), 0.1 (a conservative approach), 0.3 (more aggressive), 0.5 (very aggressive), and 0.7 (probably too aggressive, especially when $K = 4$). In each case, we'll normalize the data before running NMF. This gives five NMF and sparse NMF methods.
-
-Additionally, we'll consider the following EBNMF approaches: NMF initialization; bulk alternating; and strict alternating. For the alternating methods, we'll consider results for both normalized and unnormalized data. This gives five EBNMF methods.
+Part 2 of this analysis will continue with the "fully separated clusters" scenario, but instead of doing a deep dive into one dataset we'll vary simulation settings and compare methods using more objective measures.
