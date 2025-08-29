@@ -277,7 +277,7 @@ The reconstruction error (RMSE) appears to be monotonically increasing, and is c
 
 ### EBNMF (NMF initialization) 
 
-We turn to EBNMF. First, we'll initialize using NMF results. We can assume constant variance across residuals or column-wise variance (we won't test the row-wise variance structure, which makes much less sense here).
+We turn to EBNMF. First, we'll initialize using NMF results. We can assume constant variance across residuals or column-wise variance (we won't test the row-wise variance structure, which makes much less sense here). 
 
 ```{r ebnmf_nmfinit_k4}
 ebnmf_nmfinit_k4_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 2)
@@ -310,6 +310,44 @@ plot_grid(ebnmf_nmfinit_k4_vt0_p, ebnmf_nmfinit_k8_vt0_p,
 ```
 
 We note, first, that the constant variance structure appears to be far less effective in eliminating redundant components. We also note, somewhat surprisingly, that we get better results using the NMF initialization with the *incorrect* number of components. Indeed, the fit initialized using the 8-topic NMF fit appears as good as or better than all of the sparse NMF fits we obtained using $K = 8$. And we didn't need to set any sparsity parameters!
+
+For more flexibility, we can use unimodal nonnegative priors instead of point-exponential priors, which gives the following results:
+
+```{r ebnmf_nmfinit_k4_uni}
+ebnmf_nmfinit_k4_uni_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 2,
+                                               ebnm_fn = ebnm_unimodal_nonnegative)
+ebnmf_nmfinit_k4_uni_p <- plot_fl(
+  ebnmf_nmfinit_k4_uni_res$fit, L, pops, 
+  paste0("Colwise var., Kmax = 4 (ELBO = ", round(ebnmf_nmfinit_k4_uni_res$fit$elbo, 2), ")")
+)
+
+ebnmf_nmfinit_k8_uni_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 2,
+                                               ebnm_fn = ebnm_unimodal_nonnegative)
+ebnmf_nmfinit_k8_uni_p <- plot_fl(
+  ebnmf_nmfinit_k8_uni_res$fit, L, pops, 
+  paste0("Colwise var., Kmax = 8 (ELBO = ", round(ebnmf_nmfinit_k8_uni_res$fit$elbo, 2), ")")
+)
+
+ebnmf_nmfinit_k4_vt0_uni_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k4_res$fit, var_type = 0,
+                                               ebnm_fn = ebnm_unimodal_nonnegative)
+ebnmf_nmfinit_k4_vt0_uni_p <- plot_fl(
+  ebnmf_nmfinit_k4_vt0_uni_res$fit, L, pops, 
+  paste0("Const var., Kmax = 4 (ELBO = ", round(ebnmf_nmfinit_k4_vt0_uni_res$fit$elbo, 2), ")")
+)
+
+ebnmf_nmfinit_k8_vt0_uni_res <- run_ebnmf_from_nmf(Ynorm, nmf_norm_k8_res$fit, var_type = 0,
+                                               ebnm_fn = ebnm_unimodal_nonnegative)
+ebnmf_nmfinit_k8_vt0_uni_p <- plot_fl(
+  ebnmf_nmfinit_k8_vt0_uni_res$fit, L, pops, 
+  paste0("Const var., Kmax = 8 (ELBO = ", round(ebnmf_nmfinit_k8_vt0_uni_res$fit$elbo, 2), ")")
+)
+
+plot_grid(ebnmf_nmfinit_k4_vt0_uni_p, ebnmf_nmfinit_k8_vt0_uni_p,
+          ebnmf_nmfinit_k4_uni_p, ebnmf_nmfinit_k8_uni_p, 
+          nrow = 2, ncol = 2)
+```
+
+With Kmax = 8, unimodal nonnegative priors give relatively poor results.
 
 ### EBNMF (other approaches)
 
@@ -374,6 +412,23 @@ plot_grid(p_g_vt0, p_b_vt0, p_bulkalt_g_vt0, p_bulkalt_b_vt0, p_alt_k4_vt0, p_al
 
 Again, the constant variance structure appears to be less effective at removing noisy or redundant components.
 
+We can also compare with results that use unimodal nonnegative priors (I couldn't get the strictly alternating approach to work with Kmax = 8, so it is omitted here):
+
+```{r ebnmf_other_uni}
+fl_g_uni <- flash(Ynorm, var_type = 2, greedy_Kmax = 8, ebnm_fn = ebnm_unimodal_nonnegative, verbose = 0)
+fl_b_uni <- fl_g_uni |> flash_backfit(verbose = 0) 
+p_g_uni <- plot_fl(fl_g_uni, L, pops, paste0("Greedy (ELBO = ", round(fl_g_uni$elbo, 2), ")"))
+p_b_uni <- plot_fl(fl_b_uni, L, pops, paste0("Backfit (ELBO = ", round(fl_b_uni$elbo, 2), ")"))
+
+fl_bulkalt_g_uni <- fl_b_uni |> flash_greedy(Kmax = 4, ebnm_fn = ebnm_unimodal_nonnegative, verbose = 0)
+fl_bulkalt_b_uni <- fl_bulkalt_g_uni |> flash_backfit(verbose = 0)
+p_bulkalt_g_uni <- plot_fl(fl_bulkalt_g_uni, L, pops, 
+                           paste0("Second greedy (ELBO = ", round(fl_bulkalt_g_uni$elbo, 2), ")"))
+p_bulkalt_b_uni <- plot_fl(fl_bulkalt_b_uni, L, pops, 
+                           paste0("Second backfit (ELBO = ", round(fl_bulkalt_b_uni$elbo, 2), ")"))
+
+plot_grid(p_g_uni, p_b_uni, p_bulkalt_g_uni, p_bulkalt_b_uni, nrow = 2, ncol = 2)
+```
 
 ### EBNMF, unnormalized data
 
