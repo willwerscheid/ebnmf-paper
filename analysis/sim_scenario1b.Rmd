@@ -28,15 +28,16 @@ library(ebnm)
 library(flashier)
 library(fastTopics)
 library(RcppML)
+library(Matrix)
 source("./code/sim_functions.R")
 ```
 
 ### Scenario
 
-As in Part 1, we consider the "fully-separated topics" scenario. Here there are four populations of varying abundance; the rarest population ranges from 3 to 50 individuals, while the most abundant population is of size 1150 to 1197. The `L` matrix codes population memberships. The factors `F` are randomly generated from a Gamma distribution with mean 1, where the shape of the distribution ranges from 0.5 (so that counts vary widely across columns) to 2 (similar counts across columns). For separability in the `K = 4` case, we create 10 "anchor words" for each topic. Finally, we use a `log1p` link function in the sense that we simulate counts $X$ as Poisson($e^\mu - 1$), where $\mu = LF'$, and then take the data matrix to be $Y = \log(X + 1)$. 
+As in Part 1, we consider the "fully-separated topics" scenario. Here there are four populations of varying abundance; the rarest population ranges from $n_4 = 3$ to $n_4 = 50$ individuals, while the most abundant population is of size $n_1 = 1200 - n_4$. The `L` matrix codes population memberships. The factors `F` are randomly generated from a Gamma distribution with mean and variance both equal to 2/3 (we found that these parameters give fairly realistic magnitudes). For separability in the `K = 4` case, we create 3 "anchor words" for each topic. Finally, we use a `log1p` link function in the sense that we simulate counts $X$ from a negative binomial distribution with mean $e^\mu - 1$, where $\mu = LF'$, and then take the data matrix to be $Y = \log(X + 1)$. We vary the size (or "dispersion") parameter of the negative binomial distribution. As this dispersion parameter goes to infinity, the negative binomial distribution is approximately Poisson. Low settings of the dispersion parameter should achieve unequal noise across the columns of $Y$ (so that EBNMF with `var_type = 2` might be expected to outperform EBNMF with `var_type = 0`).
 
 ```{r}
-sim_data <- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
+sim_data <- function(ns, p, dispersion, n_anchor_words = 3) {
   pops <- rep(LETTERS[1:length(ns)], times = ns)
   
   L <- matrix(0, nrow = sum(ns), ncol = 4)
@@ -45,19 +46,83 @@ sim_data <- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor
   L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
   L[, 4] <- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
   
-  F <- sim_F(p, 4, gamma_shape, gamma_scale, n_anchor_words)
-  X <- sim_X(L, F)
+  F <- sim_F(p, 4, gamma_shape = 2/3, gamma_scale = 1, n_anchor_words)
+  X <- sim_X(L, F, dispersion = dispersion)
   return_sim_data(X, L, F, pops)
 }
 
-set.seed(1)
-example_sim <- sim_data(c(1175, 250, 50, 25), 2000, 4)
-
-Y <- example_sim$Y
-Ynorm <- example_sim$Ynorm
-L <- example_sim$L
-pops <- example_sim$pops
+run_sims <- function(which_dat, Kmax, verbose = FALSE) {
+  all_res <- tibble()
+  next_seed <- 0
+  for (varied_n in c(3, 5, 10, 25, 50)) { 
+    for (disp in c(0.1, 1, 10, 100, 10000)) {
+      if (verbose) cat("RARE N: ", varied_n, "DISPERSION: ", disp, "\n")
+      
+      ns <- c(1200 - varied_n, 250, 50, varied_n)
+      p <- 1000
+      
+      next_seed <- next_seed + 1
+      set.seed(next_seed)
+      sim_dat <- sim_data(ns, p, disp)
+      
+      dat <- sim_dat[[which_dat]]
+      
+      if (verbose) cat(" NMF...\n")
+      nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
+      all_res <- all_res |> 
+        bind_rows(next_tib(next_seed, disp, ns, "NMF", Kmax, nmf_res, sim_dat))
+      
+      L1pens <- c(0.05, 0.1, 0.25, 0.5, 0.75) 
+      for (L1pen in L1pens) {
+        if (verbose) cat(" Sparse NMF, L1 = ", L1pen, "...\n")
+        spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
+        all_res <- all_res |> 
+          bind_rows(next_tib(next_seed, disp, ns, paste0("SpNMF", L1pen), Kmax, spnmf_res, sim_dat))
+      }
+      
+      if (verbose) cat(" NMF-EBNMF...\n")
+      ebnmf_nmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit)
+      all_res <- all_res |> 
+        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF", Kmax, ebnmf_nmf_res, sim_dat))
+      
+      if (verbose) cat(" NMF-EBNMF (var type = 0)...\n")
+      ebnmf_nmf_vt0_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
+      all_res <- all_res |> 
+        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF-vt0", Kmax, ebnmf_nmf_vt0_res, sim_dat))
+      
+      if (verbose) cat(" EBNMFgb...\n")
+      ebnmf_gb_res <- run_greedy_backfit(dat, Kmax = Kmax)
+      all_res <- all_res |> 
+        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb", Kmax, ebnmf_gb_res, sim_dat))
+      
+      if (verbose) cat(" EBNMFgb (var type = 0)...\n")
+      ebnmf_gb_vt0_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
+      all_res <- all_res |> 
+        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb-vt0", Kmax, ebnmf_gb_vt0_res, sim_dat))
+      
+      # Unimodal priors are currently slow as well as giving poor results...
+      
+      # if (verbose) cat(" NMF-EBNMF (unimodal priors)...\n")
+      # ebnmf_nmf_uni_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, ebnm_fn = ebnm_unimodal_nonnegative)
+      # all_res <- all_res |>
+      #   bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF-uni", Kmax, ebnmf_nmf_res, sim_dat))
+      
+      # if (verbose) cat(" EBNMFgb (unimodal priors)...\n")
+      # ebnmf_gb_uni_res <- run_greedy_backfit(dat, Kmax = Kmax, ebnm_fn = ebnm_unimodal_nonnegative)
+      # all_res <- all_res |>
+      #   bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb-uni", Kmax, ebnmf_gb_uni_res, sim_dat))
+      
+      all_res <- all_res |>
+        mutate(method = factor(method, levels = c(
+          "NMF", paste0("SpNMF", L1pens), "NMF-EBNMF", "NMF-EBNMF-vt0", "EBNMFgb", "EBNMFgb-vt0"
+        )))
+    }
+  }
+  
+  return(all_res)
+}
 ```
+
 
 ### Fitting methods
 
@@ -65,388 +130,134 @@ We use ten fitting methods:
 
 1. "NMF": Vanilla NMF on the normalized data; uses package `RcppML`. As is common practice, we do 10 trials and choose the fit with the lowest error.
 
-2--5. "SpNMF": Sparse NMF on the normalized data; again uses package `RcppML`. Uses an L1 penalty for the document loadings matrix. This penalty can range from 0 to 1. We use settings of 0.1, 0.3, 0.5, and 0.7.
+2--6. "SpNMF": Sparse NMF on the normalized data; again uses package `RcppML`. Uses an L1 penalty for the document loadings matrix $L$ (but no penalty on the word loadings matrix $F$). In general, this penalty can range from 0 to 1, with 0 equivalent to vanilla NMF and 1 resulting in complete sparsity (i.e., $L \equiv 0$). We use settings of 0.05, 0.1, 0.25, 0.5, and 0.75.
 
-6. "EBNMFnmf": EBNMF using the vanilla NMF results as initialization. 
+7--8. "NMF-EBNMF" and "NMF-EBNMF-vt0": EBNMF using the vanilla NMF results as initialization with, respectively, column-wise variance estimation (`var_type = 2`) and constant variance estimation (`var_type = 0` or "vt0"). 
 
-7. "EBNMFgb": A "bulk alternating" EBNMF fit. Produced by adding as many "greedy" factors as possible (up to `Kmax`), then backfitting, and repeating (adding as many greedy factors as possible and backfitting) until either `Kmax` factors have been added or no new factors are greedily added. 
-
-8. "EBNMFalt": An "alternating" EBNMF fit. Produced by alternatively adding one "greedy" factor and running 10 backfitting iterations (so, we backfit after *each* new factor is added). After no new factor can be added, we perform a full backfit. 
-
-9--10. "EBNMFgbraw" and "EBNMFaltraw": Produced by running bulk alternating and alternating EBNMF on the unnormalized data.
+9--10. "EBNMFgb" and "EBNMFgb-vt0": "Bulk alternating" EBNMF fits with, respectively, column-wise and constant variance estimation. Produced by adding as many "greedy" factors as possible (up to `Kmax`), then backfitting, and repeating (adding as many greedy factors as possible and backfitting) until either `Kmax` factors have been added or no new factors are greedily added. 
 
 For code, see `code/sim_functions.R`.
+
 
 ### Evaluation metrics
 
 We consider the following metrics:
 
-1. Cosine distance between the fitted `L` matrix and the true `L`. Since the order of columns is arbitrary, we "align" columns by taking the least distant fitted column for each true topic. Note that since the true `L` is sparse, we expect EBNMF to outperform NMF.
+1. Cosine distance between the fitted $L$ matrix and the true $L$. Since the order of columns is arbitrary, we "align" columns by taking the least distant fitted column for each true topic. Note that since the true $L$ is sparse, we expect EBNMF to outperform NMF.
 
-2. Cosine distance between the fitted `F` matrix and the true `F`. The true `F` is dense (except for the anchor words), so we don't necessarily expect EBNMF to do much better than NMF. 
+2. Cosine distance between the fitted $F$ matrix and the true $F$. The true $F$ is dense (except for the anchor words), so we don't necessarily expect EBNMF to do much better than NMF. **We omit this metric with normalized data, since normalization results in inaccurate estimates of the true $F$.**
 
-3. The relative scale of any extra fitted columns. In general, these columns will be either noise or redundant with other components. We calculate the relative scale of column $i$ as
+3. The "signal-to-noise ratio" (SNR) for any extra fitted columns. In general, these columns will be either noise or redundant with other components. Using the $LDF'$ representation of the matrix factorization, so that columns of $L$ and $F$ are both normalized ($\|\ell_k\|_2 = 1, k = 1,\ldots, K$, $\|f_k\|_2 = 1, k = 1,\ldots, K$) and $D$ is a diagonal matrix, we calculate the SNR for column $i$ as $$ (d_1 + \ldots + d_{K_{\text{true}}}) / d_i, $$ where columns $k = 1,\ldots, K$ are "aligned" as described above (so that the first $K_{\text{true}}$ columns of the fitted $L$ are least distant from the true $L$). When $K_\max = K_{\text{true}}$, there will be no extra columns, so the SNR plot is omitted when $K_\max = 4$.
 
-$$ \| \ell_i \|_2^2 / \sum_{k = 1}^K \| \ell_k \|_2^2. $$
-
-4. The elapsed time taken to run the method. Note that **NMF and sparse NMF times are for 10 separate runs, and EBNMFnmf times are for the EBNMF portion of the fit only.** 
+4. The elapsed time taken to run the method. Note that **NMF and sparse NMF times are for 10 separate runs, and NMF-EBNMF times are for the EBNMF portion of the fit only.** 
 
 For code, see `code/sim_functions.R`.
 
-### Simulation code
 
-Run simulations. We consider results for when the true `K = 4` is given in advance as well as for when `K` is overspecified (here, `Kmax = 8`). Since EBNMF can "choose" the total number of factors to add, `K` can be less than `Kmax`:
+### Results, Kmax = 4, normalized data 
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
-trueK <- 4
-highK <- 8
-verbose <- FALSE
-
-all_res <- tibble()
-next_seed <- 0
-for (varied_n in  c(3, 5, 10, 25, 50)) { 
-  for (shape in c(1/2, 2/3, 3/4, 1, 2)) { 
-    if (verbose) cat("RARE N: ", varied_n, "SHAPE: ", shape)
-    
-    gamma_mean <- 1
-    scale <- gamma_mean / shape 
-    
-    ns <- c(1200 - varied_n, 250, 50, varied_n)
-    p <- 1000
-    
-    next_seed <- next_seed + 1
-    set.seed(next_seed)
-    sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-    
-    Y <- sim_dat$Y
-    Ynorm <- sim_dat$Ynorm
-    
-    nmf_res_trueK <- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF", trueK, nmf_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_trueK_1 <- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.1, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.1", trueK, spnmf_res_trueK_1, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_trueK_3 <- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.3, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.3", trueK, spnmf_res_trueK_3, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_trueK_5 <- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.5, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.5", trueK, spnmf_res_trueK_5, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_trueK_7 <- run_RcppML_sparse_nmf(Ynorm, k = trueK, L1pen = 0.7, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.7", trueK, spnmf_res_trueK_7, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_nmf_res_trueK <- run_ebnmf_from_nmf(Ynorm, nmf_res_trueK$fit, var_type = 2)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF-EBNMF", trueK, ebnmf_nmf_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_gb_res_trueK <- run_greedy_backfit(Ynorm, Kmax = trueK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFgb", trueK, ebnmf_gb_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_alt_res_trueK <- run_alternating(Ynorm, Kmax = trueK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFalt", trueK, ebnmf_alt_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    nmfraw_res_trueK <- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMFraw", trueK, nmfraw_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_trueK_1 <- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.1, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.1raw", trueK, spnmfraw_res_trueK_1, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_trueK_3 <- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.3, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.3raw", trueK, spnmfraw_res_trueK_3, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_trueK_5 <- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.5, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.5raw", trueK, spnmfraw_res_trueK_5, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_trueK_7 <- run_RcppML_sparse_nmf(Y, k = trueK, L1pen = 0.7, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.7raw", trueK, spnmfraw_res_trueK_7, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_nmfraw_res_trueK <- run_ebnmf_from_nmf(Y, nmfraw_res_trueK$fit, var_type = 2)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF-EBNMFraw", trueK, ebnmf_nmfraw_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_gbraw_res_trueK <- run_greedy_backfit(Y, Kmax = trueK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFgbraw", trueK, ebnmf_gbraw_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_altraw_res_trueK <- run_alternating(Y, Kmax = trueK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFaltraw", trueK, ebnmf_altraw_res_trueK, sim_dat))
-    if (verbose) cat(".")
-    
-    nmf_res_highK <- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF", highK, nmf_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_highK_1 <- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.1, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.1", highK, spnmf_res_highK_1, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_highK_3 <- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.3, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.3", highK, spnmf_res_highK_3, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_highK_5 <- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.5, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.5", highK, spnmf_res_highK_5, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmf_res_highK_7 <- run_RcppML_sparse_nmf(Ynorm, k = highK, L1pen = 0.7, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.7", highK, spnmf_res_highK_7, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_nmf_res_highK <- run_ebnmf_from_nmf(Ynorm, nmf_res_highK$fit, var_type = 2)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF-EBNMF", highK, ebnmf_nmf_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_gb_res_highK <- run_greedy_backfit(Ynorm, Kmax = highK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFgb", highK, ebnmf_gb_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_alt_res_highK <- run_alternating(Ynorm, Kmax = highK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFalt", highK, ebnmf_alt_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    nmfraw_res_highK <- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMFraw", highK, nmfraw_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_highK_1 <- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.1, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.1raw", highK, spnmfraw_res_highK_1, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_highK_3 <- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.3, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.3raw", highK, spnmfraw_res_highK_3, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_highK_5 <- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.5, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.5raw", highK, spnmfraw_res_highK_5, sim_dat))
-    if (verbose) cat(".")
-    
-    spnmfraw_res_highK_7 <- run_RcppML_sparse_nmf(Y, k = highK, L1pen = 0.7, seeds = 1:10)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "SpNMF0.7raw", highK, spnmfraw_res_highK_7, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_nmfraw_res_highK <- run_ebnmf_from_nmf(Y, nmfraw_res_highK$fit, var_type = 2)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "NMF-EBNMFraw", highK, ebnmf_nmfraw_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_gbraw_res_highK <- run_greedy_backfit(Y, Kmax = highK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFgbraw", highK, ebnmf_gbraw_res_highK, sim_dat))
-    if (verbose) cat(".")
-    
-    ebnmf_altraw_res_highK <- run_alternating(Y, Kmax = highK)
-    all_res <- all_res |> 
-      bind_rows(next_tib(next_seed, shape, ns, "EBNMFaltraw", highK, ebnmf_altraw_res_highK, sim_dat))
-    if (verbose) cat("\n")
-  }
-}
+```{r sims_4norm, echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+sims_4norm <- run_sims("Ynorm", Kmax = 4, verbose = FALSE)
 ```
 
-### Results, Kmax = 4
-
-Cosine similarities for `L` (normalized data). Each row gives cosine similarities for one true component (one "population"), with rows arranged according to the abundance of the population (in descending order). Individual tiles correspond to individual simulations (a single combination of gamma prior on `F` and rare population size):
+Cosine similarities for `L` (normalized data). Each row of grids gives cosine similarities for one true component (one "population"), with rows arranged according to the abundance of the population (in descending order). For example, row "LLcosine1" gives cosine distances from the column of the fitted `L` corresponding to the very abundant population to the true `L` corresponding to the very abundant population, while row "LLcosine4" gives distances for the rare population. Within each grid, **individual tiles correspond to individual simulations** (a single combination of dispersion parameter and rare population size):
 
 ```{r}
-xlabel <- "Size of rarest population"
-norm_lvls <- c("NMF", "SpNMF0.1", "SpNMF0.3", "SpNMF0.5", "SpNMF0.7", "NMF-EBNMF", "EBNMFgb", "EBNMFalt")
-raw_lvls <- c("NMFraw", "SpNMF0.1raw", "SpNMF0.3raw", "SpNMF0.5raw", "SpNMF0.7raw", "NMF-EBNMFraw", "EBNMFgbraw", "EBNMFaltraw")
-lvls <- norm_lvls
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, "LLcos")), "Cos. sim. w/ true L")
+xlab <- "Size of rarest population"
+ylab <- "Dispersion parameter"
+make_cosplot(sims_4norm, "LLcos", xlab, ylab, "Cos. sim. w/ true L")
+```
+
+#### Comments
+
+With the exception of sparse NMF with L1 = 0.5, methods perform similarly for the three components corresponding to more abundant populations (rows LLcosine1, LLcosine2, LLcosine3), with the column-wise EBNMF methods performing a little better and vanilla NMF performing a little worse. Results are more mixed for the rare population component (row LLcosine4). Sparse NMF appears to do best, provided that the L1 penalty is set appropriately (here, between 0.1 and 0.25). EBNMF can struggle, especially with very overdispersed data. Additionally, bulk alternating EBNMF with constant variance can struggle with very rare populations.
+
+
+### Results, Kmax = 4, non-normalized data 
+
+```{r sims_4nonorm, echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+sims_4nonorm <- run_sims("Y", Kmax = 4, verbose = FALSE)
 ```
 
 Cosine similarities for `L` (non-normalized data):
 
 ```{r}
-lvls <- raw_lvls
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, "LLcos")), "Cos. sim. w/ true L")
+make_cosplot(sims_4nonorm, "LLcos", xlab, ylab, "Cos. sim. w/ true L")
 ```
 
 Cosine similarities for `F` (non-normalized data):
 
 ```{r}
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == trueK, str_starts(metric_type, "FFcos")), "Cos. sim. w/ true F")
+make_cosplot(sims_4nonorm, "FFcos", xlab, ylab, "Cos. sim. w/ true F", cutoff = 0.999)
 ```
 
-### Comments, Kmax = 4
+#### Comments
 
-All sparse NMF and EBNMF methods outperform NMF in estimating `L` (as long as the L1 penalty is not set too high) but all methods, including NMF, perform very similarly in estimating `F`. This makes sense, since the true `L` is sparse but the true `F` is almost entirely dense. Interestingly, EBNMF outperforms sparse NMF on the normalized data but sparse NMF outperforms EBNMF on the non-normalized data. All three EBNMF approaches give pretty similar results.
+Results are similar to the results for normalized data except that, interestingly, here it is bulk alternating EBNMF with constant variance that does best, even outperforming sparse NMF with very overdispersed data.
 
-### Example, Kmax = 4
 
-It will suffice to illustrate results for NMF, SpNMF0.5, and EBNMFalt. We'll consider the setting where `shape = 2/3,` with the size of the rarest population equal to 10.
+### Results, Kmax = 8, normalized data
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
-shape <- 2/3
-scale <- 3/2
-
-ns <- c(1190, 250, 50, 10)
-
-ex_seed <- all_res |> filter(shape == 2/3, varied_n == 10) |> slice(1) |> pull(seed)
-set.seed(ex_seed)
-sim_dat <- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-Y <- sim_dat$Y
-Ynorm <- sim_dat$Ynorm
-
-nmf_res_k4 <- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = 0, seeds = 1:10)
-spnmf_res_k4 <- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = 0.5, seeds = 1:10)
-ebnmf_res_k4 <- run_alternating(Ynorm, Kmax = 4, var_type = 2)
-nmf_raw_res_k4 <- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0, seeds = 1:10)
-spnmf_raw_res_k4 <- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0.5, seeds = 1:10)
-ebnmf_raw_res_k4 <- run_alternating(Y, Kmax = 4, var_type = 2)
+```{r sims_8norm, echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+sims_8norm <- run_sims("Ynorm", Kmax = 8, verbose = FALSE)
 ```
+
+```{r sims_8nonorm, echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
+sims_8nonorm <- run_sims("Y", Kmax = 8, verbose = FALSE)
+```
+
+Cosine similarities for `L`:
 
 ```{r}
-L <- sim_dat$L
-pops <- sim_dat$pops
-
-ex_plots_k4 <- list()
-ex_plots_k4[[1]] <- plot_nmf(nmf_res_k4$fit, L, pops, "NMF (norm.)")
-ex_plots_k4[[2]] <- plot_nmf(spnmf_res_k4$fit, L, pops, "Sparse NMF (norm.)")
-ex_plots_k4[[3]] <- plot_fl(ebnmf_res_k4$fit, L, pops, "Alt. EBNMF (norm.)")
-ex_plots_k4[[4]] <- plot_nmf(nmf_raw_res_k4$fit, L, pops, "NMF (raw)")
-ex_plots_k4[[5]] <- plot_nmf(spnmf_raw_res_k4$fit, L, pops, "Sparse NMF (raw)")
-ex_plots_k4[[6]] <- plot_fl(ebnmf_raw_res_k4$fit, L, pops, "Alt. EBNMF (raw)")
-plot_grid(plotlist = ex_plots_k4, nrow = 2, ncol = 3)
+make_cosplot(sims_8norm, "LLcos", xlab, ylab, "Cos. sim. w/ true L")
 ```
 
-In the non-normalized case, the better performance of sparse NMF appears to be due to the failure of EBNMF to sparsify the blue component.
-
-### Results, Kmax = 8
-
-Cosine similarities for `L` (normalized data):
-
-```{r}
-lvls <- norm_lvls
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == highK, str_starts(metric_type, "LLcos")), "Cos. sim. w/ true L")
-```
-
-Cosine similarities for `L` (non-normalized data):
-
-```{r}
-lvls <- raw_lvls
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == highK, str_starts(metric_type, "LLcos")), "Cos. sim. w/ true L")
-```
-
-Cosine similarities for `F` (non-normalized data):
-
-```{r}
-make_cosplot(all_res |> filter(method %in% lvls, Kmax == highK, str_starts(metric_type, "FFcos")), "Cos. sim. w/ true F")
-```
-
-Scale of redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row. 
+SNR for redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row. 
 
 Normalized data:
 
 ```{r}
-lvls <- norm_lvls
-make_scaleplot(all_res |> filter(method %in% lvls, Kmax == highK, str_starts(metric_type, "Scale")))
+make_scaleplot(sims_8norm, xlab, ylab, "SNR", cutoff = 100)
 ```
 
-Non-normalized data:
+#### Comments
+
+When `Kmax` is over-specified, EBNMF generally outperforms sparse NMF at estimating more abundant population components and at eliminating redundant components. Among EBNMF methods, NMF-EBNMF performs least well (but still outperforms sparse NMF, even when the L1 penalty is well-chosen). 
+
+
+### Results, Kmax = 8, non-normalized data
+
+Cosine similarities for `L`:
 
 ```{r}
-lvls <- raw_lvls
-make_scaleplot(all_res |> filter(method %in% lvls, Kmax == highK, str_starts(metric_type, "Scale")))
+make_cosplot(sims_8nonorm, "LLcos", xlab, ylab, "Cos. sim. w/ true L")
 ```
 
-### Comments, Kmax = 8
-
-The cosine similarity plots tell a similar story to the `Kmax = 4` case, except that here the poorer quality of the NMF fit results in relatively low cosine similarities with the true `F` (in addition to the true `L`) in the NMF and EBNMFnmf cases. 
-
-Although, as with `Kmax = 4`, sparse NMF does better than EBNMF on non-normalized data, EBNMF is consistently better at eliminating redundant/noisy factors, and both the bulk alternating and strictly alternating approaches do better than initializing with NMF.
-
-### Example, Kmax = 8
-
-As well as NMF, SpNMF0.5, and EBNMFalt, we include NMF-EBNMF in these results. We'll again consider the setting where `shape = 2/3,` with the size of the rarest population equal to 10.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE, results='hide'}
-nmf_res_k8 <- run_RcppML_sparse_nmf(Ynorm, k = 8, L1pen = 0, seeds = 1:10)
-spnmf_res_k8 <- run_RcppML_sparse_nmf(Ynorm, k = 8, L1pen = 0.5, seeds = 1:10)
-nmf_ebnmf_res_k8 <- run_ebnmf_from_nmf(Ynorm, nmf_res_k8$fit, var_type = 2)
-ebnmf_res_k8 <- run_alternating(Ynorm, Kmax = 8, var_type = 2)
-nmf_raw_res_k8 <- run_RcppML_sparse_nmf(Y, k = 8, L1pen = 0, seeds = 1:10)
-spnmf_raw_res_k8 <- run_RcppML_sparse_nmf(Y, k = 8, L1pen = 0.5, seeds = 1:10)
-nmf_ebnmf_raw_res_k8 <- run_ebnmf_from_nmf(Y, nmf_raw_res_k8$fit, var_type = 2)
-ebnmf_raw_res_k8 <- run_alternating(Y, Kmax = 8, var_type = 2)
-```
+Cosine similarities for `F`:
 
 ```{r}
-L <- sim_dat$L
-pops <- sim_dat$pops
-
-ex_plots_k8 <- list()
-ex_plots_k8[[1]] <- plot_nmf(nmf_res_k8$fit, L, pops, "NMF (norm.)")
-ex_plots_k8[[2]] <- plot_nmf(spnmf_res_k8$fit, L, pops, "Sparse NMF (norm.)")
-ex_plots_k8[[3]] <- plot_fl(nmf_ebnmf_res_k8$fit, L, pops, "NMF-EBNMF (norm.)")
-ex_plots_k8[[4]] <- plot_fl(ebnmf_res_k8$fit, L, pops, "Alt. EBNMF (norm.)")
-ex_plots_k8[[5]] <- plot_nmf(nmf_raw_res_k8$fit, L, pops, "NMF (raw)")
-ex_plots_k8[[6]] <- plot_nmf(spnmf_raw_res_k8$fit, L, pops, "Sparse NMF (raw)")
-ex_plots_k8[[7]] <- plot_fl(nmf_ebnmf_raw_res_k8$fit, L, pops, "NMF-EBNMF (raw)")
-ex_plots_k8[[8]] <- plot_fl(ebnmf_raw_res_k8$fit, L, pops, "Alt. EBNMF (raw)")
-plot_grid(plotlist = ex_plots_k8, nrow = 2, ncol = 4)
+make_cosplot(sims_8nonorm, "FFcos", xlab, ylab, "Cos. sim. w/ true F", cutoff = 0.999)
 ```
 
-The NMF-initialization results appear pretty unsatisfactory. The columnwise-variance alternating result does slightly less well in estimating the fourth component, but overall the cleanness of the representation is, I think, preferable to the constant-variance result.
+SNR for redundant/noisy factors:
+
+```{r}
+make_scaleplot(sims_8nonorm, xlab, ylab, "SNR", cutoff = 100)
+```
+
+#### Comments
+
+Results are similar to the results for normalized data. As with Kmax = 4, the constant-variance EBNMF methods do a little better than columnwise-variance EBNMF in estimating $L$ (and, when the data is very over-dispersed, $F$). However, bulk alternating EBNMF with column-wise variance does a much better job at removing redunandant components (column-wise NMF-EBNMF, however, does a worse job than the constant-variance approaches!). So there appears to be a tradeoff: column-wise variance appears to be able to give us a better estimate of $K$ (at least using the bulk alternating approach), but the price is a minor decrease in the accuracy with which the true components are estimated.
+
 
 ### Timings
 
 Timings are averaged across normalized and non-normalized runs:
 
 ```{r}
-plot_df <- all_res |> filter(str_starts(metric_type, "t_elapsed")) |>
-  mutate(varied_n = factor(varied_n), 
-         shape = factor(round(shape, 2)),
-         Kmax = factor(paste0("Kmax = ", Kmax)),
-         method = factor(str_remove(method, "raw"), levels = norm_lvls)) |>
-  group_by(varied_n, shape, Kmax, method) |>
-  summarize(metric_val = mean(metric_val))
-ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
-  facet_grid(rows = vars(Kmax), cols = vars(method), scales = "free_x") +
-  labs(x = xlabel, y = "Shape of gamma prior on factors", fill = "Time elapsed (s)") +
-  theme(axis.text.x = element_text(angle = 45)) + 
-  theme(strip.text = element_text(size = 8))
+all_res <- sims_4norm |>
+  bind_rows(sims_4nonorm) |>
+  bind_rows(sims_8norm) |>
+  bind_rows(sims_8nonorm)
+make_timingplot(all_res, xlab, ylab)
 ```
