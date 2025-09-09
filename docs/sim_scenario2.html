@@ -377,7 +377,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-08-22
+<strong>Last updated:</strong> 2025-09-09
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -487,7 +487,22 @@ aria-hidden="true"></span> <strong>Cache:</strong> detected </a>
 The following chunks had caches available:
 <ul>
 <li>
+sims_3nonorm
+</li>
+<li>
+sims_3norm
+</li>
+<li>
+sims_6nonorm
+</li>
+<li>
+sims_6norm
+</li>
+<li>
 unnamed-chunk-10
+</li>
+<li>
+unnamed-chunk-12
 </li>
 <li>
 unnamed-chunk-2
@@ -525,15 +540,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6768bba4cc98a339549cd752b1558324d44af3e7targetblank6768bbaa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree25d592124ec79b8e4658d0c75c89c223c62b8166targetblank25d5921a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6768bba4cc98a339549cd752b1558324d44af3e7" target="_blank">6768bba</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/25d592124ec79b8e4658d0c75c89c223c62b8166" target="_blank">25d5921</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree6768bba4cc98a339549cd752b1558324d44af3e7targetblank6768bbaa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree25d592124ec79b8e4658d0c75c89c223c62b8166targetblank25d5921a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +558,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/6768bba4cc98a339549cd752b1558324d44af3e7" target="_blank">6768bba</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/25d592124ec79b8e4658d0c75c89c223c62b8166" target="_blank">25d5921</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -563,6 +578,8 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    analysis/lps_fail_fix_cache/
     Ignored:    analysis/sim_scenario1_cache/
+    Ignored:    analysis/sim_scenario1a_cache/
+    Ignored:    analysis/sim_scenario1b_cache/
     Ignored:    analysis/sim_scenario2_cache/
     Ignored:    analysis/sim_scenario3_cache/
 
@@ -654,8 +671,10 @@ Untracked files:
     Untracked:  output/sim_scenario1.rds
 
 Unstaged changes:
+    Modified:   analysis/sim_scenario1b.Rmd
     Modified:   analysis/sim_scenario3.Rmd
     Modified:   analysis/simdata2.Rmd
+    Modified:   code/sim_functions.R
     Modified:   matlab/simdata2.mat
 
 </code></pre>
@@ -701,6 +720,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/25d592124ec79b8e4658d0c75c89c223c62b8166/analysis/sim_scenario2.Rmd" target="_blank">25d5921</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-09-09
+</td>
+<td>
+workflowr::wflow_publish("analysis/sim_scenario2.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/532f9eecf4efafbef94444e736e5b0809528d646/docs/sim_scenario2.html" target="_blank">532f9ee</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -941,9 +994,9 @@ library(flashier)
 library(fastTopics)
 source(&quot;./code/sim_functions.R&quot;)</code></pre>
 <p>For details on fitting methods and evaluation metrics, see our
-previous analysis in <code>analysis/sim_scenario1.Rmd</code>.</p>
-<div id="simulation-setting" class="section level2">
-<h2>Simulation setting</h2>
+previous analysis in <code>analysis/sim_scenario1b.Rmd</code>.</p>
+<div id="scenario" class="section level3">
+<h3>Scenario</h3>
 <p>In this analysis we consider the “shared topics” scenario. Here there
 are six populations: three “pure” populations defined by a single topic
 each, and three “mixed” populations, each of which is an admixture of 2
@@ -953,16 +1006,10 @@ vary the relative size of pure and mixed populations, from 25 pure and
 <code>L</code> matrix codes population memberships. The factors
 <code>F</code> and the <code>log1p</code> link function are as in the
 previous analysis.</p>
-<pre class="r"><code>trueK &lt;- 3
-highK &lt;- 8 
-n_anchor_words &lt;- 10
-
-sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, link = &quot;log1p&quot;) {
-  k &lt;- trueK
+<pre class="r"><code>sim_data &lt;- function(ns, p, dispersion, n_anchor_words = 3) {
+  pops &lt;- rep(LETTERS[1:length(ns)], times = ns)
   
-  # Loadings (document-topics):
-  set.seed(1)
-  L &lt;- matrix(0, nrow = sum(ns), ncol = k)
+  L &lt;- matrix(0, nrow = sum(ns), ncol = 3)
   pi1 &lt;- seq(0, 1, length.out = ns[4])
   pi2 &lt;- seq(0, 1, length.out = ns[5])
   pi3 &lt;- seq(0, 1, length.out = ns[6])
@@ -970,96 +1017,85 @@ sim_data &lt;- function(ns, p, gamma_shape, gamma_scale, n_anchor_words = 10, li
   L[, 2] &lt;- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, ns[3]), 1 - pi1, rep(0, ns[5]), pi3)
   L[, 3] &lt;- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]), 1 - pi2, 1 - pi3)
   
-  F &lt;- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
-  
-  # Anchor words
-  for (i in 1:k) {
-    F[((i - 1) * n_anchor_words + 1):(i * n_anchor_words), setdiff(1:k, i)] &lt;- 0
-  }
-  
-  mu &lt;- L %*% t(F)
-  if (link == &quot;identity&quot;) {
-    Y &lt;- matrix(rpois(sum(ns) * p, mu), nrow = sum(ns), ncol = p)
-  } else if (link == &quot;log1p&quot;) {
-    Y &lt;- matrix(log1p(rpois(sum(ns) * p, expm1(mu))), nrow = sum(ns), ncol = p)
-  }
-  
-  # Make sure there aren&#39;t any all-zero columns:
-  F &lt;- F[apply(Y, 2, sum) &gt; 0, ]
-  Y &lt;- Y[, apply(Y, 2, sum) &gt; 0]
-  
-  rownames(Y) &lt;- paste0(&quot;sample&quot;, 1:nrow(Y))
-  colnames(Y) &lt;- paste0(&quot;feature&quot;, 1:ncol(Y))
+  F &lt;- sim_F(p, 3, gamma_shape = 2/3, gamma_scale = 1, n_anchor_words)
+  X &lt;- sim_X(L, F, dispersion = dispersion)
+  return_sim_data(X, L, F, pops)
+}
 
-  return(list(Y = Y, L = L, F = F))
+run_sims &lt;- function(which_dat, Kmax, verbose = FALSE) {
+  all_res &lt;- tibble()
+  next_seed &lt;- 0
+  for (varied_n in c(25, 100, 500, 900, 975)) { 
+    for (disp in c(0.1, 1, 10, 100, 10000)) {
+      if (verbose) cat(&quot;SHARED N: &quot;, varied_n, &quot;DISPERSION: &quot;, disp, &quot;\n&quot;)
+      
+      ns &lt;- c(rep(1000 - varied_n, 3), rep(varied_n, 3))
+      p &lt;- 1000
+      
+      next_seed &lt;- next_seed + 1
+      set.seed(next_seed)
+      sim_dat &lt;- sim_data(ns, p, disp)
+      
+      dat &lt;- sim_dat[[which_dat]]
+      
+      if (verbose) cat(&quot; NMF...\n&quot;)
+      nmf_res &lt;-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;NMF&quot;, Kmax, nmf_res, sim_dat))
+      
+      L1pens &lt;- c(0.05, 0.1, 0.25, 0.5, 0.75) 
+      for (L1pen in L1pens) {
+        if (verbose) cat(&quot; Sparse NMF, L1 = &quot;, L1pen, &quot;...\n&quot;)
+        spnmf_res &lt;- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
+        all_res &lt;- all_res |&gt; 
+          bind_rows(next_tib(next_seed, disp, ns, paste0(&quot;SpNMF&quot;, L1pen), Kmax, spnmf_res, sim_dat))
+      }
+      
+      if (verbose) cat(&quot; NMF-EBNMF...\n&quot;)
+      ebnmf_nmf_res &lt;- run_ebnmf_from_nmf(dat, nmf_res$fit)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;NMF-EBNMF&quot;, Kmax, ebnmf_nmf_res, sim_dat))
+      
+      if (verbose) cat(&quot; NMF-EBNMF (var type = 0)...\n&quot;)
+      ebnmf_nmf_vt0_res &lt;- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;NMF-EBNMF-vt0&quot;, Kmax, ebnmf_nmf_vt0_res, sim_dat))
+      
+      if (verbose) cat(&quot; EBNMFgb...\n&quot;)
+      ebnmf_gb_res &lt;- run_greedy_backfit(dat, Kmax = Kmax)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;EBNMFgb&quot;, Kmax, ebnmf_gb_res, sim_dat))
+      
+      if (verbose) cat(&quot; EBNMFgb (var type = 0)...\n&quot;)
+      ebnmf_gb_vt0_res &lt;- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;EBNMFgb-vt0&quot;, Kmax, ebnmf_gb_vt0_res, sim_dat))
+      
+      if (verbose) cat(&quot; EBNMFalt...\n&quot;)
+      ebnmf_alt_res &lt;- run_alternating(dat, Kmax = Kmax)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;EBNMFalt&quot;, Kmax, ebnmf_alt_res, sim_dat))
+      
+      if (verbose) cat(&quot; EBNMFalt (var type = 0)...\n&quot;)
+      ebnmf_alt_vt0_res &lt;- run_alternating(dat, Kmax = Kmax, var_type = 0)
+      all_res &lt;- all_res |&gt; 
+        bind_rows(next_tib(next_seed, disp, ns, &quot;EBNMFalt-vt0&quot;, Kmax, ebnmf_alt_vt0_res, sim_dat))
+      
+    }
+  }
+  
+  all_res &lt;- all_res |&gt;
+    mutate(method = factor(method, levels = c(
+      &quot;NMF&quot;, paste0(&quot;SpNMF&quot;, L1pens), &quot;NMF-EBNMF&quot;, &quot;NMF-EBNMF-vt0&quot;, &quot;EBNMFgb&quot;, &quot;EBNMFgb-vt0&quot;,
+      &quot;EBNMFalt&quot;, &quot;EBNMFalt-vt0&quot;
+    )))
+  
+  return(all_res)
 }</code></pre>
 </div>
-<div id="simulation-code" class="section level2">
-<h2>Simulation code</h2>
-<p>Run simulations. We consider results for when the true
-<code>K = 3</code> is given in advance as well as for when
-<code>K</code> is overspecified (here, <code>Kmax = 6</code>):</p>
-<pre class="r"><code>all_res &lt;- tibble()
-
-set.seed(1)
-for (varied_n in c(25, 100, 500, 900, 975)) {
-  for (shape in c(1/2, 2/3, 3/4, 1, 2)) {
-    cat(&quot;SHARED N: &quot;, varied_n, &quot;SHAPE: &quot;, shape, &quot;\n&quot;)
-    
-    gamma_mean &lt;- 1
-    scale &lt;- gamma_mean / shape 
-    
-    ns &lt;- c(rep(1000 - varied_n, 3), rep(varied_n, 3))
-    p &lt;- 1000
-    
-    sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-    Y &lt;- sim_dat$Y
-    
-    nmf_res_trueK &lt;- run_nmf(Y, k = trueK)
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, trueK, nmf_res_trueK, sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf0&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf2&quot;, trueK, run_ebnmf_from_nmf(Y, nmf_res_trueK$fit, var_type = 2), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb0&quot;, trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb2&quot;, trueK, run_greedy_backfit(Y, Kmax = trueK, var_type = 2), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt0&quot;, trueK, run_alternating(Y, Kmax = trueK, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt2&quot;, trueK, run_alternating(Y, Kmax = trueK, var_type = 2), sim_dat))
-    
-    nmf_res_highK &lt;- run_nmf(Y, k = highK)
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;NMF&quot;, highK, nmf_res_highK, sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf0&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFnmf2&quot;, highK, run_ebnmf_from_nmf(Y, nmf_res_highK$fit, var_type = 2), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb0&quot;, highK, run_greedy_backfit(Y, Kmax = highK, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFgb2&quot;, highK, run_greedy_backfit(Y, Kmax = highK, var_type = 2), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt0&quot;, highK, run_alternating(Y, Kmax = highK, var_type = 0), sim_dat))
-    
-    all_res &lt;- all_res |&gt; 
-      bind_rows(next_tib(shape, ns, &quot;EBNMFalt2&quot;, highK, run_alternating(Y, Kmax = highK, var_type = 2), sim_dat))
-  }
-}</code></pre>
+<div id="results-kmax-3" class="section level3">
+<h3>Results, Kmax = 3</h3>
+<pre class="r"><code>sims_3norm &lt;- run_sims(&quot;Ynorm&quot;, Kmax = 3, verbose = FALSE)</code></pre>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1074,16 +1110,31 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
+<p>Cosine similarities for <code>L</code> (normalized data). Each row
+gives correlations for one true component or “topic.” Individual tiles
+correspond to individual simulations (a single combination of gamma
+shape and shared population size):</p>
+<pre class="r"><code>xlab &lt;- &quot;Size of shared population&quot;
+ylab &lt;- &quot;Dispersion parameter&quot;
+make_cosplot(sims_3norm, &quot;LLcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true L&quot;)</code></pre>
+<p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-2-1.png" width="840" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sims_3nonorm &lt;- run_sims(&quot;Y&quot;, Kmax = 3, verbose = FALSE)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
 </div>
-<div id="results-kmax-3" class="section level2">
-<h2>Results, Kmax = 3</h2>
-<p>Correlations for <code>L</code>. Each row gives correlations for one
-true component or “topic.” Individual tiles correspond to individual
-simulations (a single combination of gamma shape and shared population
-size):</p>
-<pre class="r"><code>lvls &lt;- c(&quot;NMF&quot;, &quot;EBNMFnmf0&quot;, &quot;EBNMFgb0&quot;, &quot;EBNMFalt0&quot;, &quot;EBNMFnmf2&quot;, &quot;EBNMFgb2&quot;, &quot;EBNMFalt2&quot;)
-xlabel &lt;- &quot;Size of shared population&quot;
-make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
+<p>Cosine similarities for <code>L</code> (non-normalized data):</p>
+<pre class="r"><code>make_cosplot(sims_3nonorm, &quot;LLcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-3-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
@@ -1122,8 +1173,8 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == trueK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
+<p>Cosine similarities for <code>F</code> (non-normalized data):</p>
+<pre class="r"><code>make_cosplot(sims_3nonorm, &quot;FFcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true F&quot;, cutoff = 0.999)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-4-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
@@ -1163,34 +1214,9 @@ Jason Willwerscheid
 </div>
 </div>
 </div>
-<div id="comments-kmax-3" class="section level2">
-<h2>Comments, Kmax = 3</h2>
-<p>The story here is pretty similar to the previous analysis, except
-that there is very little to distinguish among the three EBNMF methods.
-The constant-variance methods do slightly better than the
-columnwise-variance methods, but the gap is small. All EBNMF methods
-outperform vanilla NMF, particularly in estimating <code>L</code>.</p>
-</div>
-<div id="example-kmax-3" class="section level2">
-<h2>Example, Kmax = 3</h2>
-<p>Since EBNMF methods all perform similarly, it will suffice to
-illustrate NMF, EBNMFalt0, and EBNMFalt2. We’ll consider the setting
-where <code>shape = 0.5</code> and the size of the shared populations is
-100, since this setting gives noticeably different results for the
-constant-variance and columnwise-variance methods.</p>
-<pre class="r"><code>shape &lt;- 0.5
-scale &lt;- 2
-
-ns &lt;- c(rep(900, 3), rep(100, 3))
-p &lt;- 1000
-
-set.seed(6)
-sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-Y &lt;- sim_dat$Y
-
-nmf_res_k3 &lt;- run_nmf(Y, k = 3)
-ebnmf_res_alt0_k3 &lt;- run_alternating(Y, Kmax = 3, var_type = 0)
-ebnmf_res_alt2_k3 &lt;- run_alternating(Y, Kmax = 3, var_type = 2)</code></pre>
+<div id="results-kmax-6" class="section level3">
+<h3>Results, Kmax = 6</h3>
+<pre class="r"><code>sims_6norm &lt;- run_sims(&quot;Ynorm&quot;, Kmax = 6, verbose = FALSE)</code></pre>
 <div class="alert alert-warning">
 <p>
 <strong>Warning:</strong> The above code chunk cached its results, but
@@ -1205,13 +1231,96 @@ remove this warning. See the
 >knitr cache options</a> for more details.
 </p>
 </div>
-<pre class="r"><code>ex_plots_k3 &lt;- list()
-ex_plots_k3[[1]] &lt;- make_structure_plot(sim_dat$L, 1:3, &quot;True&quot;)
-ex_plots_k3[[2]] &lt;- plot_nmf(nmf_res_k3$fit, sim_dat$L, &quot;NMF&quot;)
-ex_plots_k3[[3]] &lt;- plot_fl(ebnmf_res_alt0_k3$fit, sim_dat$L, &quot;EBNMF (alt, const)&quot;)
-ex_plots_k3[[4]] &lt;- plot_fl(ebnmf_res_alt2_k3$fit, sim_dat$L, &quot;EBNMF (alt, colwise)&quot;)
-
-plot_grid(plotlist = ex_plots_k3, nrow = 2, ncol = 2)</code></pre>
+<pre class="r"><code>sims_6nonorm &lt;- run_sims(&quot;Y&quot;, Kmax = 6, verbose = FALSE)</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
+<p>Cosine similarities for <code>L</code> (normalized):</p>
+<pre class="r"><code>make_cosplot(sims_6norm, &quot;LLcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true L&quot;)</code></pre>
+<p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">972bf29</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-22
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">384778f</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-19
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-5-1.png" target="_blank">9b0074e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>SNR for redundant/noisy factors (normalized):</p>
+<pre class="r"><code>make_scaleplot(sims_6norm, xlab, ylab, &quot;SNR&quot;, cutoff = 100)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-6-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
@@ -1283,19 +1392,8 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Visually, the columnwise-variance results look nicer, since they
-sparsify the blue “background” component. Estimation for the shared
-populations are however somewhat irregular, and for this reason their
-correlations with the true component matrices are lower than for
-constant-variance EBNMF. Of course, since we’re using correlations as an
-evaluation metric, the presence of a background component will not be
-heavily penalized; this is I think one limitation of correlation as a
-metric.</p>
-</div>
-<div id="results-kmax-6" class="section level2">
-<h2>Results, Kmax = 6</h2>
-<p>Correlations for <code>L</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;LLcor&quot;)), &quot;Cor. w/ true L&quot;)</code></pre>
+<p>Cosine similarities for <code>L</code> (non-normalized):</p>
+<pre class="r"><code>make_cosplot(sims_6nonorm, &quot;LLcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true L&quot;)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-7-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
@@ -1367,8 +1465,8 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Correlations for <code>F</code>:</p>
-<pre class="r"><code>make_corplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;FFcor&quot;)), &quot;Cor. w/ true F&quot;)</code></pre>
+<p>Cosine similarities for <code>F</code> (non-normalized):</p>
+<pre class="r"><code>make_cosplot(sims_6nonorm, &quot;FFcos&quot;, xlab, ylab, &quot;Cos. sim. w/ true F&quot;, cutoff = 0.999)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-8-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
@@ -1440,10 +1538,8 @@ Jason Willwerscheid
 </table>
 </div>
 </div>
-<p>Scale of redundant/noisy factors. If any exist, they are arranged in
-descending order, with the largest redundant/noisy factor appearing in
-the top row:</p>
-<pre class="r"><code>make_scaleplot(all_res |&gt; filter(Kmax == highK, str_starts(metric_type, &quot;Scale&quot;)))</code></pre>
+<p>SNR for redundant/noisy factors (non-normalized):</p>
+<pre class="r"><code>make_scaleplot(sims_6nonorm, xlab, ylab, &quot;SNR&quot;, cutoff = 100)</code></pre>
 <p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-9-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -1527,67 +1623,22 @@ Jason Willwerscheid
 </div>
 </div>
 </div>
-<div id="comments-kmax-6" class="section level2">
-<h2>Comments, Kmax = 6</h2>
-<p>Here the success of the EBNMF methods is more varied, with
-alternating EBNMF consistently getting good results in the correlation
-plots. Interestingly, correlations with the true <code>F</code> vary
-much more than correlations with the true <code>L</code>. Again the
-columnwise-variance methods do a much better job removing redundant
-factors, with the greedy-backfit and alternating methods outperforming
-the NMF-initialization methods.</p>
-</div>
-<div id="example-kmax-6" class="section level2">
-<h2>Example, Kmax = 6</h2>
-<p>We’ll take a closer look at the NMF, EBNMFnmf0, EBNMFnmf2, EBNMFalt0,
-and EBNMFalt2 methods. We’ll consider the setting where
-<code>shape = 0.75</code> and the size of the shared populations is
-500.</p>
-<pre class="r"><code>shape &lt;- 3/4
-scale &lt;- 4/3
-
-ns &lt;- c(rep(500, 3), rep(500, 3))
-p &lt;- 1000
-
-set.seed(13)
-sim_dat &lt;- sim_data(ns, p, gamma_shape = shape, gamma_scale = scale)
-Y &lt;- sim_dat$Y
-
-nmf_res_k6 &lt;- run_nmf(Y, k = 6)
-ebnmf_res_nmf0_k6 &lt;- run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 0)
-ebnmf_res_nmf2_k6 &lt;- run_ebnmf_from_nmf(Y, nmf_res_k6$fit, var_type = 2)
-ebnmf_res_alt0_k6 &lt;- run_alternating(Y, Kmax = 6, var_type = 0)
-ebnmf_res_alt2_k6 &lt;- run_alternating(Y, Kmax = 6, var_type = 2)</code></pre>
-<div class="alert alert-warning">
+<div id="timings" class="section level3">
+<h3>Timings</h3>
+<pre class="r"><code>all_res &lt;- sims_3norm |&gt;
+  bind_rows(sims_3nonorm) |&gt;
+  bind_rows(sims_6norm) |&gt;
+  bind_rows(sims_6nonorm)
+make_timingplot(all_res, xlab, ylab)
+# `summarise()` has grouped output by &#39;varied_n&#39;, &#39;shape&#39;, &#39;Kmax&#39;. You can
+# override using the `.groups` argument.</code></pre>
+<p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" width="840" style="display: block; margin: auto;" /></p>
 <p>
-<strong>Warning:</strong> The above code chunk cached its results, but
-it won’t be re-run if previous chunks it depends on are updated. If you
-need to use caching, it is highly recommended to also set
-<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
-file (in a chunk that is not cached). Alternatively, you can customize
-the option <code>dependson</code> for each individual chunk that is
-cached. Using either <code>autodep</code> or <code>dependson</code> will
-remove this warning. See the
-<a href="https://yihui.name/knitr/options/#cache"
->knitr cache options</a> for more details.
-</p>
-</div>
-<pre class="r"><code>ex_plots_k6 &lt;- list()
-ex_plots_k6[[1]] &lt;- make_structure_plot(sim_dat$L, 1:3, &quot;True&quot;)
-ex_plots_k6[[2]] &lt;- plot_nmf(nmf_res_k6$fit, sim_dat$L, &quot;NMF&quot;)
-ex_plots_k6[[3]] &lt;- plot_fl(ebnmf_res_nmf0_k6$fit, sim_dat$L, &quot;EBNMF (NMF init, const)&quot;)
-ex_plots_k6[[4]] &lt;- plot_fl(ebnmf_res_nmf2_k6$fit, sim_dat$L, &quot;EBNMF (NMF init, colwise)&quot;)
-ex_plots_k6[[5]] &lt;- plot_fl(ebnmf_res_alt0_k6$fit, sim_dat$L, &quot;EBNMF (alt, const)&quot;)
-ex_plots_k6[[6]] &lt;- plot_fl(ebnmf_res_alt2_k6$fit, sim_dat$L, &quot;EBNMF (alt, colwise)&quot;)
-
-plot_grid(plotlist = ex_plots_k6, nrow = 3, ncol = 2)</code></pre>
-<p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-11-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div id="fig-unnamed-chunk-10-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1606,7 +1657,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-11-1.png" target="_blank">972bf29</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">972bf29</a>
 </td>
 <td>
 Jason Willwerscheid
@@ -1615,75 +1666,43 @@ Jason Willwerscheid
 2025-08-22
 </td>
 </tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>The story is again similar to the previous analysis: although EBNMF
-with an NMF initialization is a clear improvement over vanilla NMF,
-alternating EBNMF gives an even cleaner representation, with the
-columnwise-variance approach doing a slightly better job than the
-constant-variance approach.</p>
-</div>
-<div id="time-elapsed" class="section level2">
-<h2>Time elapsed</h2>
-<pre class="r"><code>plot_df &lt;- all_res |&gt; filter(str_starts(metric_type, &quot;t_elapsed&quot;)) |&gt;
-  mutate(varied_n = factor(varied_n), 
-         shape = factor(round(shape, 2)),
-         Kmax = factor(paste0(&quot;Kmax = &quot;, Kmax)),
-         method = factor(method, levels = lvls)) 
-ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
-  geom_tile() +
-  scale_fill_gradient(low = &quot;white&quot;, high = &quot;darkgreen&quot;, na.value = &quot;black&quot;, transform = &quot;log10&quot;) +
-  facet_grid(rows = vars(Kmax), cols = vars(method), scales = &quot;free_x&quot;) +
-  labs(x = xlabel, y = &quot;Shape of gamma prior on factors&quot;, fill = &quot;Time elapsed (s)&quot;) +
-  theme(axis.text.x = element_text(angle = 45))</code></pre>
-<p><img src="figure/sim_scenario2.Rmd/unnamed-chunk-12-1.png" width="840" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
-Past versions of unnamed-chunk-12-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-12-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
 <tr>
 <td>
-<a href="https://github.com/willwerscheid/ebnmf-paper/blob/972bf2970e2e006f491170897c3aa4740f7d8e50/docs/figure/sim_scenario2.Rmd/unnamed-chunk-12-1.png" target="_blank">972bf29</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/384778f031a522afd2588af114275bd292e16cb4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">384778f</a>
 </td>
 <td>
 Jason Willwerscheid
 </td>
 <td>
-2025-08-22
+2025-08-19
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ecbc3af3e83cb7fd405ebfe0dda36b39251bf9e1/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">ecbc3af</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-18
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/9b0074e390f0fb15ba547425d2860b82100416f4/docs/figure/sim_scenario2.Rmd/unnamed-chunk-10-1.png" target="_blank">9b0074e</a>
+</td>
+<td>
+Jason Willwerscheid
+</td>
+<td>
+2025-08-15
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div id="comments-overall" class="section level3">
-<h3>Comments, overall</h3>
-<p>As in the previous analysis, I think that columnwise-variance
-alternating EBNMF wins out here. The constant-variance approach does
-give slightly better correlations with the true <code>L</code>, but the
-gap is much smaller here than in the previous analysis, and the
-<code>Kmax = 3</code> example above illustrates why we might not want to
-put full faith in the correlation metric.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1695,7 +1714,7 @@ Session information
 <pre class="r"><code>sessionInfo()
 # R version 4.5.1 (2025-06-13)
 # Platform: aarch64-apple-darwin20
-# Running under: macOS Sequoia 15.5
+# Running under: macOS Sequoia 15.6.1
 # 
 # Matrix products: default
 # BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
@@ -1711,7 +1730,7 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-#  [1] fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-34        cowplot_1.2.0     
+#  [1] fastTopics_0.6-192 flashier_1.0.56    ebnm_1.1-36        cowplot_1.2.0     
 #  [5] ggplot2_3.5.2      stringr_1.5.1      tidyr_1.3.1        dplyr_1.1.4       
 #  [9] tibble_3.3.0       R.matlab_3.7.0     workflowr_1.7.1   
 # 
@@ -1722,30 +1741,29 @@ Session information
 # [10] processx_3.8.6       invgamma_1.2         magrittr_2.0.3      
 # [13] compiler_4.5.1       rlang_1.1.6          sass_0.4.10         
 # [16] progress_1.2.3       tools_4.5.1          yaml_2.3.10         
-# [19] data.table_1.17.8    knitr_1.50           labeling_0.4.3      
-# [22] prettyunits_1.2.0    htmlwidgets_1.6.4    scatterplot3d_0.3-44
-# [25] RColorBrewer_1.1-3   Rtsne_0.17           withr_3.0.2         
-# [28] purrr_1.1.0          R.oo_1.27.1          grid_4.5.1          
-# [31] git2r_0.36.2         colorspace_2.1-1     scales_1.4.0        
-# [34] gtools_3.9.5         cli_3.6.5            rmarkdown_2.29      
-# [37] crayon_1.5.3         generics_0.1.4       RcppParallel_5.1.10 
-# [40] rstudioapi_0.17.1    httr_1.4.7           pbapply_1.7-2       
-# [43] cachem_1.1.0         splines_4.5.1        parallel_4.5.1      
-# [46] softImpute_1.4-3     vctrs_0.6.5          Matrix_1.7-3        
-# [49] jsonlite_2.0.0       callr_3.7.6          hms_1.1.3           
-# [52] mixsqp_0.3-54        ggrepel_0.9.6        irlba_2.3.5.1       
-# [55] horseshoe_0.2.0      trust_0.1-8          plotly_4.11.0       
-# [58] jquerylib_0.1.4      glue_1.8.0           ps_1.9.1            
-# [61] uwot_0.2.3           stringi_1.8.7        Polychrome_1.5.4    
-# [64] gtable_0.3.6         later_1.4.2          quadprog_1.5-8      
-# [67] pillar_1.11.0        htmltools_0.5.8.1    truncnorm_1.0-9     
-# [70] R6_2.6.1             rprojroot_2.1.0      evaluate_1.0.4      
-# [73] lattice_0.22-7       R.methodsS3_1.8.2    RhpcBLASctl_0.23-42 
-# [76] SQUAREM_2021.1       ashr_2.2-63          httpuv_1.6.16       
-# [79] bslib_0.9.0          Rcpp_1.1.0           deconvolveR_1.2-1   
-# [82] whisker_0.4.1        xfun_0.52            fs_1.6.6            
-# [85] getPass_0.2-4        pkgconfig_2.0.3</code></pre>
-</div>
+# [19] data.table_1.17.8    knitr_1.50           prettyunits_1.2.0   
+# [22] htmlwidgets_1.6.4    scatterplot3d_0.3-44 RColorBrewer_1.1-3  
+# [25] Rtsne_0.17           withr_3.0.2          purrr_1.1.0         
+# [28] R.oo_1.27.1          grid_4.5.1           git2r_0.36.2        
+# [31] colorspace_2.1-1     scales_1.4.0         gtools_3.9.5        
+# [34] cli_3.6.5            rmarkdown_2.29       crayon_1.5.3        
+# [37] generics_0.1.4       RcppParallel_5.1.10  rstudioapi_0.17.1   
+# [40] httr_1.4.7           pbapply_1.7-2        cachem_1.1.0        
+# [43] splines_4.5.1        parallel_4.5.1       softImpute_1.4-3    
+# [46] vctrs_0.6.5          Matrix_1.7-3         jsonlite_2.0.0      
+# [49] callr_3.7.6          hms_1.1.3            mixsqp_0.3-54       
+# [52] ggrepel_0.9.6        irlba_2.3.5.1        horseshoe_0.2.0     
+# [55] trust_0.1-8          plotly_4.11.0        jquerylib_0.1.4     
+# [58] glue_1.8.0           ps_1.9.1             uwot_0.2.3          
+# [61] stringi_1.8.7        Polychrome_1.5.4     gtable_0.3.6        
+# [64] later_1.4.2          quadprog_1.5-8       pillar_1.11.0       
+# [67] htmltools_0.5.8.1    truncnorm_1.0-9      R6_2.6.1            
+# [70] rprojroot_2.1.0      evaluate_1.0.4       lattice_0.22-7      
+# [73] R.methodsS3_1.8.2    RhpcBLASctl_0.23-42  SQUAREM_2021.1      
+# [76] ashr_2.2-63          httpuv_1.6.16        bslib_0.9.0         
+# [79] Rcpp_1.1.0           deconvolveR_1.2-1    whisker_0.4.1       
+# [82] xfun_0.52            fs_1.6.6             getPass_0.2-4       
+# [85] pkgconfig_2.0.3</code></pre>
 </div>
 </div>
 </div>
