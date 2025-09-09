@@ -1,5 +1,5 @@
 ---
-title: NMF analyses of simulated data, Scenario 2
+title: NMF analyses of simulated data, Scenario 2 (shared topics)
 author: Jason Willwerscheid and Peter Carbonetto
 output:
   workflowr::wflow_html:
