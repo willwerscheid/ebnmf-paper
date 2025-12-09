@@ -1,30 +1,28 @@
-run_RcppML_sims <- function(which_dat, Kmax, niter = 5, verbose = FALSE) {
+run_RcppML_sims <- function(sim_data, which_dat, Kmax, niter = 5, verbose = FALSE) {
   all_res <- tibble()
   next_seed <- 0
   for (iter in 1:niter) {
+    if (verbose) cat("ITER: ", iter, "\n")
+
     next_seed <- next_seed + 1
     set.seed(next_seed)
 
-    for (disp in c(1, Inf)) {
-      if (verbose) cat("ITER: ", iter, "DISPERSION: ", disp, "\n")
+    sim_dat <- sim_data(ns, p, disp)
+    dat <- sim_dat[[which_dat]]
 
-      sim_dat <- sim_data(ns, p, disp)
-      dat <- sim_dat[[which_dat]]
-
-      L1pens <- seq(0, 0.9, by = 0.05)^2
-      for (L1pen in L1pens) {
-        if (verbose) cat(" L1 = ", L1pen, "...\n")
-        spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
-        all_res <- all_res |>
-          bind_rows(next_tib(next_seed, disp, min(ns), L1pen, Kmax, spnmf_res, sim_dat))
-      }
+    L1pens <- seq(0, 0.9, by = 0.05)^2
+    for (L1pen in L1pens) {
+      if (verbose) cat(" L1 = ", L1pen, "...\n")
+      spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
+      all_res <- all_res |>
+        bind_rows(next_tib(next_seed, disp, min(ns), L1pen, Kmax, spnmf_res, sim_dat))
     }
   }
 
   return(all_res)
 }
 
-run_nnlm_sims <- function(which_dat, Kmax, niter = 3, verbose = FALSE) {
+run_KimPark_sims <- function(matlab, which_dat, Kmax, L1pens, L2pen = 1, niter = 5, verbose = FALSE) {
   all_res <- tibble()
   next_seed <- 0
   for (iter in 1:niter) {
@@ -32,17 +30,17 @@ run_nnlm_sims <- function(which_dat, Kmax, niter = 3, verbose = FALSE) {
     set.seed(next_seed)
 
     for (disp in c(1, Inf)) {
-      if (verbose) cat("ITER: ", iter, "DISPERSION: ", disp, "\n")
+      if (verbose) cat("RARE N: ", 10, "DISPERSION: ", disp, "\n")
 
       sim_dat <- sim_data(ns, p, disp)
       dat <- sim_dat[[which_dat]]
 
-      L1pens <- seq(0, sqrt(10), length.out = 10)^2
-      for (L1pen in L1pens) {
-        if (verbose) cat(" L1 = ", L1pen, "...\n")
-        spnmf_res <- run_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1)
+      for (pen in l1pens) {
+        if (verbose) cat(" penalty = ", pen, "...\n")
+
+        spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, Kmax, pen, L2pen, 1:niter, verbose)
         all_res <- all_res |>
-          bind_rows(next_tib(next_seed, disp, min(ns), L1pen, Kmax, spnmf_res, sim_dat))
+          bind_rows(next_tib(next_seed, disp, min(ns), pen, Kmax, spnmf_res, sim_dat))
       }
     }
   }
@@ -86,7 +84,7 @@ run_Hoyer_sims <- function(matlab, which_dat, Kmax, niter = 5, verbose = FALSE) 
           evaluate(matlab, "[W,H,e,t] = sparseNMF(dat,k,options);")
 
           hoyer_res <- getVariable(matlab, c("W", "H", "e", "t"))
-          all_t <- all_t + max(hoyer_res$t)
+          all_t <- all_t + max(hoyer_res$t, na.rm = TRUE)
           all_mse[seed] <- min(hoyer_res$e)
           if (min(hoyer_res$e) < best_mse) {
             best_mse <- min(hoyer_res$e)
@@ -100,6 +98,32 @@ run_Hoyer_sims <- function(matlab, which_dat, Kmax, niter = 5, verbose = FALSE) 
         )
         all_res <- all_res |>
           bind_rows(next_tib(next_seed, disp, min(ns), pen, Kmax, spnmf_res, sim_dat))
+      }
+    }
+  }
+
+  return(all_res)
+}
+
+run_nnlm_sims <- function(which_dat, Kmax, niter = 3, verbose = FALSE) {
+  all_res <- tibble()
+  next_seed <- 0
+  for (iter in 1:niter) {
+    next_seed <- next_seed + 1
+    set.seed(next_seed)
+
+    for (disp in c(1, Inf)) {
+      if (verbose) cat("ITER: ", iter, "DISPERSION: ", disp, "\n")
+
+      sim_dat <- sim_data(ns, p, disp)
+      dat <- sim_dat[[which_dat]]
+
+      L1pens <- seq(0, sqrt(10), length.out = 10)^2
+      for (L1pen in L1pens) {
+        if (verbose) cat(" L1 = ", L1pen, "...\n")
+        spnmf_res <- run_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1)
+        all_res <- all_res |>
+          bind_rows(next_tib(next_seed, disp, min(ns), L1pen, Kmax, spnmf_res, sim_dat))
       }
     }
   }

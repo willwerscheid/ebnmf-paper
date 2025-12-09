@@ -64,7 +64,7 @@ run_nmf <- function(Y, k, seeds = 1:10, method = "scd", verbose = FALSE) {
   return(list(t = t, fit = best_res, all_mse = all_mse))
 }
 
-run_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
+run_nnlm_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
   if (verbose) cat("Running Sparse NMF, L1 penalty =", L1pen)
   t <- system.time({
     all_mse <- numeric(length(seeds))
@@ -73,7 +73,7 @@ run_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
     for (i in 1:length(seeds)) {
       if (verbose) cat(".")
       set.seed(seeds[i])
-      next_res <- NNLM::nnmf(Y, k = k, alpha = c(0, 0, L1pen), beta = c(0, 0, L1pen), verbose = 0)
+      next_res <- NNLM::nnmf(Y, k = k, alpha = c(0, 0, L1pen), beta = c(1, 0, 0), verbose = 0)
       all_mse[i] <- min(next_res$mse)
       if (min(next_res$mse) < best_mse) {
         best_mse <- min(next_res$mse)
@@ -111,6 +111,75 @@ run_RcppML_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
   out_res$H <- out_res$H[colSums(best_res$w) > 0, ]
 
   return(list(t = t, fit = out_res, all_mse = all_mse))
+}
+
+run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbose = FALSE) {
+  setVariable(matlab, Y = Y)
+
+  t <- system.time({
+    all_mse <- numeric(length(seeds))
+    best_mse <- Inf
+    # The seeds parameter controls the number of trials:
+    for (i in 1:length(seeds)) {
+      if (verbose) cat(".")
+
+      evaluate(matlab, paste0("rng(", seeds[i], ");"))
+      evaluate(matlab, paste0("[H,W,i,HIS] = nmf(transpose(Y),", k,
+                              ",'type','sparse','verbose',1,",
+                              "'alpha',", L2pen, ",'beta',", L1pen, ");"))
+      evaluate(matlab, "W = transpose(W);")
+      evaluate(matlab, "H = transpose(H);")
+
+      next_res <- getVariable(matlab, c("W", "H", "i", "HIS"))
+      all_mse[i] <- next_res$HIS[nrow(next_res$HIS), 6]
+      if (all_mse[i] < best_mse) {
+        best_mse <- all_mse[i]
+        best_fit <- list(W = next_res$W, H = next_res$H)
+      }
+    }
+  })
+
+  to_keep <- colSums(best_fit$W) > 0
+  best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
+  best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
+
+  return(list(t = t, fit = best_fit,  all_mse = all_mse))
+}
+
+run_Hoyer_sparse_nmf <- function(matlab, Y, k, pen, seeds = 1, verbose = FALSE) {
+  setVariable(matlab, Y = Y)
+
+  evaluate(matlab, paste0("k=", k,";"))
+  evaluate(matlab, paste0("options.sW=", pen,";"))
+  evaluate(matlab, paste0("options.sH=0.1;"))
+  evaluate(matlab, paste0("options.maxiter=200;"))
+  evaluate(matlab, paste0("options.delta=1e-3;"))
+
+  t <- system.time({
+    all_mse <- numeric(length(seeds))
+    best_mse <- Inf
+    # The seeds parameter controls the number of trials:
+    for (i in 1:length(seeds)) {
+      if (verbose) cat(".")
+
+      evaluate(matlab, paste0("rng(", seeds[i], ");"))
+      evaluate(matlab, "[W,H,e,t] = sparseNMF(Y,k,options);")
+
+      next_res <- getVariable(matlab, c("W", "H", "e", "t"))
+
+      all_mse[i] <- min(next_res$e)
+      if (min(next_res$e) < best_mse) {
+        best_mse <- min(next_res$e)
+        best_fit <- list(W = next_res$W, H = next_res$H)
+      }
+    }
+  })
+
+  to_keep <- colSums(best_fit$W) > 0
+  best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
+  best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
+
+  return(list(t = t, fit = best_fit,  all_mse = all_mse))
 }
 
 run_ebnmf_from_nmf <- function(Y, nmf_res, var_type = 2, ebnm_fn = ebnm_point_exponential,
@@ -179,6 +248,7 @@ run_alternating <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponent
 ## CV style approaches
 
 run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FALSE) {
+  set.seed(1)
   folds <- sample(1:nfolds, length(Y), replace = TRUE)
   L1pen_mse <- numeric(length(L1pens))
   for (i in 1:length(L1pens)) {
@@ -200,14 +270,19 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
   return(tibble(L1pen = L1pens, RMSE = sqrt(L1pen_mse)))
 }
 
-run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE) {
+run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE, method = "alternating") {
+  set.seed(1)
   folds <- sample(1:nfolds, length(Y), replace = TRUE)
   all_mse <- numeric(ntrials)
   for (fold in 1:ntrials) {
     if (verbose) cat("FOLD =", fold, "\n")
     dat <- Y
     dat[folds == fold] <- NA
-    ebnmf_res <- run_alternating(dat, Kmax = k, var_type = 2, verbose = verbose)
+    if (method == "alternating") {
+      ebnmf_res <- run_alternating(dat, Kmax = k, verbose = verbose)
+    } else if (method == "gb") {
+      ebnmf_res <- run_greedy_backfit(dat, Kmax = k, verbose = verbose)
+    }
     imp_dat <- fitted(ebnmf_res$fit)
     mse <- mean((imp_dat[folds == fold] - Y[folds == fold])^2)
     all_mse[fold] <- mse
@@ -272,11 +347,12 @@ calc_metrics <- function(res, sim_dat) {
   return(all_metrics)
 }
 
-next_tib <- function(seed, shape, varied_n, method, Kmax, res, sim_dat) {
+next_tib <- function(seed, shape, varied_n, method, submethod, Kmax, res, sim_dat) {
   metrics <- calc_metrics(res, sim_dat)
   return(tibble(
     seed = seed,
     method = method,
+    submethod = submethod,
     Kmax = Kmax,
     varied_n = varied_n,
     shape = shape,
@@ -362,8 +438,8 @@ align_cols <- function(plotmat, refmat) {
   return(idx)
 }
 
-make_structure_plot <- function(LL, pops, kset, title) {
-  structure_plot(LL[, kset], grouping = pops, gap = 20,
+make_structure_plot <- function(LL, pops, kset, title, gap = 20) {
+  structure_plot(LL[, kset, drop = FALSE], grouping = pops, gap = gap,
                  topics = rev(1:ncol(LL)), loadings_order = 1:nrow(LL),
                  colors = RColorBrewer::brewer.pal(12, "Set3")) +
     labs(y = "") +
@@ -374,18 +450,21 @@ make_structure_plot <- function(LL, pops, kset, title) {
     theme(plot.title.position = "plot")
 }
 
-plot_fl <- function(fl, refmat, pops, title) {
+plot_fl <- function(fl, refmat, pops, title, gap = 20) {
   LDF <- ldf(fl, type = "f")
   LL <- t(t(LDF$L) * LDF$D)
   kset <- align_cols(LL, refmat)
-  make_structure_plot(LL, pops, kset, title)
+  make_structure_plot(LL, pops, kset, title, gap)
 }
 
-plot_nmf <- function(fit, refmat, pops, title) {
+plot_nmf <- function(fit, refmat, pops, title, gap = 20) {
+  if (is.null(fit$W) | ncol(fit$W) == 0) {
+    return(NULL)
+  }
   Wscale <- sqrt(apply(fit$W, 2, function(x) sum(x^2)))
   Hscale <- sqrt(apply(fit$H, 1, function(x) sum(x^2)))
   D <- Wscale * Hscale
   LL <- t(t(fit$W) / sqrt(Wscale) * sqrt(Hscale))
   kset <- align_cols(LL, refmat)
-  make_structure_plot(LL, pops, kset, title)
+  make_structure_plot(LL, pops, kset, title, gap)
 }
