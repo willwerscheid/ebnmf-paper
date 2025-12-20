@@ -17,7 +17,7 @@ add_noise <- function(dat, noise_lvl) {
 # Sample of noisy swimmer images.
 set.seed(1)
 noisy_dat <- add_noise(dat, 0.1)
-R.matlab::writeMat("./data/noisy_swimmer.mat", Y = noisy_dat)
+# R.matlab::writeMat("./data/noisy_swimmer.mat", Y = noisy_dat)
 plot_images(noisy_dat[, sample(ncol(noisy_dat), 6)], nrow = 1, ncol = 6) +
   theme(strip.text = element_blank())
 ggsave("./output/plots/swimmer_sample.pdf", width = 7, height = 1.5)
@@ -35,7 +35,9 @@ ggsave("./output/plots/swimmer_true_factors.pdf", width = 8, height = 2)
 
 # EBNMF results.
 fl <- flash(noisy_dat, ebnm_fn = ebnm_point_exponential, greedy_Kmax = 20, backfit = TRUE)
-plot_images(fl$L_pm[, align_cols(fl$L_pm, parts)[1:17]], nrow = 1, ncol = 17)
+plot_images(fl$L_pm[, align_cols(fl$L_pm, parts)[1:17]], nrow = 1, ncol = 17) +
+  ggtitle("EBSNMF")
+ggsave("./output/plots/swimmer_flash.pdf", width = 8, height = 0.9)
 
 # Sparse NMF results (DeBruine).
 plotlist <- list()
@@ -47,7 +49,7 @@ for (pen in c(0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5)) {
   plotlist <- c(plotlist, list(p))
 }
 plot_grid(plotlist = plotlist, ncol = 1)
-ggsave("./output/plots/swimmer_debruine.pdf", width = 8, height = 3.5)
+ggsave("./output/plots/swimmer_debruine.pdf", width = 8, height = 6)
 
 setwd("./matlab/")
 Matlab$startServer(matlab = "/Applications/MATLAB_R2025a.app/bin/matlab")
@@ -83,7 +85,7 @@ for (pen in c(0.1, 0.3, 1, 3, 10, 30, 100)) {
   plotlist <- c(plotlist, list(p))
 }
 plot_grid(plotlist = plotlist, ncol = 1)
-ggsave("../output/plots/swimmer_kimpark.pdf", width = 8, height = 3.5)
+ggsave("../output/plots/swimmer_kimpark.pdf", width = 8, height = 6)
 
 close(matlab)
 setwd("../")
