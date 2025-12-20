@@ -1,100 +1,142 @@
-library(R.matlab)
-library(tibble)
-library(dplyr)
-library(tidyr)
-library(stringr)
-library(ggplot2)
-library(cowplot)
-library(ebnm)
-library(flashier)
-library(fastTopics)
 source("./code/sim_functions.R")
-source("./code/sim_study_functions.R")
 options(matlab = "/Applications/MATLAB_R2025a.app/bin/matlab")
 
 
 ### Simulations -----
 
-ns <- c(rep(25, 3), rep(500, 3))
-p <- 2000
-
-sim_data <- function(ns, p, dispersion, n_anchor_words = 3) {
-  pops <- rep(LETTERS[1:length(ns)], times = ns)
-
+sim_data <- function(ns, p, colwise_noise, component_scales = rep(5, length(ns))) {
   L <- matrix(0, nrow = sum(ns), ncol = 3)
+  pops <- rep(LETTERS[1:length(ns)], times = ns)
+  L[pops == "A", 1] <- 1
+  L[pops == "B", 2] <- 1
+  L[pops == "C", 3] <- 1
+
   pi1 <- seq(0, 1, length.out = ns[4])
   pi2 <- seq(0, 1, length.out = ns[5])
   pi3 <- seq(0, 1, length.out = ns[6])
-  L[, 1] <- c(rep(1, ns[1]), rep(0, sum(ns[2:3])), pi1, pi2, rep(0, ns[6]))
-  L[, 2] <- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, ns[3]), 1 - pi1, rep(0, ns[5]), pi3)
-  L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]), 1 - pi2, 1 - pi3)
+  L[pops == "D", 1:2] <- c(pi1, 1 - pi1)
+  L[pops == "E", c(1, 3)] <- c(pi2, 1 - pi2)
+  L[pops == "F", 2:3] <- c(pi3, 1 - pi3)
 
-  # vary sizes:
-  L <- L * rgamma(sum(ns), shape = 2, rate = 2)
-
-  F <- sim_F(p, 3, gamma_shape = 2/3, gamma_scale = 1, n_anchor_words)
-  X <- sim_X(L, F, dispersion = dispersion)
+  L <- vary_library_sizes(L)
+  F <- sim_F(p, ncol(L))
+  F <- t(t(F) * component_scales)
+  X <- sim_X(L, F, colwise_noise)
   return_sim_data(X, L, F, pops)
 }
 
-ss2_ebnmf_K3_res <- run_ebnmf_sims("Y", 3, verbose = TRUE)
-ss2_ebnmf_K6_res <- run_ebnmf_sims("Y", 6, verbose = TRUE)
-save(ss2_ebnmf_K3_res, ss2_ebnmf_K6_res, file = "output/ss2_ebnmf.RData")
+run_sims <- function(matlab, which_dat, Kmax, nreps = 5, verbose = FALSE,
+                     colwise_noise = FALSE) {
+  all_res <- tibble()
+  next_seed <- 0
+  for (varied_n in c(0, 1, 5, 50, 250, 450, 495, 499, 500)) {
+    for (reps in 1:nreps) {
+      if (verbose) cat("ANCHOR N:", varied_n, " SEED:", next_seed + 1, "\n")
 
-ss2_rcppML_K3_res <- run_RcppML_sims("Y", 3, verbose = TRUE)
-ss2_rcppML_K6_res <- run_RcppML_sims("Y", 6, verbose = TRUE)
-save(ss2_rcppML_K3_res, ss2_rcppML_K6_res, file = "output/ss2_rcppML.RData")
+      ns <- c(rep(varied_n, 3), rep(500 - varied_n, 3))
+      p <- 2000
+
+      next_seed <- next_seed + 1
+      set.seed(next_seed)
+      sim_dat <- sim_data(ns, p, colwise_noise = colwise_noise)
+
+      all_res <- all_res |>
+        bind_rows(run_all_methods(sim_dat, which_dat, Kmax, next_seed, colwise_noise, varied_n))
+    }
+  }
+
+  return(all_res)
+}
 
 setwd("./matlab/")
-Matlab$startServer()
+Matlab$startServer(matlab = "/Applications/MATLAB_R2025a.app/bin/matlab")
 matlab <- Matlab()
 open(matlab)
-setVerbose(matlab, threshold = 100000)
-ss2_hoyer_K3_res <- run_Hoyer_sims(matlab, "Y", 3, verbose = TRUE)
-ss2_hoyer_K6_res <- run_Hoyer_sims(matlab, "Y", 6, verbose = TRUE)
+setVerbose(matlab, threshold = 1000000)
+
+sims_K3 <- run_sims(matlab, "Y", Kmax = 3, verbose = TRUE)
+saveRDS(sims_K3, "../output/ss2_K3.rds")
+sims_K4 <- run_sims(matlab, "Y", Kmax = 4, verbose = TRUE)
+saveRDS(sims_K4, "../output/ss2_K4.rds")
+sims_K6 <- run_sims(matlab, "Y", Kmax = 6, verbose = TRUE)
+saveRDS(sims_K6, "../output/ss2_K6.rds")
+sims_K8 <- run_sims(matlab, "Y", Kmax = 8, verbose = TRUE)
+saveRDS(sims_K8, "../output/ss2_K8.rds")
+
+sims_K3 <- run_sims(matlab, "Ylibnorm", Kmax = 3, verbose = TRUE)
+saveRDS(sims_K3, "../output/ss2_K3_libnorm.rds")
+sims_K4 <- run_sims(matlab, "Ylibnorm", Kmax = 4, verbose = TRUE)
+saveRDS(sims_K4, "../output/ss2_K4_libnorm.rds")
+sims_K6 <- run_sims(matlab, "Ylibnorm", Kmax = 6, verbose = TRUE)
+saveRDS(sims_K6, "../output/ss2_K6_libnorm.rds")
+sims_K8 <- run_sims(matlab, "Ylibnorm", Kmax = 8, verbose = TRUE)
+saveRDS(sims_K8, "../output/ss2_K8_libnorm.rds")
+
+# sims_K3 <- run_sims(matlab, "Y", Kmax = 3, verbose = TRUE, colwise_noise = TRUE)
+# saveRDS(sims_K3, "../output/ss2_K3_colwise.rds")
+# sims_K4 <- run_sims(matlab, "Y", Kmax = 4, verbose = TRUE, colwise_noise = TRUE)
+# saveRDS(sims_K4, "../output/ss2_K4_colwise.rds")
+# sims_K6 <- run_sims(matlab, "Y", Kmax = 6, verbose = TRUE, colwise_noise = TRUE)
+# saveRDS(sims_K6, "../output/ss2_K6_colwise.rds")
+# sims_K8 <- run_sims(matlab, "Y", Kmax = 8, verbose = TRUE, colwise_noise = TRUE)
+# saveRDS(sims_K8, "../output/ss2_K8_colwise.rds")
+
 close(matlab)
 setwd("../")
-save(ss2_hoyer_K3_res, ss2_hoyer_K6_res, file = "output/ss2_hoyer.RData")
-
-ss2_nnlm_K3_res <- run_nnlm_sims("Y", 3, verbose = TRUE)
-ss2_nnlm_K6_res <- run_nnlm_sims("Y", 6, verbose = TRUE)
-save(ss2_nnlm_K3_res, ss2_nnlm_K6_res, file = "output/ss2_nnlm.RData")
 
 
 ### Plots -----
 
-rel_widths <- c(0.5, 0.5)
+plot_df <- sims_K6 |> mutate(K = "K = 3") |>
+  #bind_rows(sims_K4 |> mutate(K = "K = 4")) |>
+  #bind_rows(sims_K6 |> mutate(K = "K = 6")) |>
+  mutate(varied_n = shape) |>
+  group_by(K, method, submethod, varied_n, seed) |>
+  summarize(metric_val = max(metric_val * (metric_type == "FFcosine3"))) |>
+  mutate(metric_val = coalesce(metric_val, 0)) |>
+  mutate(varied_n = factor(varied_n)) |>
+  mutate(method = fct_rev(method), submethod = fct_rev(submethod)) |>
+  group_by(K, method, submethod, varied_n) |>
+  summarize(metric_val = mean(metric_val)) |>
+  ungroup()
 
-xlab <- "L1 penalty"
-
-make_trueK_plot(
-  ss2_rcppML_K3_res, ss2_ebnmf_K3_res, "RcppML", xlab, ylab, TRUE, c(0.025, 0.1, 0.25, 0.5)
-)
-ggsave("output/plots/ss2_rcppML_K3.pdf", width = 10, height = 6)
-
-make_overK_plot(
-  ss2_rcppML_K6_res, ss2_ebnmf_K6_res, "RcppML", xlab, ylab, rel_widths, 6, TRUE, c(0.05, 0.25, 0.5)
-)
-ggsave("output/plots/ss2_rcppML_K6.pdf", width = 12, height = 8)
-
-make_trueK_plot(
-  ss2_nnlm_K3_res, ss2_ebnmf_K3_res, "NNLM", xlab, ylab, TRUE, c(0.5, 2, 5)
-)
-ggsave("output/plots/ss2_nnlm_K3.pdf", width = 10, height = 6)
-
-make_overK_plot(
-  ss2_nnlm_K6_res, ss2_ebnmf_K6_res, "NNLM", xlab, ylab, rel_widths, 6, TRUE, c(0.5, 2, 5)
-)
-ggsave("output/plots/ss2_nnlm_K6.pdf", width = 12, height = 8)
-
-xlab <- "L1 penalty"
-
-make_trueK_plot(
-  ss2_hoyer_K3_res, ss2_ebnmf_K3_res, "Hoyer", "Sparseness penalty", ylab
-)
-ggsave("output/plots/ss2_hoyer_K3.pdf", width = 10, height = 6)
-
-make_overK_plot(
-  ss2_hoyer_K6_res, ss2_ebnmf_K6_res, "Hoyer", xlab, ylab, rel_widths, 6
-)
-ggsave("output/plots/ss2_hoyer_K6.pdf", width = 12, height = 8)
+all_plots <- list()
+methods <- c("NMF", "EBNMF", "KimPark", "RcppML", "Hoyer")
+margins <- c(80, 1, 74, 82, 82)
+for (i in 1:length(methods)) {
+  next_df <- plot_df |>
+    filter(method == methods[[i]]) |>
+    mutate(submethod = fct_drop(submethod))
+  all_plots[[i]] <- ggplot(next_df, aes(x = varied_n, y = submethod, fill = metric_val)) +
+    geom_tile() +
+    scale_fill_gradient(low = "red4", high = "seagreen4", limits = c(0.95, 1)) +
+    theme_minimal() +
+    labs(x = "", y = methods[[i]], fill = "") +
+    theme(plot.margin = margin(l = margins[i])) +
+    facet_wrap(~K, nrow = 1)
+  if (methods[[i]] == "NMF") {
+    all_plots[[i]] <- all_plots[[i]] +
+      labs(y = "")
+  } else {
+    all_plots[[i]] <- all_plots[[i]] +
+      theme(
+        strip.background = element_blank(),
+        strip.text.x = element_blank()
+      )
+  }
+  if (i < length(methods)) {
+    all_plots[[i]] <- all_plots[[i]] +
+      theme(axis.text.x = element_blank())
+  }
+}
+legend <- get_legend(all_plots[[1]])
+for (i in 1:length(methods)) {
+  all_plots[[i]] <- all_plots[[i]] +
+    theme(legend.position = "none")
+}
+p1 <- plot_grid(plotlist = all_plots, ncol = 1, rel_heights = 3 + c(3, 8, 9, 8, 9))
+p2 <- plot_grid(p1, legend, nrow = 1, rel_widths = c(9, 1))
+p3 <- add_sub(p2, label = "Size of \"pure\" populations",
+              hjust = 0.4, vjust = -0.8, size = 10)
+plot(p3)
+#save_plot("./output/plots/ss2_FF1_allK.pdf", p3, base_width = 7, base_height = 5)

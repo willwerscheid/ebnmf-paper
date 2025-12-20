@@ -1,7 +1,27 @@
+library(Matrix)
+library(R.matlab)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(forcats)
+library(stringr)
+library(scales)
+library(ggplot2)
+library(cowplot)
+library(ebnm)
+library(flashier)
+library(fastTopics)
+
+
 ## Simulation functions
 
-sim_F <- function(p, k, gamma_shape, gamma_scale, n_anchor_words) {
-  F <- matrix(rgamma(p * k, shape = gamma_shape, scale = gamma_scale), nrow = p, ncol = k)
+vary_library_sizes <- function(L) {
+  return(L * rgamma(nrow(L), shape = 10, scale = 1/10))
+}
+
+sim_F <- function(p, k, gamma_shape = 1/5, n_anchor_words = 3) {
+  F <- matrix(rgamma(p * k, shape = gamma_shape, scale = 1), nrow = p, ncol = k)
+  F <- F / max(F)
 
   # Anchor words
   for (i in 1:k) {
@@ -12,12 +32,14 @@ sim_F <- function(p, k, gamma_shape, gamma_scale, n_anchor_words) {
   return(F)
 }
 
-sim_X <- function(L, F, dispersion = Inf) {
+sim_X <- function(L, F, colwise_noise = FALSE) {
   mu <- L %*% t(F)
-  if (is.infinite(dispersion)) {
+  if (!colwise_noise) {
     X <- matrix(rpois(length(mu), expm1(mu)), nrow = nrow(mu), ncol = ncol(mu))
   } else {
-    X <- matrix(rnbinom(length(mu), mu = expm1(mu), size = dispersion), nrow = nrow(mu), ncol = ncol(mu))
+    size_params <- rep(exp(runif(ncol(mu), -2, 3)), each = nrow(mu))
+    X <- matrix(rnbinom(length(mu), mu = expm1(mu), size = size_params),
+                nrow = nrow(mu), ncol = ncol(mu))
   }
   return(X)
 }
@@ -40,7 +62,85 @@ return_sim_data <- function(X, L, F, pops) {
   return(list(Y = Y, Ynorm = Ynorm, Ylibnorm = Ylibnorm, L = L, F = F, pops = pops))
 }
 
+
 ## Fitting functions
+
+run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
+                            KimPark_pens = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000),
+                            RcppML_pens =  c(0.01, 0.05, seq(0.1, 0.7, by = 0.1)),
+                            Hoyer_pens = RcppML_pens,
+                            verbose = FALSE) {
+  dat <- sim_dat[[which_dat]]
+  all_res <- tibble()
+
+  if (verbose) cat(" NMF...\n")
+  nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "NMF", "NMF", Kmax, nmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, NMF init...\n")
+  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "NMF init, const var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, greedy/backfit...\n")
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, const var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, alternating add-many/bf...\n")
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-many/bf, const var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, alternating add-one/bf...\n")
+  ebnmf_res <- run_alternating(dat, Kmax = Kmax, var_type = 0)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-one/bf, const var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, NMF init...\n")
+  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 2)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "NMF init, colwise var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, greedy/backfit...\n")
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 2)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, colwise var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, alternating add-many/bf...\n")
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 2)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-many/bf, colwise var", Kmax, ebnmf_res, sim_dat))
+
+  if (verbose) cat(" EBNMF, alternating add-one/bf...\n")
+  ebnmf_res <- run_alternating(dat, Kmax = Kmax, var_type = 2)
+  all_res <- all_res |>
+    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-one/bf, colwise var", Kmax, ebnmf_res, sim_dat))
+
+  for (pen in KimPark_pens) {
+    if (verbose) cat(" Kim Park NMF, L1 =", pen, "...\n")
+    spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, k = Kmax, L1pen = pen, L2pen = 1, seeds = 1:3)
+    all_res <- all_res |>
+      bind_rows(next_tib(seed, shape, varied_n, "KimPark", as.character(pen), Kmax, spnmf_res, sim_dat))
+  }
+
+  for (pen in RcppML_pens) {
+    if (verbose) cat(" RcppML NMF, L1 =", pen, "...\n")
+    spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = pen, seeds = 1:10)
+    all_res <- all_res |>
+      bind_rows(next_tib(seed, shape, varied_n, "RcppML", as.character(pen), Kmax, spnmf_res, sim_dat))
+  }
+
+  for (pen in Hoyer_pens) {
+    if (verbose) cat(" Hoyer NMF, L1 =", pen, "...\n")
+    spnmf_res <- run_Hoyer_sparse_nmf(matlab, dat, k = Kmax, pen = pen, seeds = 1:3)
+    all_res <- all_res |>
+      bind_rows(next_tib(seed, shape, varied_n, "Hoyer", as.character(pen), Kmax, spnmf_res, sim_dat))
+  }
+
+  return(all_res)
+}
 
 run_nmf <- function(Y, k, seeds = 1:10, method = "scd", verbose = FALSE) {
   if (verbose) cat("Running NMF")
@@ -186,7 +286,7 @@ run_ebnmf_from_nmf <- function(Y, nmf_res, var_type = 2, ebnm_fn = ebnm_point_ex
                                maxiter = 2000, verbose = FALSE) {
   if (verbose) cat("Running EBNMF from NMF.\n")
   t <- system.time({
-    fl <- flash_init(Y, var_type = var_type) |>
+    fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
       flash_factors_init(list(nmf_res$W, t(nmf_res$H)), ebnm_fn = ebnm_fn) |>
       flash_backfit(maxiter = maxiter, verbose = 0) |>
       flash_nullcheck(verbose = 0)
@@ -199,7 +299,8 @@ run_greedy_backfit <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_expon
                                alternating = TRUE, verbose = FALSE) {
   if (verbose) cat("Running greedy-backfit EBNMF")
   t <- system.time({
-    fl <- flash(Y, var_type = var_type, greedy_Kmax = Kmax, ebnm_fn = ebnm_fn, verbose = 0) |>
+    fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
+      flash_greedy(Kmax = Kmax, ebnm_fn = ebnm_fn, verbose = 0) |>
       flash_backfit(verbose = 0) |>
       flash_nullcheck(verbose = 0)
     keep_going <- fl$n_factors < Kmax
@@ -223,7 +324,7 @@ run_greedy_backfit <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_expon
 run_alternating <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponential, verbose = FALSE) {
   if (verbose) cat("Running alternating EBNMF")
   t <- system.time({
-    fl <- flash_init(Y, var_type = var_type) |>
+    fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
       flash_set_verbose()
     keep_going <- TRUE
     while(keep_going) {
@@ -245,6 +346,7 @@ run_alternating <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponent
   return(list(t = t, fit = fl))
 }
 
+
 ## CV style approaches
 
 run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FALSE) {
@@ -255,16 +357,31 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
     if (verbose) cat("L1 penalty =", L1pens[i], "\n")
     all_mse <- numeric(ntrials)
     for (fold in 1:ntrials) {
-      if (verbose) cat(". Fold =", fold, "\n")
+      if (verbose) cat(". Fold =", fold)
       dat <- Y + 1e-4
       dat[folds == fold] <- 0
       dat <- Matrix(dat, sparse = TRUE)
-      nmf_res <- RcppML::nmf(dat, k = k, L1 = c(L1pens[i], 0), mask_zeros = TRUE, verbose = FALSE)
+      niter <- 10
+      all_mse <- numeric(niter)
+      best_mse <- Inf
+      for (j in 1:niter) {
+        if (verbose) cat(".")
+        next_res <- RcppML::nmf(dat, k = k, L1 = c(L1pens[i], 0), mask_zeros = TRUE, verbose = FALSE, seed = j)
+        all_mse[j] <- mean((Y - next_res$w %*% (next_res$h * next_res$d))^2, na.rm = TRUE)
+        if (all_mse[j] < best_mse) {
+          best_mse <- all_mse[j]
+          nmf_res <- next_res
+        }
+      }
+      if (verbose) cat("\n")
       imp_dat <- nmf_res$w %*% diag(nmf_res$d) %*% nmf_res$h
       mse <- mean((imp_dat[folds == fold] - Y[folds == fold])^2)
       all_mse[fold] <- mse
     }
-    if (verbose) cat("MSE =", mean(all_mse), "\n")
+    if (anyNA(all_mse)) {
+      cat("Warning: NA in fold(s)", which(is.na(all_mse)))
+    }
+    if (verbose) cat("MSE =", mean(all_mse, na.rm = TRUE), "\n")
     L1pen_mse[i] <- mean(all_mse)
   }
   return(tibble(L1pen = L1pens, RMSE = sqrt(L1pen_mse)))
@@ -290,6 +407,7 @@ run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE, meth
   if (verbose) cat("MSE =", mean(all_mse), "\n")
   return(sqrt(mean(all_mse)))
 }
+
 
 ## Evaluation metrics
 
@@ -361,65 +479,66 @@ next_tib <- function(seed, shape, varied_n, method, submethod, Kmax, res, sim_da
   ))
 }
 
+
 ## Plotting functions
 
-make_cosplot <- function(res, metric, xlabel, ylabel, fill_label, cutoff = 0.99999) {
-  res <- res |>
-    filter(str_starts(metric_type, metric))
-  plot_df <- res |>
-    mutate(varied_n = factor(varied_n),
-           shape = factor(round(shape, 2))) |>
-    mutate(metric_val = pmax(pmin(metric_val, cutoff), 0.1))
-  p <- ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
-    geom_tile() +
-    scale_fill_gradient(low = "white", high = "blue", na.value = "gray", transform = "logit",
-                        breaks = c(0.5, 1 - 10^seq(-1, ceiling(log10(1 - cutoff)), by = -1)),
-                        limits = c(0.1, cutoff)) +
-    facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-    labs(x = xlabel, y = ylabel, fill = fill_label) +
-    theme(axis.text.x = element_text(angle = 45, size = 6)) +
-    theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
-  return(p)
-}
-
-make_scaleplot <- function(res, xlabel, ylabel, fill_label, cutoff = 1000) {
-  res <- res |>
-    filter(str_starts(metric_type, "Scale")) |>
-    mutate(metric_type = factor(metric_type, levels = paste0("Scale", 1:12))) |>
-    group_by(varied_n, shape, method) |>
-    mutate(SNR = (1 - sum(metric_val)) / metric_val)
-  plot_df <- res |>
-    mutate(varied_n = factor(varied_n),
-           shape = factor(round(shape, 2))) |>
-    mutate(SNR = pmin(SNR, cutoff))
-  p <- ggplot(plot_df, aes(x = varied_n, y = shape, fill = SNR)) +
-    geom_tile() +
-    scale_fill_gradient(low = "red", high = "white", na.value = "white", transform = "log",
-                        breaks = 10^(seq(0, floor(log10(cutoff)), by = 1)),
-                        limits = c(1, cutoff)) +
-    facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
-    labs(x = xlabel, y = ylabel, fill = fill_label) +
-    theme(axis.text.x = element_text(angle = 45, size = 6)) +
-    theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
-  return(p)
-}
-
-make_timingplot <- function(res, xlabel, ylabel) {
-  plot_df <- res |> filter(str_starts(metric_type, "t_elapsed")) |>
-    mutate(varied_n = factor(varied_n),
-           shape = factor(round(shape, 2)),
-           Kmax = factor(paste0("Kmax = ", Kmax))) |>
-    group_by(varied_n, shape, Kmax, method) |>
-    summarize(metric_val = mean(metric_val, na.rm = TRUE))
-  ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
-    geom_tile() +
-    scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
-    facet_grid(rows = vars(Kmax), cols = vars(method), scales = "free_x") +
-    labs(x = xlabel, y = ylabel, fill = "Time elapsed (s)") +
-    theme(axis.text.x = element_text(angle = 45, size = 6)) +
-    theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
-}
-
+# make_cosplot <- function(res, metric, xlabel, ylabel, fill_label, cutoff = 0.99999) {
+#   res <- res |>
+#     filter(str_starts(metric_type, metric))
+#   plot_df <- res |>
+#     mutate(varied_n = factor(varied_n),
+#            shape = factor(round(shape, 2))) |>
+#     mutate(metric_val = pmax(pmin(metric_val, cutoff), 0.1))
+#   p <- ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
+#     geom_tile() +
+#     scale_fill_gradient(low = "white", high = "blue", na.value = "gray", transform = "logit",
+#                         breaks = c(0.5, 1 - 10^seq(-1, ceiling(log10(1 - cutoff)), by = -1)),
+#                         limits = c(0.1, cutoff)) +
+#     facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
+#     labs(x = xlabel, y = ylabel, fill = fill_label) +
+#     theme(axis.text.x = element_text(angle = 45, size = 6)) +
+#     theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
+#   return(p)
+# }
+#
+# make_scaleplot <- function(res, xlabel, ylabel, fill_label, cutoff = 1000) {
+#   res <- res |>
+#     filter(str_starts(metric_type, "Scale")) |>
+#     mutate(metric_type = factor(metric_type, levels = paste0("Scale", 1:12))) |>
+#     group_by(varied_n, shape, method) |>
+#     mutate(SNR = (1 - sum(metric_val)) / metric_val)
+#   plot_df <- res |>
+#     mutate(varied_n = factor(varied_n),
+#            shape = factor(round(shape, 2))) |>
+#     mutate(SNR = pmin(SNR, cutoff))
+#   p <- ggplot(plot_df, aes(x = varied_n, y = shape, fill = SNR)) +
+#     geom_tile() +
+#     scale_fill_gradient(low = "red", high = "white", na.value = "white", transform = "log",
+#                         breaks = 10^(seq(0, floor(log10(cutoff)), by = 1)),
+#                         limits = c(1, cutoff)) +
+#     facet_grid(rows = vars(metric_type), cols = vars(method), scales = "free_x") +
+#     labs(x = xlabel, y = ylabel, fill = fill_label) +
+#     theme(axis.text.x = element_text(angle = 45, size = 6)) +
+#     theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
+#   return(p)
+# }
+#
+# make_timingplot <- function(res, xlabel, ylabel) {
+#   plot_df <- res |> filter(str_starts(metric_type, "t_elapsed")) |>
+#     mutate(varied_n = factor(varied_n),
+#            shape = factor(round(shape, 2)),
+#            Kmax = factor(paste0("Kmax = ", Kmax))) |>
+#     group_by(varied_n, shape, Kmax, method) |>
+#     summarize(metric_val = mean(metric_val, na.rm = TRUE))
+#   ggplot(plot_df, aes(x = varied_n, y = shape, fill = metric_val)) +
+#     geom_tile() +
+#     scale_fill_gradient(low = "white", high = "darkgreen", na.value = "black", transform = "log10") +
+#     facet_grid(rows = vars(Kmax), cols = vars(method), scales = "free_x") +
+#     labs(x = xlabel, y = ylabel, fill = "Time elapsed (s)") +
+#     theme(axis.text.x = element_text(angle = 45, size = 6)) +
+#     theme(strip.text.x = element_text(size = 4), strip.text.y = element_text(size = 6))
+# }
+#
 align_cols <- function(plotmat, refmat) {
   if (ncol(refmat) > ncol(plotmat)) {
     refmat <- refmat[, 1:ncol(plotmat)]

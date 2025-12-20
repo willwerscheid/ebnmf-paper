@@ -1,3 +1,4 @@
+
 run_RcppML_sims <- function(sim_data, which_dat, Kmax, niter = 5, verbose = FALSE) {
   all_res <- tibble()
   next_seed <- 0
@@ -154,135 +155,135 @@ run_ebnmf_sims <- function(which_dat, Kmax, niter = 5, verbose = FALSE) {
 }
 
 
-make_cosdist_plot <- function(spnmf_res, ebnmf_res, disp, method_name, xlabel, ylabel, title) {
-  pens <- spnmf_res |> select(method) |> distinct()
-
-  all_res <- spnmf_res |> mutate(source = method_name) |>
-    bind_rows(ebnmf_res |> mutate(source = "EBNMF") |> select(-method) |> cross_join(pens)) |>
-    group_by(method, Kmax, shape, metric_type, source) |>
-    summarize(metric_na = anyNA(metric_val),
-              metric_val = mean(1 - ifelse(metric_na, 0, metric_val)),
-              .groups = "drop")
-
-  plot_df <- all_res |>
-    filter(str_detect(metric_type, "cosine")) |>
-    mutate(LorF = factor(str_extract(metric_type, "L|F"), levels = c("L", "F"))) |>
-    mutate(Component = paste("Component", str_extract(metric_type, "[0-9]+"))) |>
-    mutate(source = factor(source, levels = c(method_name, "EBNMF")))
-
-  if (disp == "Poisson") {
-    plot_df <- plot_df |> filter(is.infinite(shape))
-  } else { # "Overdispersed"
-    plot_df <- plot_df |> filter(!is.infinite(shape))
-  }
-
-  p <- ggplot(plot_df, aes(x = method, y = metric_val, color = source, linetype = source)) +
-    geom_line() +
-    geom_point(data = plot_df |> filter(metric_na), aes(shape = metric_na), shape = 17) +
-    scale_y_log10() +
-    scale_color_manual(values = c("darkred", "dodgerblue")) +
-    scale_linetype_manual(values = c("solid", "dashed")) +
-    facet_grid(rows = vars(LorF), cols = vars(Component)) +
-    labs(x = xlabel, y = ylabel, color = "Method") +
-    # labs(caption = "Triangles indicate that components were removed in at least one trial.") +
-    ggtitle(title) +
-    guides(linetype = "none") +
-    theme_bw() +
-    theme(strip.text.y = element_text(angle = 0))
-
-  return(p)
-}
-
-make_SNR_plot <- function(spnmf_res, ebnmf_res, disp, method_name, xlabel, ylabel, trunc_at) {
-  pens <- spnmf_res |> select(method) |> distinct()
-
-  all_res <- spnmf_res |> mutate(source = method_name) |>
-    bind_rows(ebnmf_res |> mutate(source = "EBNMF") |> select(-method) |> cross_join(pens)) |>
-    filter(str_detect(metric_type, "Scale")) |>
-    group_by(method, Kmax, shape, metric_type, source, seed) |>
-    mutate(metric_val = coalesce(metric_val, 0)) |>
-    mutate(SNR = metric_val / (1 - sum(metric_val))) |>
-    group_by(method, Kmax, shape, metric_type, source) |>
-    summarize(SNR = mean(SNR), .groups = "drop") |>
-    filter(SNR > 0)
-
-  if (trunc_at < 10) {
-    complab <- "Component"
-  } else {
-    complab <- "Comp."
-  }
-  plot_df <- all_res |>
-    mutate(Component = paste(complab, str_extract(metric_type, "[0-9]+"))) |>
-    mutate(source = factor(source, levels = c(method_name, "EBNMF"))) |>
-    mutate(Component = factor(Component, levels = paste(complab, 1:trunc_at))) |>
-    filter(!is.na(Component))
-
-  if (disp == "Poisson") {
-    plot_df <- plot_df |> filter(is.infinite(shape))
-  } else { # "Overdispersed"
-    plot_df <- plot_df |> filter(!is.infinite(shape))
-  }
-
-  p <- ggplot(plot_df, aes(x = method, y = SNR, color = source, linetype = source)) +
-    geom_line() +
-    scale_y_log10() +
-    scale_color_manual(values = c("darkred", "dodgerblue")) +
-    scale_linetype_manual(values = c("solid", "dashed")) +
-    facet_grid(cols = vars(Component)) +
-    labs(x = xlabel, y = ylabel, color = "Method") +
-    guides(linetype = "none") +
-    theme_bw()
-
-  return(p)
-}
-
-make_trueK_plot <- function(res1, res2, method_name, xlab, ylab,
-                            scale_sqrt = FALSE, brks = NULL) {
-  p1 <- make_cosdist_plot(
-    res1, res2, "Poisson", method_name, xlab, "Cos. dist. from true L or F", "Poisson noise"
-  )
-  p2 <- make_cosdist_plot(
-    res1, res2, "Overdispersed", method_name, xlab, "Cos. dist. from true L or F", "Overdispersed noise"
-  )
-  if (scale_sqrt) {
-    p1 <- p1 + scale_x_sqrt(breaks = brks)
-    p2 <- p2 + scale_x_sqrt(breaks = brks)
-  } else if (!is.null(brks)) {
-    p1 <- p1 + scale_x_continuous(breaks = brks)
-    p2 <- p2 + scale_x_continuous(breaks = brks)
-  }
-  plot_grid(p1, p2, nrow = 2)
-}
-
-make_overK_plot <- function(res1, res2, method_name, xlab, ylab, rel_widths, trunc_at,
-                            scale_sqrt = FALSE, brks = NULL) {
-  p1a <- make_cosdist_plot(
-    res1, res2, "Poisson", method_name, xlab, "Cos. dist. from true L or F", "Poisson noise"
-  ) +
-    guides(color = "none")
-  p1b <- make_SNR_plot(res1, res2, "Poisson", method_name, xlab, "Noise-to-signal ratio", trunc_at)
-  p2a <- make_cosdist_plot(
-    res1, res2, "Overdispersed", method_name, xlab, "Cos. dist. from true L or F", "Overdispersed noise") +
-    guides(color = "none")
-  p2b <- make_SNR_plot(res1, res2, "Overdispersed", method_name, xlab, "Noise-to-signal ratio", trunc_at)
-  if (scale_sqrt) {
-    p1a <- p1a + scale_x_sqrt(breaks = brks)
-    p1b <- p1b + scale_x_sqrt(breaks = brks)
-    p2a <- p2a + scale_x_sqrt(breaks = brks)
-    p2b <- p2b + scale_x_sqrt(breaks = brks)
-  } else if (!is.null(brks)) {
-    p1a <- p1a + scale_x_continuous(breaks = brks)
-    p1b <- p1b + scale_x_continuous(breaks = brks)
-    p2a <- p2a + scale_x_continuous(breaks = brks)
-    p2b <- p2b + scale_x_continuous(breaks = brks)
-  }
-  p1b_wmargin <- suppressWarnings({
-    plot_grid("", p1b, "", ncol = 1, rel_heights = c(0.2, 0.6, 0.2))
-  })
-  p2b_wmargin <- suppressWarnings({
-    plot_grid("", p2b, "", ncol = 1, rel_heights = c(0.2, 0.6, 0.2))
-  })
-  p1 <- plot_grid(p1a, p1b_wmargin, rel_widths = rel_widths)
-  p2 <- plot_grid(p2a, p2b_wmargin, rel_widths = rel_widths)
-  plot_grid(p1, p2, nrow = 2)
-}
+# make_cosdist_plot <- function(spnmf_res, ebnmf_res, disp, method_name, xlabel, ylabel, title) {
+#   pens <- spnmf_res |> select(method) |> distinct()
+#
+#   all_res <- spnmf_res |> mutate(source = method_name) |>
+#     bind_rows(ebnmf_res |> mutate(source = "EBNMF") |> select(-method) |> cross_join(pens)) |>
+#     group_by(method, Kmax, shape, metric_type, source) |>
+#     summarize(metric_na = anyNA(metric_val),
+#               metric_val = mean(1 - ifelse(metric_na, 0, metric_val)),
+#               .groups = "drop")
+#
+#   plot_df <- all_res |>
+#     filter(str_detect(metric_type, "cosine")) |>
+#     mutate(LorF = factor(str_extract(metric_type, "L|F"), levels = c("L", "F"))) |>
+#     mutate(Component = paste("Component", str_extract(metric_type, "[0-9]+"))) |>
+#     mutate(source = factor(source, levels = c(method_name, "EBNMF")))
+#
+#   if (disp == "Poisson") {
+#     plot_df <- plot_df |> filter(is.infinite(shape))
+#   } else { # "Overdispersed"
+#     plot_df <- plot_df |> filter(!is.infinite(shape))
+#   }
+#
+#   p <- ggplot(plot_df, aes(x = method, y = metric_val, color = source, linetype = source)) +
+#     geom_line() +
+#     geom_point(data = plot_df |> filter(metric_na), aes(shape = metric_na), shape = 17) +
+#     scale_y_log10() +
+#     scale_color_manual(values = c("darkred", "dodgerblue")) +
+#     scale_linetype_manual(values = c("solid", "dashed")) +
+#     facet_grid(rows = vars(LorF), cols = vars(Component)) +
+#     labs(x = xlabel, y = ylabel, color = "Method") +
+#     # labs(caption = "Triangles indicate that components were removed in at least one trial.") +
+#     ggtitle(title) +
+#     guides(linetype = "none") +
+#     theme_bw() +
+#     theme(strip.text.y = element_text(angle = 0))
+#
+#   return(p)
+# }
+#
+# make_SNR_plot <- function(spnmf_res, ebnmf_res, disp, method_name, xlabel, ylabel, trunc_at) {
+#   pens <- spnmf_res |> select(method) |> distinct()
+#
+#   all_res <- spnmf_res |> mutate(source = method_name) |>
+#     bind_rows(ebnmf_res |> mutate(source = "EBNMF") |> select(-method) |> cross_join(pens)) |>
+#     filter(str_detect(metric_type, "Scale")) |>
+#     group_by(method, Kmax, shape, metric_type, source, seed) |>
+#     mutate(metric_val = coalesce(metric_val, 0)) |>
+#     mutate(SNR = metric_val / (1 - sum(metric_val))) |>
+#     group_by(method, Kmax, shape, metric_type, source) |>
+#     summarize(SNR = mean(SNR), .groups = "drop") |>
+#     filter(SNR > 0)
+#
+#   if (trunc_at < 10) {
+#     complab <- "Component"
+#   } else {
+#     complab <- "Comp."
+#   }
+#   plot_df <- all_res |>
+#     mutate(Component = paste(complab, str_extract(metric_type, "[0-9]+"))) |>
+#     mutate(source = factor(source, levels = c(method_name, "EBNMF"))) |>
+#     mutate(Component = factor(Component, levels = paste(complab, 1:trunc_at))) |>
+#     filter(!is.na(Component))
+#
+#   if (disp == "Poisson") {
+#     plot_df <- plot_df |> filter(is.infinite(shape))
+#   } else { # "Overdispersed"
+#     plot_df <- plot_df |> filter(!is.infinite(shape))
+#   }
+#
+#   p <- ggplot(plot_df, aes(x = method, y = SNR, color = source, linetype = source)) +
+#     geom_line() +
+#     scale_y_log10() +
+#     scale_color_manual(values = c("darkred", "dodgerblue")) +
+#     scale_linetype_manual(values = c("solid", "dashed")) +
+#     facet_grid(cols = vars(Component)) +
+#     labs(x = xlabel, y = ylabel, color = "Method") +
+#     guides(linetype = "none") +
+#     theme_bw()
+#
+#   return(p)
+# }
+#
+# make_trueK_plot <- function(res1, res2, method_name, xlab, ylab,
+#                             scale_sqrt = FALSE, brks = NULL) {
+#   p1 <- make_cosdist_plot(
+#     res1, res2, "Poisson", method_name, xlab, "Cos. dist. from true L or F", "Poisson noise"
+#   )
+#   p2 <- make_cosdist_plot(
+#     res1, res2, "Overdispersed", method_name, xlab, "Cos. dist. from true L or F", "Overdispersed noise"
+#   )
+#   if (scale_sqrt) {
+#     p1 <- p1 + scale_x_sqrt(breaks = brks)
+#     p2 <- p2 + scale_x_sqrt(breaks = brks)
+#   } else if (!is.null(brks)) {
+#     p1 <- p1 + scale_x_continuous(breaks = brks)
+#     p2 <- p2 + scale_x_continuous(breaks = brks)
+#   }
+#   plot_grid(p1, p2, nrow = 2)
+# }
+#
+# make_overK_plot <- function(res1, res2, method_name, xlab, ylab, rel_widths, trunc_at,
+#                             scale_sqrt = FALSE, brks = NULL) {
+#   p1a <- make_cosdist_plot(
+#     res1, res2, "Poisson", method_name, xlab, "Cos. dist. from true L or F", "Poisson noise"
+#   ) +
+#     guides(color = "none")
+#   p1b <- make_SNR_plot(res1, res2, "Poisson", method_name, xlab, "Noise-to-signal ratio", trunc_at)
+#   p2a <- make_cosdist_plot(
+#     res1, res2, "Overdispersed", method_name, xlab, "Cos. dist. from true L or F", "Overdispersed noise") +
+#     guides(color = "none")
+#   p2b <- make_SNR_plot(res1, res2, "Overdispersed", method_name, xlab, "Noise-to-signal ratio", trunc_at)
+#   if (scale_sqrt) {
+#     p1a <- p1a + scale_x_sqrt(breaks = brks)
+#     p1b <- p1b + scale_x_sqrt(breaks = brks)
+#     p2a <- p2a + scale_x_sqrt(breaks = brks)
+#     p2b <- p2b + scale_x_sqrt(breaks = brks)
+#   } else if (!is.null(brks)) {
+#     p1a <- p1a + scale_x_continuous(breaks = brks)
+#     p1b <- p1b + scale_x_continuous(breaks = brks)
+#     p2a <- p2a + scale_x_continuous(breaks = brks)
+#     p2b <- p2b + scale_x_continuous(breaks = brks)
+#   }
+#   p1b_wmargin <- suppressWarnings({
+#     plot_grid("", p1b, "", ncol = 1, rel_heights = c(0.2, 0.6, 0.2))
+#   })
+#   p2b_wmargin <- suppressWarnings({
+#     plot_grid("", p2b, "", ncol = 1, rel_heights = c(0.2, 0.6, 0.2))
+#   })
+#   p1 <- plot_grid(p1a, p1b_wmargin, rel_widths = rel_widths)
+#   p2 <- plot_grid(p2a, p2b_wmargin, rel_widths = rel_widths)
+#   plot_grid(p1, p2, nrow = 2)
+# }
