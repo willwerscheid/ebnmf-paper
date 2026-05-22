@@ -70,7 +70,7 @@ nmf_k8_p2 <- plot_nmf(
 
 plot_grid(nmf_k4_p1, nmf_k4_p2, nmf_k5_p1, nmf_k5_p2, nmf_k8_p1, nmf_k8_p2,
           nrow = 2, byrow = FALSE)
-ggsave("output/plots/ex_nmf.pdf", width = 7, height = 5)
+ggsave("output/plots/ex_nmf.pdf", width = 7, height = 3.5)
 
 
 setwd("./matlab/")
@@ -222,13 +222,13 @@ t_df <- tibble(method = "KimPark", t = c(KimPark_k4_t, KimPark_k5_t, KimPark_k8_
 ggplot(t_df, aes(x = method, y = t)) +
   geom_boxplot() +
   scale_y_log10() +
-  labs(x = "", y = "Elapsed time") +
+  labs(x = "", y = "Elapsed time (s)") +
   theme_minimal()
 ggsave("./output/plots/ex_timing.pdf", width = 7, height = 2.5)
 
 
-L1pens <- c(0, .001) #, .01, .05, seq(0.1, 0.8, by = 0.1))
-k4_cv <- run_RcppML_cv(Y, k = 4, L1pens = L1pens, nfolds = 100, ntrials = 2, verbose = TRUE)
+L1pens <- c(0, .001, .01, .05, seq(0.1, 0.8, by = 0.1))
+k4_cv <- run_RcppML_cv(Y, k = 4, L1pens = L1pens, nfolds = 100, ntrials = 100, verbose = TRUE)
 k5_cv <- run_RcppML_cv(Y, k = 5, L1pens = L1pens, nfolds = 100, ntrials = 100, verbose = TRUE)
 k8_cv <- run_RcppML_cv(Y, k = 8, L1pens = L1pens, nfolds = 100, ntrials = 100, verbose = TRUE)
 cv_res <- k4_cv |> mutate(k = "4") |>

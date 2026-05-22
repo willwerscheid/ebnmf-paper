@@ -351,6 +351,7 @@ run_alternating <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponent
 
 run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FALSE) {
   set.seed(1)
+  niter <- 10
   folds <- sample(1:nfolds, length(Y), replace = TRUE)
   L1pen_mse <- numeric(length(L1pens))
   for (i in 1:length(L1pens)) {
@@ -361,15 +362,14 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
       dat <- Y + 1e-4
       dat[folds == fold] <- 0
       dat <- Matrix(dat, sparse = TRUE)
-      niter <- 10
-      all_mse <- numeric(niter)
+      fold_mse <- numeric(niter)
       best_mse <- Inf
       for (j in 1:niter) {
         if (verbose) cat(".")
         next_res <- RcppML::nmf(dat, k = k, L1 = c(L1pens[i], 0), mask_zeros = TRUE, verbose = FALSE, seed = j)
-        all_mse[j] <- mean((Y - next_res$w %*% (next_res$h * next_res$d))^2, na.rm = TRUE)
-        if (all_mse[j] < best_mse) {
-          best_mse <- all_mse[j]
+        fold_mse[j] <- mean((Y - next_res$w %*% (next_res$h * next_res$d))^2, na.rm = TRUE)
+        if (fold_mse[j] < best_mse) {
+          best_mse <- fold_mse[j]
           nmf_res <- next_res
         }
       }
@@ -382,7 +382,7 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
       cat("Warning: NA in fold(s)", which(is.na(all_mse)))
     }
     if (verbose) cat("MSE =", mean(all_mse, na.rm = TRUE), "\n")
-    L1pen_mse[i] <- mean(all_mse)
+    L1pen_mse[i] <- mean(all_mse, na.rm = TRUE)
   }
   return(tibble(L1pen = L1pens, RMSE = sqrt(L1pen_mse)))
 }
