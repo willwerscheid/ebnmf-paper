@@ -38,7 +38,7 @@ frobenius_norm <- function (X, W, H)
 # Compute the Frobenius norm objective for data matrix X and NMF
 # result fit$W * fit$H.
 frobenius_norm_nmf <- function (X, fit)
-  frobenius_norm(X,fit$W,fit$H)
+  frobenius_norm(X, fit$W, fit$H)
 
 # Compute the Frobenius norm objective for data matrix X and flashier
 # output "fit".

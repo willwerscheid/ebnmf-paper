@@ -88,16 +88,6 @@ run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, const var", Kmax, ebnmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, alternating add-many/bf...\n")
-  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
-  all_res <- all_res |>
-    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-many/bf, const var", Kmax, ebnmf_res, sim_dat))
-
-  if (verbose) cat(" EBNMF, alternating add-one/bf...\n")
-  ebnmf_res <- run_alternating(dat, Kmax = Kmax, var_type = 0)
-  all_res <- all_res |>
-    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-one/bf, const var", Kmax, ebnmf_res, sim_dat))
-
   if (verbose) cat(" EBNMF, NMF init...\n")
   ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 2)
   all_res <- all_res |>
@@ -108,19 +98,9 @@ run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, colwise var", Kmax, ebnmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, alternating add-many/bf...\n")
-  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 2)
-  all_res <- all_res |>
-    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-many/bf, colwise var", Kmax, ebnmf_res, sim_dat))
-
-  if (verbose) cat(" EBNMF, alternating add-one/bf...\n")
-  ebnmf_res <- run_alternating(dat, Kmax = Kmax, var_type = 2)
-  all_res <- all_res |>
-    bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "alt add-one/bf, colwise var", Kmax, ebnmf_res, sim_dat))
-
   for (pen in KimPark_pens) {
     if (verbose) cat(" Kim Park NMF, L1 =", pen, "...\n")
-    spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, k = Kmax, L1pen = pen, L2pen = 1, seeds = 1:3)
+    spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, k = Kmax, L1pen = pen, L2pen = 1, seeds = 1:10)
     all_res <- all_res |>
       bind_rows(next_tib(seed, shape, varied_n, "KimPark", as.character(pen), Kmax, spnmf_res, sim_dat))
   }
@@ -134,7 +114,7 @@ run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
 
   for (pen in Hoyer_pens) {
     if (verbose) cat(" Hoyer NMF, L1 =", pen, "...\n")
-    spnmf_res <- run_Hoyer_sparse_nmf(matlab, dat, k = Kmax, pen = pen, seeds = 1:3)
+    spnmf_res <- run_Hoyer_sparse_nmf(matlab, dat, k = Kmax, pen = pen, seeds = 1:10)
     all_res <- all_res |>
       bind_rows(next_tib(seed, shape, varied_n, "Hoyer", as.character(pen), Kmax, spnmf_res, sim_dat))
   }
@@ -142,62 +122,46 @@ run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
   return(all_res)
 }
 
-run_nmf <- function(Y, k, seeds = 1:10, method = "scd", verbose = FALSE) {
-  if (verbose) cat("Running NMF")
+run_nnlm_sparse_nmf <- function(Y, k, L1pen, L2pen, seeds = 1, verbose = FALSE) {
+  if (verbose) cat("Running Sparse NMF, L1 penalty =", L1pen)
   t <- system.time({
-    all_mse <- numeric(length(seeds))
-    best_mse <- Inf
+    all_obj <- numeric(length(seeds))
+    best_obj <- Inf
     # The seeds parameter controls the number of trials:
     for (i in 1:length(seeds)) {
       if (verbose) cat(".")
       set.seed(seeds[i])
-      next_res <- NNLM::nnmf(Y, k = k, verbose = 0, method = method)
-      all_mse[i] <- min(next_res$mse)
-      if (min(next_res$mse) < best_mse) {
-        best_mse <- min(next_res$mse)
+      next_res <- NNLM::nnmf(
+        Y, k = k, alpha = c(0, 0, L1pen), beta = c(L2pen, 0, 0), verbose = 0
+      )
+      all_obj[i] <- min(next_res$mse)
+      if (min(next_res$mse) < best_obj) {
+        best_obj <- min(next_res$mse)
         best_res <- next_res
       }
     }
   })
   if (verbose) cat("\n")
 
-  return(list(t = t, fit = best_res, all_mse = all_mse))
+  return(list(t = t, fit = best_res, all_obj = all_obj))
 }
 
-run_nnlm_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
+run_RcppML_sparse_nmf <- function(Y, k, L1pen, L1pen_F, seeds = 1, verbose = FALSE) {
   if (verbose) cat("Running Sparse NMF, L1 penalty =", L1pen)
   t <- system.time({
-    all_mse <- numeric(length(seeds))
-    best_mse <- Inf
+    all_obj <- numeric(length(seeds))
+    best_obj <- Inf
     # The seeds parameter controls the number of trials:
     for (i in 1:length(seeds)) {
       if (verbose) cat(".")
-      set.seed(seeds[i])
-      next_res <- NNLM::nnmf(Y, k = k, alpha = c(0, 0, L1pen), beta = c(1, 0, 0), verbose = 0)
-      all_mse[i] <- min(next_res$mse)
-      if (min(next_res$mse) < best_mse) {
-        best_mse <- min(next_res$mse)
-        best_res <- next_res
-      }
-    }
-  })
-  if (verbose) cat("\n")
-
-  return(list(t = t, fit = best_res, all_mse = all_mse))
-}
-
-run_RcppML_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
-  if (verbose) cat("Running Sparse NMF, L1 penalty =", L1pen)
-  t <- system.time({
-    all_mse <- numeric(length(seeds))
-    best_mse <- Inf
-    # The seeds parameter controls the number of trials:
-    for (i in 1:length(seeds)) {
-      if (verbose) cat(".")
-      next_res <- RcppML::nmf(Y, k = k, L1 = c(L1pen, 0), verbose = FALSE, seed = seeds[i])
-      all_mse[i] <- mean((Y - next_res$w %*% (next_res$h * next_res$d))^2)
-      if (all_mse[i] < best_mse) {
-        best_mse <- all_mse[i]
+      next_res <- RcppML::nmf(
+        Y, k = k, L1 = c(L1pen, L1pen_F), verbose = FALSE, seed = seeds[i]
+      )
+      # https://zdebruine.github.io/RcppML/articles/regularization.html:
+      all_obj[i] <- 0.5 * sum((Y - next_res$w %*% (next_res$h * next_res$d))^2) +
+        L1pen * sum(abs(next_res$w))
+      if (all_obj[i] < best_obj) {
+        best_obj <- all_obj[i]
         best_res <- next_res
       }
     }
@@ -210,15 +174,15 @@ run_RcppML_sparse_nmf <- function(Y, k, L1pen, seeds = 1, verbose = FALSE) {
   out_res$W <- out_res$W[, colSums(best_res$w) > 0]
   out_res$H <- out_res$H[colSums(best_res$w) > 0, ]
 
-  return(list(t = t, fit = out_res, all_mse = all_mse))
+  return(list(t = t, fit = out_res, all_obj = all_obj))
 }
 
 run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbose = FALSE) {
   setVariable(matlab, Y = Y)
 
   t <- system.time({
-    all_mse <- numeric(length(seeds))
-    best_mse <- Inf
+    all_obj <- numeric(length(seeds))
+    best_obj <- Inf
     # The seeds parameter controls the number of trials:
     for (i in 1:length(seeds)) {
       if (verbose) cat(".")
@@ -231,9 +195,9 @@ run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbos
       evaluate(matlab, "H = transpose(H);")
 
       next_res <- getVariable(matlab, c("W", "H", "i", "HIS"))
-      all_mse[i] <- next_res$HIS[nrow(next_res$HIS), 6]
-      if (all_mse[i] < best_mse) {
-        best_mse <- all_mse[i]
+      all_obj[i] <- next_res$HIS[nrow(next_res$HIS), 6]
+      if (all_obj[i] < best_obj) {
+        best_obj <- all_obj[i]
         best_fit <- list(W = next_res$W, H = next_res$H)
       }
     }
@@ -243,21 +207,21 @@ run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbos
   best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
   best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
 
-  return(list(t = t, fit = best_fit,  all_mse = all_mse))
+  return(list(t = t, fit = best_fit,  all_obj = all_obj))
 }
 
-run_Hoyer_sparse_nmf <- function(matlab, Y, k, pen, seeds = 1, verbose = FALSE) {
+run_Hoyer_sparse_nmf <- function(matlab, Y, k, sprs, sprs_F, seeds = 1, verbose = FALSE) {
   setVariable(matlab, Y = Y)
 
-  evaluate(matlab, paste0("k=", k,";"))
-  evaluate(matlab, paste0("options.sW=", pen,";"))
-  evaluate(matlab, paste0("options.sH=0.1;"))
+  evaluate(matlab, paste0("k=", k, ";"))
+  evaluate(matlab, paste0("options.sW=", sprs, ";"))
+  evaluate(matlab, paste0("options.sH=", sprs_F, ";"))
   evaluate(matlab, paste0("options.maxiter=200;"))
   evaluate(matlab, paste0("options.delta=1e-3;"))
 
   t <- system.time({
-    all_mse <- numeric(length(seeds))
-    best_mse <- Inf
+    all_obj <- numeric(length(seeds))
+    best_obj <- Inf
     # The seeds parameter controls the number of trials:
     for (i in 1:length(seeds)) {
       if (verbose) cat(".")
@@ -267,9 +231,9 @@ run_Hoyer_sparse_nmf <- function(matlab, Y, k, pen, seeds = 1, verbose = FALSE) 
 
       next_res <- getVariable(matlab, c("W", "H", "e", "t"))
 
-      all_mse[i] <- min(next_res$e)
-      if (min(next_res$e) < best_mse) {
-        best_mse <- min(next_res$e)
+      all_obj[i] <- min(next_res$e)
+      if (min(next_res$e) < best_obj) {
+        best_obj <- min(next_res$e)
         best_fit <- list(W = next_res$W, H = next_res$H)
       }
     }
@@ -279,7 +243,7 @@ run_Hoyer_sparse_nmf <- function(matlab, Y, k, pen, seeds = 1, verbose = FALSE) 
   best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
   best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
 
-  return(list(t = t, fit = best_fit,  all_mse = all_mse))
+  return(list(t = t, fit = best_fit,  all_obj = all_obj))
 }
 
 run_ebnmf_from_nmf <- function(Y, nmf_res, var_type = 2, ebnm_fn = ebnm_point_exponential,
@@ -295,13 +259,14 @@ run_ebnmf_from_nmf <- function(Y, nmf_res, var_type = 2, ebnm_fn = ebnm_point_ex
   return(list(t = t, fit = fl))
 }
 
-run_greedy_backfit <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponential,
-                               alternating = TRUE, verbose = FALSE) {
+run_greedy_backfit <- function(Y, Kmax, var_type = 2,
+                               ebnm_fn = ebnm_point_exponential,
+                               verbose = FALSE) {
   if (verbose) cat("Running greedy-backfit EBNMF")
   t <- system.time({
     fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
       flash_greedy(Kmax = Kmax, ebnm_fn = ebnm_fn, verbose = 0) |>
-      flash_backfit(verbose = 0) |>
+      flash_backfit(verbose = 0, maxiter = 10) |>
       flash_nullcheck(verbose = 0)
     keep_going <- fl$n_factors < Kmax
     while (keep_going) {
@@ -309,38 +274,16 @@ run_greedy_backfit <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_expon
       current_n <- fl$n_factors
       fl <- fl |>
         flash_greedy(Kmax = Kmax - current_n, ebnm_fn = ebnm_fn, verbose = 0) |>
-        flash_backfit(verbose = 0) |>
+        flash_backfit(verbose = 0, maxiter = 10) |>
         flash_nullcheck(verbose = 0)
-      if (!alternating | fl$n_factors == current_n | fl$n_factors == Kmax) {
-        keep_going <- FALSE
-      }
-    }
-    if (verbose) cat("\n")
-  })
-
-  return(list(t = t, fit = fl))
-}
-
-run_alternating <- function(Y, Kmax, var_type = 2, ebnm_fn = ebnm_point_exponential, verbose = FALSE) {
-  if (verbose) cat("Running alternating EBNMF")
-  t <- system.time({
-    fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
-      flash_set_verbose()
-    keep_going <- TRUE
-    while(keep_going) {
-      if (verbose) cat(".")
-      current_n <- fl$n_factors
-      fl <- fl |>
-        flash_greedy(ebnm_fn = ebnm_fn, verbose = 0) |>
-        flash_backfit(maxiter = 10, verbose = 0)
       if (fl$n_factors == current_n | fl$n_factors == Kmax) {
         keep_going <- FALSE
       }
     }
-    if (verbose) cat("\n")
     fl <- fl |>
-      flash_backfit(maxiter = 2000, verbose = 0) |>
+      flash_backfit(verbose = 0) |>
       flash_nullcheck(verbose = 0)
+    if (verbose) cat("\n")
   })
 
   return(list(t = t, fit = fl))
@@ -356,33 +299,33 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
   L1pen_mse <- numeric(length(L1pens))
   for (i in 1:length(L1pens)) {
     if (verbose) cat("L1 penalty =", L1pens[i], "\n")
-    all_mse <- numeric(ntrials)
+    all_obj <- numeric(ntrials)
     for (fold in 1:ntrials) {
       if (verbose) cat(". Fold =", fold)
       dat <- Y + 1e-4
       dat[folds == fold] <- 0
       dat <- Matrix(dat, sparse = TRUE)
       fold_mse <- numeric(niter)
-      best_mse <- Inf
+      best_obj <- Inf
       for (j in 1:niter) {
         if (verbose) cat(".")
         next_res <- RcppML::nmf(dat, k = k, L1 = c(L1pens[i], 0), mask_zeros = TRUE, verbose = FALSE, seed = j)
         fold_mse[j] <- mean((Y - next_res$w %*% (next_res$h * next_res$d))^2, na.rm = TRUE)
-        if (fold_mse[j] < best_mse) {
-          best_mse <- fold_mse[j]
+        if (fold_mse[j] < best_obj) {
+          best_obj <- fold_mse[j]
           nmf_res <- next_res
         }
       }
       if (verbose) cat("\n")
       imp_dat <- nmf_res$w %*% diag(nmf_res$d) %*% nmf_res$h
       mse <- mean((imp_dat[folds == fold] - Y[folds == fold])^2)
-      all_mse[fold] <- mse
+      all_obj[fold] <- mse
     }
-    if (anyNA(all_mse)) {
-      cat("Warning: NA in fold(s)", which(is.na(all_mse)))
+    if (anyNA(all_obj)) {
+      cat("Warning: NA in fold(s)", which(is.na(all_obj)))
     }
-    if (verbose) cat("MSE =", mean(all_mse, na.rm = TRUE), "\n")
-    L1pen_mse[i] <- mean(all_mse, na.rm = TRUE)
+    if (verbose) cat("MSE =", mean(all_obj, na.rm = TRUE), "\n")
+    L1pen_mse[i] <- mean(all_obj, na.rm = TRUE)
   }
   return(tibble(L1pen = L1pens, RMSE = sqrt(L1pen_mse)))
 }
@@ -390,7 +333,7 @@ run_RcppML_cv <- function(Y, k, L1pens, nfolds = 100, ntrials = 10, verbose = FA
 run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE, method = "alternating") {
   set.seed(1)
   folds <- sample(1:nfolds, length(Y), replace = TRUE)
-  all_mse <- numeric(ntrials)
+  all_obj <- numeric(ntrials)
   for (fold in 1:ntrials) {
     if (verbose) cat("FOLD =", fold, "\n")
     dat <- Y
@@ -402,10 +345,10 @@ run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE, meth
     }
     imp_dat <- fitted(ebnmf_res$fit)
     mse <- mean((imp_dat[folds == fold] - Y[folds == fold])^2)
-    all_mse[fold] <- mse
+    all_obj[fold] <- mse
   }
-  if (verbose) cat("MSE =", mean(all_mse), "\n")
-  return(sqrt(mean(all_mse)))
+  if (verbose) cat("MSE =", mean(all_obj), "\n")
+  return(sqrt(mean(all_obj)))
 }
 
 
