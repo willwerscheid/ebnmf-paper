@@ -74,6 +74,7 @@ make_plots <- function(df, limits, transform, breaks,
   return(list(plots = all_plots, legend = legend))
 }
 
+
 ### Plots -----
 
 ## 1. Rare population detection.
@@ -125,7 +126,7 @@ df <- ss2_K6 |> mutate(K = "K = 6") |>
   bind_rows(ss2_K8 |> mutate(K = "K = 8")) |>
   filter(!str_detect(submethod, "alt")) |>
   filter(method %in% c("NMF", "EBNMF") |
-           (method == "KimPark" & submethod %in% c("30", "100", "300")) |
+           (method == "KimPark" & submethod %in% c("10", "30", "100")) |
            (method == "RcppML" & submethod %in% c("0.01", "0.05", "0.1")) |
            (method == "Hoyer" & submethod %in% c("0.01", "0.05"))) |>
   mutate(varied_n = varied_n / 500)
@@ -153,3 +154,35 @@ p3 <- add_sub(p2, label = "Proportion of 'pure' individuals",
               hjust = 0.4, vjust = -0.8, size = 10)
 plot(p3)
 save_plot("./output/plots/ss2_SNR.pdf", p3, base_width = 9, base_height = 4)
+
+## 4. Timing comparisons.
+
+t_df <- ss2_K3 |> mutate(K = "K = 3") |>
+  bind_rows(ss2_K4 |> mutate(K = "K = 4")) |>
+  bind_rows(ss2_K6 |> mutate(K = "K = 6")) |>
+  bind_rows(ss2_K8 |> mutate(K = "K = 8")) |>
+  filter(!(method == "RcppML" & submethod %in% c(0.6, 0.7)))
+
+plot_df <- filter_metric(t_df, c("t_elapsed")) |>
+  mutate(method = as.character(method), submethod = as.character(submethod)) |>
+  mutate(method = ifelse(method == "NMF", "RcppML", method)) |>
+  mutate(method = ifelse(method == "RcppML", "RcppML (includes vanilla NMF)", method)) |>
+  mutate(method = ifelse(method == "EBNMF", paste0(method, " (", submethod, ")"), method)) |>
+  mutate(method = factor(method, levels = c("EBNMF (NMF init, const var)",
+                                            "EBNMF (NMF init, colwise var)",
+                                            "EBNMF (greedy/backfit, const var)",
+                                            "EBNMF (greedy/backfit, colwise var)",
+                                            "RcppML (includes vanilla NMF)",
+                                            "KimPark",
+                                            "Hoyer"))) |>
+  ungroup()
+
+ggplot(plot_df, aes(x = K, y = metric_val, color = method)) +
+  geom_boxplot(outliers = FALSE) +
+  scale_y_log10() +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = "", y = "Elapsed time (s)", color = "") +
+  guides(color = guide_legend(nrow = 4, ncol = 2, position = "bottom", direction = "horizontal")) +
+  theme_minimal()
+
+ggsave("./output/plots/ss2_t_elapsed.pdf", width = 7, height = 4.5)
