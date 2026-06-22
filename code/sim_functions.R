@@ -68,55 +68,48 @@ return_sim_data <- function(X, L, F, pops) {
 run_all_methods <- function(sim_dat, which_dat, Kmax, seed, shape, varied_n,
                             KimPark_pens = c(1, 3, 10, 30, 100, 300, 1000, 3000, 10000),
                             RcppML_pens =  c(0.01, 0.05, seq(0.1, 0.7, by = 0.1)),
-                            Hoyer_pens = RcppML_pens,
-                            verbose = FALSE) {
+                            Hoyer_sprs = RcppML_pens,
+                            ntrials = 10, verbose = FALSE) {
   dat <- sim_dat[[which_dat]]
+  seeds <- 1:ntrials
   all_res <- tibble()
 
-  if (verbose) cat(" NMF...\n")
-  nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
+  nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, L1pen_F = 0, seeds = seeds, verbose = verbose)
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "NMF", "NMF", Kmax, nmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, NMF init...\n")
-  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
+  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0, verbose = verbose)
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "NMF init, const var", Kmax, ebnmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, greedy/backfit...\n")
-  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0, verbose = verbose)
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, const var", Kmax, ebnmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, NMF init...\n")
-  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 2)
+  ebnmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 2, verbose = verbose)
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "NMF init, colwise var", Kmax, ebnmf_res, sim_dat))
 
-  if (verbose) cat(" EBNMF, greedy/backfit...\n")
-  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 2)
+  ebnmf_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 2, verbose = verbose)
   all_res <- all_res |>
     bind_rows(next_tib(seed, shape, varied_n, "EBNMF", "greedy/backfit, colwise var", Kmax, ebnmf_res, sim_dat))
 
   for (pen in KimPark_pens) {
-    if (verbose) cat(" Kim Park NMF, L1 =", pen, "...\n")
-    spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, k = Kmax, L1pen = pen, L2pen = 1, seeds = 1:10)
+    spnmf_res <- run_KimPark_sparse_nmf(matlab, dat, k = Kmax, L1pen = pen, L2pen = 1, seeds = seeds, verbose = verbose)
     all_res <- all_res |>
       bind_rows(next_tib(seed, shape, varied_n, "KimPark", as.character(pen), Kmax, spnmf_res, sim_dat))
   }
 
   for (pen in RcppML_pens) {
-    if (verbose) cat(" RcppML NMF, L1 =", pen, "...\n")
-    spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = pen, seeds = 1:10)
+    spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = pen, L1pen_F = 0.01, seeds = seeds, verbose = verbose)
     all_res <- all_res |>
       bind_rows(next_tib(seed, shape, varied_n, "RcppML", as.character(pen), Kmax, spnmf_res, sim_dat))
   }
 
-  for (pen in Hoyer_pens) {
-    if (verbose) cat(" Hoyer NMF, L1 =", pen, "...\n")
-    spnmf_res <- run_Hoyer_sparse_nmf(matlab, dat, k = Kmax, pen = pen, seeds = 1:10)
+  for (sprs in Hoyer_sprs) {
+    spnmf_res <- run_Hoyer_sparse_nmf(matlab, dat, k = Kmax, sprs = sprs, sprs_F = 0.01, seeds = seeds, verbose = verbose)
     all_res <- all_res |>
-      bind_rows(next_tib(seed, shape, varied_n, "Hoyer", as.character(pen), Kmax, spnmf_res, sim_dat))
+      bind_rows(next_tib(seed, shape, varied_n, "Hoyer", as.character(sprs), Kmax, spnmf_res, sim_dat))
   }
 
   return(all_res)
@@ -147,7 +140,7 @@ run_nnlm_sparse_nmf <- function(Y, k, L1pen, L2pen, seeds = 1, verbose = FALSE) 
 }
 
 run_RcppML_sparse_nmf <- function(Y, k, L1pen, L1pen_F, seeds = 1, verbose = FALSE) {
-  if (verbose) cat("Running Sparse NMF, L1 penalty =", L1pen)
+  if (verbose) cat("Running Sparse NMF (RcppML), L1 penalty =", L1pen)
   t <- system.time({
     all_obj <- numeric(length(seeds))
     best_obj <- Inf
@@ -174,10 +167,13 @@ run_RcppML_sparse_nmf <- function(Y, k, L1pen, L1pen_F, seeds = 1, verbose = FAL
   out_res$W <- out_res$W[, colSums(best_res$w) > 0]
   out_res$H <- out_res$H[colSums(best_res$w) > 0, ]
 
+  if (verbose) cat("\n")
+
   return(list(t = t, fit = out_res, all_obj = all_obj))
 }
 
 run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbose = FALSE) {
+  if (verbose) cat("Running Sparse NMF (Kim/Park), L1 penalty =", L1pen)
   setVariable(matlab, Y = Y)
 
   t <- system.time({
@@ -188,9 +184,11 @@ run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbos
       if (verbose) cat(".")
 
       evaluate(matlab, paste0("rng(", seeds[i], ");"))
-      evaluate(matlab, paste0("[H,W,i,HIS] = nmf(transpose(Y),", k,
-                              ",'type','sparse','verbose',1,",
-                              "'alpha',", L2pen, ",'beta',", L1pen, ");"))
+      evaluate(matlab, paste0(
+        "evalc('[H,W,i,HIS] = nmf(transpose(Y),", k,
+        ",''type'',''sparse'',''verbose'',1,",
+        "''alpha'',", L2pen, ",''beta'',", L1pen, ");');"
+      ))
       evaluate(matlab, "W = transpose(W);")
       evaluate(matlab, "H = transpose(H);")
 
@@ -207,10 +205,14 @@ run_KimPark_sparse_nmf <- function(matlab, Y, k, L1pen, L2pen, seeds = 1, verbos
   best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
   best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
 
+  if (verbose) cat("\n")
+
   return(list(t = t, fit = best_fit,  all_obj = all_obj))
 }
 
 run_Hoyer_sparse_nmf <- function(matlab, Y, k, sprs, sprs_F, seeds = 1, verbose = FALSE) {
+  if (verbose) cat("Running Sparse NMF (Hoyer), Sparseness constraint =", sprs)
+
   setVariable(matlab, Y = Y)
 
   evaluate(matlab, paste0("k=", k, ";"))
@@ -227,7 +229,7 @@ run_Hoyer_sparse_nmf <- function(matlab, Y, k, sprs, sprs_F, seeds = 1, verbose 
       if (verbose) cat(".")
 
       evaluate(matlab, paste0("rng(", seeds[i], ");"))
-      evaluate(matlab, "[W,H,e,t] = sparseNMF(Y,k,options);")
+      evaluate(matlab, "evalc('[W,H,e,t] = sparseNMF(Y,k,options);');")
 
       next_res <- getVariable(matlab, c("W", "H", "e", "t"))
 
@@ -242,6 +244,8 @@ run_Hoyer_sparse_nmf <- function(matlab, Y, k, sprs, sprs_F, seeds = 1, verbose 
   to_keep <- colSums(best_fit$W) > 0
   best_fit$W <- best_fit$W[, to_keep, drop = FALSE]
   best_fit$H <- best_fit$H[to_keep, , drop = FALSE]
+
+  if (verbose) cat("\n")
 
   return(list(t = t, fit = best_fit,  all_obj = all_obj))
 }
@@ -262,7 +266,7 @@ run_ebnmf_from_nmf <- function(Y, nmf_res, var_type = 2, ebnm_fn = ebnm_point_ex
 run_greedy_backfit <- function(Y, Kmax, var_type = 2,
                                ebnm_fn = ebnm_point_exponential,
                                verbose = FALSE) {
-  if (verbose) cat("Running greedy-backfit EBNMF")
+  if (verbose) cat("Running greedy-backfit EBNMF.")
   t <- system.time({
     fl <- flash_init(Y, var_type = var_type, S = 1e-4) |>
       flash_greedy(Kmax = Kmax, ebnm_fn = ebnm_fn, verbose = 0) |>

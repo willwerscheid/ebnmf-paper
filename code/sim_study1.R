@@ -1,6 +1,10 @@
 source("./code/sim_functions.R")
-options(matlab = "/Applications/MATLAB_R2025a.app/bin/matlab")
 
+matlab_bin <- "/Applications/MATLAB_R2025a.app/bin/matlab"
+options(matlab = paste(
+  shQuote(matlab_bin),
+  "-nodesktop -nosplash -nodisplay"
+))
 
 ### Simulations -----
 
@@ -34,7 +38,10 @@ run_sims <- function(matlab, which_dat, Kmax, nreps = 5, verbose = FALSE,
       sim_dat <- sim_data(ns, p, colwise_noise)
 
       all_res <- all_res |>
-        bind_rows(run_all_methods(sim_dat, which_dat, Kmax, next_seed, colwise_noise, varied_n))
+        bind_rows(run_all_methods(
+          sim_dat, which_dat, Kmax, next_seed, colwise_noise, varied_n,
+          ntrials = 10, verbose = verbose
+        ))
     }
   }
 
@@ -42,10 +49,13 @@ run_sims <- function(matlab, which_dat, Kmax, nreps = 5, verbose = FALSE,
 }
 
 setwd("./matlab/")
-Matlab$startServer(matlab = "/Applications/MATLAB_R2025a.app/bin/matlab")
+Matlab$startServer()
 matlab <- Matlab()
 open(matlab)
-setVerbose(matlab, threshold = 1000000)
+
+setVerbose(matlab, threshold = Inf)
+# To suppress the annoying MATLAB chatter, edit inst/externals/MatlabServer.m
+#   in the R.Matlab package.
 
 sims_K3 <- run_sims(matlab, "Y", Kmax = 3, verbose = TRUE)
 saveRDS(sims_K3, "../output/ss1_K3.rds")
@@ -53,20 +63,6 @@ sims_K4 <- run_sims(matlab, "Y", Kmax = 4, verbose = TRUE)
 saveRDS(sims_K4, "../output/ss1_K4.rds")
 sims_K6 <- run_sims(matlab, "Y", Kmax = 6, verbose = TRUE)
 saveRDS(sims_K6, "../output/ss1_K6.rds")
-
-# sims_K3 <- run_sims(matlab, "Ylibnorm", Kmax = 3, verbose = TRUE)
-# saveRDS(sims_K3, "../output/ss1_K3_libnorm.rds")
-# sims_K4 <- run_sims(matlab, "Ylibnorm", Kmax = 4, verbose = TRUE)
-# saveRDS(sims_K4, "../output/ss1_K4_libnorm.rds")
-# sims_K6 <- run_sims(matlab, "Ylibnorm", Kmax = 6, verbose = TRUE)
-# saveRDS(sims_K6, "../output/ss1_K6_libnorm.rds")
-#
-# sims_K3 <- run_sims(matlab, "Y", Kmax = 3, verbose = TRUE, colwise_noise = TRUE)
-# saveRDS(sims_K3, "../output/ss1_K3_colwise.rds")
-# sims_K4 <- run_sims(matlab, "Y", Kmax = 4, verbose = TRUE, colwise_noise = TRUE)
-# saveRDS(sims_K4, "../output/ss1_K4_colwise.rds")
-# sims_K6 <- run_sims(matlab, "Y", Kmax = 6, verbose = TRUE, colwise_noise = TRUE)
-# saveRDS(sims_K6, "../output/ss1_K6_colwise.rds")
 
 close(matlab)
 setwd("../")
