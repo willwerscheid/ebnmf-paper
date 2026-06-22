@@ -4,28 +4,10 @@ ss1_K3 <- readRDS("./output/ss1_K3.rds")
 ss1_K4 <- readRDS("./output/ss1_K4.rds")
 ss1_K6 <- readRDS("./output/ss1_K6.rds")
 
-# ss1_K3_libnorm <- readRDS("./output/ss1_K3_libnorm.rds")
-# ss1_K4_libnorm <- readRDS("./output/ss1_K4_libnorm.rds")
-# ss1_K6_libnorm <- readRDS("./output/ss1_K6_libnorm.rds")
-#
-# ss1_K3_colwise <- readRDS("./output/ss1_K3_colwise.rds")
-# ss1_K4_colwise <- readRDS("./output/ss1_K4_colwise.rds")
-# ss1_K6_colwise <- readRDS("./output/ss1_K6_colwise.rds")
-
 ss2_K3 <- readRDS("./output/ss2_K3.rds")
 ss2_K4 <- readRDS("./output/ss2_K4.rds")
 ss2_K6 <- readRDS("./output/ss2_K6.rds")
 ss2_K8 <- readRDS("./output/ss2_K8.rds")
-
-ss2_K3_libnorm <- readRDS("./output/ss2_K3_libnorm.rds")
-ss2_K4_libnorm <- readRDS("./output/ss2_K4_libnorm.rds")
-ss2_K6_libnorm <- readRDS("./output/ss2_K6_libnorm.rds")
-ss2_K8_libnorm <- readRDS("./output/ss2_K8_libnorm.rds")
-
-# ss2_K3_colwise <- readRDS("./output/ss2_K3_colwise.rds")
-# ss2_K4_colwise <- readRDS("./output/ss2_K4_colwise.rds")
-# ss2_K6_colwise <- readRDS("./output/ss2_K6_colwise.rds")
-# ss2_K8_colwise <- readRDS("./output/ss2_K8_colwise.rds")
 
 
 ### Plot functions -----
@@ -45,7 +27,7 @@ filter_metric <- function(df, metric) {
 }
 
 make_plots <- function(df, limits, transform, breaks,
-                       colors = c("red4", "seagreen4"),
+                       colors = c("red4", "dodgerblue"),
                        margins = c(38, 1, 32, 40, 40),
                        fill_legend = "Cosine sim.") {
   all_plots <- list()
@@ -99,13 +81,14 @@ make_plots <- function(df, limits, transform, breaks,
 df <- ss1_K3 |> mutate(K = "K = 3") |>
   bind_rows(ss1_K4 |> mutate(K = "K = 4")) |>
   bind_rows(ss1_K6 |> mutate(K = "K = 6")) |>
-  filter(!str_detect(submethod, "colwise|alt")) |>
+  filter(!str_detect(submethod, "colwise")) |>
+  filter(!(method == "RcppML" & submethod %in% c(0.6, 0.7))) |>
   mutate(submethod = str_remove(submethod, ",.*var"))
 
 plot_df <- filter_metric(df, "LLcosine3")
-all_plots <- make_plots(plot_df, c(.9, .999), transform_logit(), c(.9, .99, .999))
+all_plots <- make_plots(plot_df, c(.82, .9995), transform_logit(), c(.9, .99, .999))
 
-p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(3, 3, 9, 8, 9))
+p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(1.6, 0.8, 8.8, 7, 11))
 p2 <- plot_grid(p1, all_plots$legend, nrow = 1, rel_widths = c(9, 1))
 p3 <- add_sub(p2, label = "Size of rare population",
               hjust = 0.4, vjust = -0.8, size = 10)
@@ -118,7 +101,8 @@ df <- ss2_K3 |> mutate(K = "K = 3") |>
   bind_rows(ss2_K4 |> mutate(K = "K = 4")) |>
   bind_rows(ss2_K6 |> mutate(K = "K = 6")) |>
   bind_rows(ss2_K8 |> mutate(K = "K = 8")) |>
-  filter(!str_detect(submethod, "colwise|alt")) |>
+  filter(!str_detect(submethod, "colwise")) |>
+  filter(!(method == "RcppML" & submethod %in% c(0.6, 0.7))) |>
   mutate(submethod = str_remove(submethod, ",.*var")) |>
   mutate(varied_n = varied_n / 500)
 
@@ -126,14 +110,14 @@ plot_df <- filter_metric(df, c("LLcosine1")) |>
   group_by(K, method, submethod, varied_n) |>
   summarize(metric_val = mean(metric_val)) |>
   ungroup()
-all_plots <- make_plots(plot_df, c(.9, .999), transform_logit(), c(.9, .99, .999))
+all_plots <- make_plots(plot_df, c(.82, .9995), transform_logit(), c(.9, .99, .999))
 
-p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(3, 4, 9, 8, 9))
+p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(1.6, 0.8, 8.8, 7, 11))
 p2 <- plot_grid(p1, all_plots$legend, nrow = 1, rel_widths = c(9, 1))
 p3 <- add_sub(p2, label = "Proportion of 'pure' individuals",
               hjust = 0.4, vjust = -0.8, size = 10)
 plot(p3)
-save_plot("./output/plots/ss2_LL1_allK.pdf", p3, base_width = 9, base_height = 6.5)
+save_plot("./output/plots/ss2_LLall_allK.pdf", p3, base_width = 9, base_height = 6.5)
 
 ## 3. Unnecessary factors.
 
@@ -141,7 +125,7 @@ df <- ss2_K6 |> mutate(K = "K = 6") |>
   bind_rows(ss2_K8 |> mutate(K = "K = 8")) |>
   filter(!str_detect(submethod, "alt")) |>
   filter(method %in% c("NMF", "EBNMF") |
-           (method == "KimPark" & submethod %in% c("10", "30", "100")) |
+           (method == "KimPark" & submethod %in% c("30", "100", "300")) |
            (method == "RcppML" & submethod %in% c("0.01", "0.05", "0.1")) |
            (method == "Hoyer" & submethod %in% c("0.01", "0.05"))) |>
   mutate(varied_n = varied_n / 500)
@@ -163,26 +147,9 @@ all_plots <- make_plots(plot_df, c(1, 100), transform_log10(), c(1, 10, 100),
                         margins = c(87, 1, 92, 90, 90),
                         fill_legend = "SNR")
 
-p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(3, 5, 4, 3, 6.5))
+p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(1.6, 3.5, 2.5, 1, 4))
 p2 <- plot_grid(p1, all_plots$legend, nrow = 1, rel_widths = c(9, 1))
 p3 <- add_sub(p2, label = "Proportion of 'pure' individuals",
               hjust = 0.4, vjust = -0.8, size = 10)
 plot(p3)
 save_plot("./output/plots/ss2_SNR.pdf", p3, base_width = 9, base_height = 4)
-
-## 4. Library-size normalization.
-
-df <- ss2_K6 |> mutate(K = "No size factors") |>
-  bind_rows(ss2_K6_libnorm |> mutate(K = "Library-size normalization")) |>
-  filter(!str_detect(submethod, "colwise")) |>
-  mutate(submethod = str_remove(submethod, ",.*var"))
-
-plot_df <- filter_metric(df, "FFcosine1")
-all_plots <- make_plots(plot_df, c(.1, .999), transform_logit(), c(.1, .5, .9, .99, .999))
-
-p1 <- plot_grid(plotlist = all_plots$plots, ncol = 1, rel_heights = 3 + c(3, 4, 9, 8, 9))
-p2 <- plot_grid(p1, all_plots$legend, nrow = 1, rel_widths = c(9, 1))
-p3 <- add_sub(p2, label = "Size of 'pure' populations",
-              hjust = 0.4, vjust = -0.8, size = 10)
-plot(p3)
-save_plot("./output/plots/ss2_FF1_libsize.pdf", p3, base_width = 7, base_height = 5)
