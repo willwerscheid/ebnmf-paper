@@ -193,11 +193,13 @@ get_top_genes <- function(LL, min_loading = 0.5, max_n = 15) {
 
 # Main figures. -----
 
-make_main_fig <- function(LL, FF, cell_idx, p_title, min_loading = 0.5, max_n = 15) {
+make_main_fig <- function(LL, FF, cell_idx, p_title, l_order = NULL, min_loading = 0.5, max_n = 15) {
   top_unique_genes <- get_top_genes(LL, min_loading, max_n)
 
   ct_tib <- make_tib(FF, cell_idx)
-  ct_tib_idx <- do_order(ct_tib)
+  if (is.null(l_order)) {
+    l_order <- do_order(ct_tib)
+  }
 
   plot_df <- ct_tib |>
     left_join(top_unique_genes, by = "Component") |>
@@ -206,7 +208,7 @@ make_main_fig <- function(LL, FF, cell_idx, p_title, min_loading = 0.5, max_n = 
     ) |>
     select(-TopGenes, -ComponentName)
 
-  p <- do_plot(plot_df, ct_tib_idx, glasbey[2:41], p_title, legend_ncol = 1) +
+  p <- do_plot(plot_df, l_order, glasbey[2:41], p_title, legend_ncol = 1) +
     labs(fill = "Component (Top unique genes)") +
     theme(legend.position = "bottom",
           legend.title.position = "top",
@@ -215,20 +217,43 @@ make_main_fig <- function(LL, FF, cell_idx, p_title, min_loading = 0.5, max_n = 
   return(p)
 }
 
+
 set.seed(1)
 samp_idx <- external_info |>
   slice_sample(n = 200, by = CellType, replace = TRUE) |>
   pull(CellIdx)
 
+ebnmf40 <- readRDS("output/montoro-ebmf-40.rds")
+ebnmf40_FF <- scale_FF(ebnmf40$fit$F_pm, ebnmf40$fit$L_pm)
+
+nmf <- readRDS("output/montoro-nmf.rds")
+nmf_FF <- scale_FF(t(nmf$fit$h), nmf$fit$w, nmf$fit$d)
+
+nmf40 <- readRDS("output/montoro-nmf-40.rds")
+nmf40_FF <- scale_FF(t(nmf40$fit$h), nmf40$fit$w, nmf40$fit$d)
+
+tm <- readRDS("output/montoro-topics.rds")
+tm_FF <- scale_FF(tm$fit$F, tm$fit$L)
+
+tm40 <- readRDS("output/montoro-topics-40.rds")
+tm40_FF <- scale_FF(tm40$fit$F, tm40$fit$L)
+
+combined_FF <- cbind(ebnmf_FF, ebnmf40_FF, nmf_FF, nmf40_FF, tm_FF, tm40_FF)
+combined_tib <- make_tib(combined_FF, samp_idx)
+combined_order <- do_order(combined_tib)
+
+
 ebnmf_LL <- scale_LL(ebnmf$fit$F_pm, ebnmf$fit$L_pm)
 ebnmf_p <- make_main_fig(
-  ebnmf_LL, ebnmf_FF, samp_idx, "EBNMF results (K = 30)"
+  ebnmf_LL, ebnmf_FF, samp_idx, "EBNMF results"
 )
 save_plot("./output/plots/montoro_ebnmf.pdf",
           ebnmf_p, base_height = 10, base_width = 8)
 
-ebnmf40 <- readRDS("output/montoro-ebmf-40.rds")
-ebnmf40_FF <- scale_FF(ebnmf40$fit$F_pm, ebnmf40$fit$L_pm)
+ebnmf_p2 <- make_main_fig(
+  ebnmf_LL, ebnmf_FF, samp_idx, "EBNMF results (K = 30)", combined_order
+)
+
 ebnmf40_LL <- scale_LL(ebnmf40$fit$F_pm, ebnmf40$fit$L_pm)
 ebnmf40_p <- make_main_fig(
   ebnmf40_LL, ebnmf40_FF, samp_idx, "EBNMF results (K = 40)"
@@ -236,8 +261,10 @@ ebnmf40_p <- make_main_fig(
 save_plot("./output/plots/montoro_ebnmf40.pdf",
           ebnmf40_p, base_height = 12, base_width = 8)
 
-nmf <- readRDS("output/montoro-nmf.rds")
-nmf_FF <- scale_FF(t(nmf$fit$h), nmf$fit$w, nmf$fit$d)
+ebnmf40_p2 <- make_main_fig(
+  ebnmf40_LL, ebnmf40_FF, samp_idx, "EBNMF results (K = 40)", combined_order
+)
+
 nmf_LL <- scale_LL(t(nmf$fit$h), nmf$fit$w, nmf$fit$d)
 rownames(nmf_LL) <- rownames(ebnmf_LL)
 nmf_p <- make_main_fig(
@@ -246,8 +273,10 @@ nmf_p <- make_main_fig(
 save_plot("./output/plots/montoro_nmf.pdf",
           nmf_p, base_height = 10, base_width = 8)
 
-nmf40 <- readRDS("output/montoro-nmf-40.rds")
-nmf40_FF <- scale_FF(t(nmf40$fit$h), nmf40$fit$w, nmf40$fit$d)
+nmf_p2 <- make_main_fig(
+  nmf_LL, nmf_FF, samp_idx, "NMF results (K = 30)", combined_order, max_n = 14
+)
+
 nmf40_LL <- scale_LL(t(nmf40$fit$h), nmf40$fit$w, nmf40$fit$d)
 rownames(nmf40_LL) <- rownames(ebnmf_LL)
 nmf40_p <- make_main_fig(
@@ -256,8 +285,10 @@ nmf40_p <- make_main_fig(
 save_plot("./output/plots/montoro_nmf40.pdf",
           nmf40_p, base_height = 12, base_width = 8)
 
-tm <- readRDS("output/montoro-topics.rds")
-tm_FF <- scale_FF(tm$fit$F, tm$fit$L)
+nmf40_p2 <- make_main_fig(
+  nmf40_LL, nmf40_FF, samp_idx, "NMF results (K = 40)", combined_order, max_n = 14
+)
+
 tm_LL <- scale_LL(tm$fit$F, tm$fit$L)
 tm_p <- make_main_fig(
   tm_LL, tm_FF, samp_idx, "Topic model results (K = 30)", max_n = 14
@@ -265,8 +296,10 @@ tm_p <- make_main_fig(
 save_plot("./output/plots/montoro_tm.pdf",
           tm_p, base_height = 10, base_width = 8)
 
-tm40 <- readRDS("output/montoro-topics-40.rds")
-tm40_FF <- scale_FF(tm40$fit$F, tm40$fit$L)
+tm_p2 <- make_main_fig(
+  tm_LL, tm_FF, samp_idx, "Topic model results (K = 30)", combined_order, max_n = 14
+)
+
 tm40_LL <- scale_LL(tm40$fit$F, tm40$fit$L)
 tm40_p <- make_main_fig(
   tm40_LL, tm40_FF, samp_idx, "Topic model results (K = 40)", max_n = 14
@@ -274,13 +307,17 @@ tm40_p <- make_main_fig(
 save_plot("./output/plots/montoro_tm40.pdf",
           tm40_p, base_height = 12, base_width = 8)
 
+tm40_p2 <- make_main_fig(
+  tm40_LL, tm40_FF, samp_idx, "Topic model results (K = 40)", combined_order, max_n = 14
+)
+
 combined_p <- plot_grid(
-  ebnmf_p + theme(legend.position = "none"),
-  ebnmf40_p + theme(legend.position = "none"),
-  nmf_p + theme(legend.position = "none"),
-  nmf40_p + theme(legend.position = "none"),
-  tm_p + theme(legend.position = "none"),
-  tm40_p + theme(legend.position = "none"),
+  ebnmf_p2 + theme(legend.position = "none"),
+  ebnmf40_p2 + theme(legend.position = "none"),
+  nmf_p2 + theme(legend.position = "none"),
+  nmf40_p2 + theme(legend.position = "none"),
+  tm_p2 + theme(legend.position = "none"),
+  tm40_p2 + theme(legend.position = "none"),
   ncol = 1
 )
 save_plot("./output/plots/montoro_combined.pdf",
