@@ -71,45 +71,45 @@ run_sims <- function(which_dat, Kmax, verbose = FALSE) {
       if (verbose) cat(" NMF...\n")
       nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF", Kmax, nmf_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF", Kmax, nmf_res, sim_dat))
       
       L1pens <- c(0.05, 0.1, 0.25, 0.5, 0.75) 
       for (L1pen in L1pens) {
         if (verbose) cat(" Sparse NMF, L1 = ", L1pen, "...\n")
         spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
         all_res <- all_res |> 
-          bind_rows(next_tib(next_seed, disp, ns, paste0("SpNMF", L1pen), Kmax, spnmf_res, sim_dat))
+          bind_rows(next_tib(next_seed, disp, varied_n, paste0("SpNMF", L1pen), Kmax, spnmf_res, sim_dat))
       }
       
       if (verbose) cat(" NMF-EBNMF...\n")
       ebnmf_nmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF", Kmax, ebnmf_nmf_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF-EBNMF", Kmax, ebnmf_nmf_res, sim_dat))
       
       if (verbose) cat(" NMF-EBNMF (var type = 0)...\n")
       ebnmf_nmf_vt0_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF-vt0", Kmax, ebnmf_nmf_vt0_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF-EBNMF-vt0", Kmax, ebnmf_nmf_vt0_res, sim_dat))
       
       if (verbose) cat(" EBNMFgb...\n")
       ebnmf_gb_res <- run_greedy_backfit(dat, Kmax = Kmax)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb", Kmax, ebnmf_gb_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFgb", Kmax, ebnmf_gb_res, sim_dat))
       
       if (verbose) cat(" EBNMFgb (var type = 0)...\n")
       ebnmf_gb_vt0_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb-vt0", Kmax, ebnmf_gb_vt0_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFgb-vt0", Kmax, ebnmf_gb_vt0_res, sim_dat))
       
       if (verbose) cat(" EBNMFalt...\n")
       ebnmf_alt_res <- run_alternating(dat, Kmax = Kmax)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFalt", Kmax, ebnmf_alt_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFalt", Kmax, ebnmf_alt_res, sim_dat))
       
       if (verbose) cat(" EBNMFalt (var type = 0)...\n")
       ebnmf_alt_vt0_res <- run_alternating(dat, Kmax = Kmax, var_type = 0)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFalt-vt0", Kmax, ebnmf_alt_vt0_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFalt-vt0", Kmax, ebnmf_alt_vt0_res, sim_dat))
       
     }
   }

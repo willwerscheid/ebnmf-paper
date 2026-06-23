@@ -70,54 +70,55 @@ run_sims <- function(which_dat, Kmax, verbose = FALSE) {
       if (verbose) cat(" NMF...\n")
       nmf_res <-  run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = 0, seeds = 1:10)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF", Kmax, nmf_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF", Kmax, nmf_res, sim_dat))
       
       L1pens <- c(0.05, 0.1, 0.25, 0.5, 0.75) 
       for (L1pen in L1pens) {
         if (verbose) cat(" Sparse NMF, L1 = ", L1pen, "...\n")
         spnmf_res <- run_RcppML_sparse_nmf(dat, k = Kmax, L1pen = L1pen, seeds = 1:10)
         all_res <- all_res |> 
-          bind_rows(next_tib(next_seed, disp, ns, paste0("SpNMF", L1pen), Kmax, spnmf_res, sim_dat))
+          bind_rows(next_tib(next_seed, disp, varied_n, paste0("SpNMF", L1pen), Kmax, spnmf_res, sim_dat))
       }
       
       if (verbose) cat(" NMF-EBNMF...\n")
       ebnmf_nmf_res <- run_ebnmf_from_nmf(dat, nmf_res$fit)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF", Kmax, ebnmf_nmf_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF-EBNMF", Kmax, ebnmf_nmf_res, sim_dat))
       
       if (verbose) cat(" NMF-EBNMF (var type = 0)...\n")
       ebnmf_nmf_vt0_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, var_type = 0)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF-vt0", Kmax, ebnmf_nmf_vt0_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "NMF-EBNMF-vt0", Kmax, ebnmf_nmf_vt0_res, sim_dat))
       
       if (verbose) cat(" EBNMFgb...\n")
       ebnmf_gb_res <- run_greedy_backfit(dat, Kmax = Kmax)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb", Kmax, ebnmf_gb_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFgb", Kmax, ebnmf_gb_res, sim_dat))
       
       if (verbose) cat(" EBNMFgb (var type = 0)...\n")
       ebnmf_gb_vt0_res <- run_greedy_backfit(dat, Kmax = Kmax, var_type = 0)
       all_res <- all_res |> 
-        bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb-vt0", Kmax, ebnmf_gb_vt0_res, sim_dat))
+        bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFgb-vt0", Kmax, ebnmf_gb_vt0_res, sim_dat))
       
       # Unimodal priors are currently slow as well as giving poor results...
       
       # if (verbose) cat(" NMF-EBNMF (unimodal priors)...\n")
       # ebnmf_nmf_uni_res <- run_ebnmf_from_nmf(dat, nmf_res$fit, ebnm_fn = ebnm_unimodal_nonnegative)
       # all_res <- all_res |>
-      #   bind_rows(next_tib(next_seed, disp, ns, "NMF-EBNMF-uni", Kmax, ebnmf_nmf_res, sim_dat))
+      #   bind_rows(next_tib(next_seed, disp, varied_n, "NMF-EBNMF-uni", Kmax, ebnmf_nmf_res, sim_dat))
       
       # if (verbose) cat(" EBNMFgb (unimodal priors)...\n")
       # ebnmf_gb_uni_res <- run_greedy_backfit(dat, Kmax = Kmax, ebnm_fn = ebnm_unimodal_nonnegative)
       # all_res <- all_res |>
-      #   bind_rows(next_tib(next_seed, disp, ns, "EBNMFgb-uni", Kmax, ebnmf_gb_uni_res, sim_dat))
+      #   bind_rows(next_tib(next_seed, disp, varied_n, "EBNMFgb-uni", Kmax, ebnmf_gb_uni_res, sim_dat))
       
-      all_res <- all_res |>
-        mutate(method = factor(method, levels = c(
-          "NMF", paste0("SpNMF", L1pens), "NMF-EBNMF", "NMF-EBNMF-vt0", "EBNMFgb", "EBNMFgb-vt0"
-        )))
     }
   }
+  
+  all_res <- all_res |>
+    mutate(method = factor(method, levels = c(
+      "NMF", paste0("SpNMF", L1pens), "NMF-EBNMF", "NMF-EBNMF-vt0", "EBNMFgb", "EBNMFgb-vt0"
+    )))
   
   return(all_res)
 }
@@ -212,9 +213,7 @@ Cosine similarities for `L`:
 make_cosplot(sims_8norm, "LLcos", xlab, ylab, "Cos. sim. w/ true L")
 ```
 
-SNR for redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row. 
-
-Normalized data:
+SNR for redundant/noisy factors. If any exist, they are arranged in descending order, with the largest redundant/noisy factor appearing in the top row:
 
 ```{r}
 make_scaleplot(sims_8norm, xlab, ylab, "SNR", cutoff = 100)

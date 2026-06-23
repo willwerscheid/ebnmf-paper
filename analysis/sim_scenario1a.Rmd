@@ -31,34 +31,41 @@ library(fastTopics)
 library(RcppML)
 library(Matrix)
 source("./code/sim_functions.R")
+source("./code/sim_study_functions.R")
 ```
 
 ### Scenario
 
 To allow for objective comparisons among methods, we restrict ourselves to scenarios where the matrix of "true means" is separable. In topic modeling terms, each topic must feature at least one "anchor word" (a word that appears in that topic and nowhere else) and there must be at least one "pure" document per topic. In the simplest such scenario, which we will consider here, *all* documents are pure.
 
-To begin, let there be four clusters, respectively consisting of 1175, 250, 50, and 25 "pure" documents. We code cluster memberships using a binary $1500 \times 4$ component matrix $L$, with $L_{ik} = 1$ if document $i$ belongs to cluster $k$ and $L_{ik} = 0$ otherwise. Topics are given by a $2000 \times 4$ component matrix $F$. For separability, we include 10 anchor words per topic. For these 40 words, $F_{jk} = 1$ if word $j$ is an anchor word for topic $k$ and $F_{jk} = 0$ otherwise. The remaining $1960 \times 4$ entries $F_{jk}$ are simulated from a Gamma distribution with shape parameter $2$ and scale parameter $1/2$ (i.e., mean $1$ and variance $1/2$), so that all entries $F_{jk}$ are similar in magnitude. We define the matrix of "true means" as $\mu = LF'$. We then simulate the data matrix $Y$ using a `log1p` link function; that is, we simulate count $X_{ij}$ from a Poisson distribution with mean $e^{\mu_{ij}} - 1$, then set $Y_{ij} = \log(X_{ij} + 1)$. (We note that the expectation of the random variable $Y_{ij}$ is not exactly $\mu_{ij}$, but it is close, especially for large $\mu_{ij}$.)
+To begin, let there be four clusters, respectively consisting of 1250, 250, 100, and 10 "pure" documents. We code cluster memberships using a binary $1610 \times 4$ component matrix $L$, with $L_{ik} = 1$ if document $i$ belongs to cluster $k$ and $L_{ik} = 0$ otherwise. Topics are given by a $2000 \times 4$ component matrix $F$. For separability, we include 3 anchor words per topic. For these 12 words, $F_{jk} = 1$ if word $j$ is an anchor word for topic $k$ and $F_{jk} = 0$ otherwise. The remaining $1988 \times 4$ entries $F_{jk}$ are simulated from a Gamma distribution with shape parameter $2$ and scale parameter $1/2$ (i.e., mean $1$ and variance $1/2$), so that all entries $F_{jk}$ are similar in magnitude. We define the matrix of "true means" as $\mu = LF'$. We then simulate the data matrix $Y$ using a `log1p` link function; that is, we simulate count $X_{ij}$ from a Poisson distribution with mean $e^{\mu_{ij}} - 1$, then set $Y_{ij} = \log(X_{ij} + 1)$. (We note that the expectation of the random variable $Y_{ij}$ is not exactly $\mu_{ij}$, but it is close, especially for large $\mu_{ij}$.)
 
 ```{r sim_dat}
-sim_data <- function(ns, p, gamma_shape, gamma_scale = 1 / gamma_shape, n_anchor_words = 10) {
+ns <- c(1250, 250, 100, 10)
+p <- 2000
+
+sim_data <- function(ns, p, dispersion, n_anchor_words = 3) {
   pops <- rep(LETTERS[1:length(ns)], times = ns)
-  
+
   L <- matrix(0, nrow = sum(ns), ncol = 4)
   L[, 1] <- c(rep(1, ns[1]), rep(0, sum(ns[2:4])))
   L[, 2] <- c(rep(0, ns[1]), rep(1, ns[2]), rep(0, sum(ns[3:4])))
   L[, 3] <- c(rep(0, sum(ns[1:2])), rep(1, ns[3]), rep(0, ns[4]))
   L[, 4] <- c(rep(0, sum(ns[1:3])), rep(1, ns[4]))
-  
-  F <- sim_F(p, 4, gamma_shape, gamma_scale, n_anchor_words)
-  X <- sim_X(L, F)
+
+  # vary sizes:
+  L <- L * rgamma(sum(ns), shape = 2, rate = 2)
+
+  F <- sim_F(p, 4, gamma_shape = 2/3, gamma_scale = 1, n_anchor_words)
+  X <- sim_X(L, F, dispersion = dispersion)
   return_sim_data(X, L, F, pops)
 }
 
 set.seed(1)
-example_sim <- sim_data(c(1175, 250, 50, 25), 2000, 4)
+example_sim <- sim_data(ns, p, Inf)
 
-Y <- example_sim$Y
-Ynorm <- example_sim$Ynorm
+Y <- example_sim$Ylibnorm
+
 L <- example_sim$L
 pops <- example_sim$pops
 ```
@@ -69,13 +76,13 @@ pops <- example_sim$pops
 As is common practice, we fit NMF by running multiple trials and choosing the fit with the lowest error.
 
 ```{r nmf_k4}
-nmf_k4_res <- run_nmf(Y, k = 4)
+nmf_k4_res <- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0, seeds = 1:100)
 ```
 
 Results vary slightly from one trial to the next: 
 
 ```{r nmf_k4_plots}
-nmf_k4_worst_res <- run_nmf(Y, k = 4, seeds = which.max(nmf_k4_res$all_mse))
+nmf_k4_worst_res <- run_RcppML_sparse_nmf(Y, k = 4, L1pen = 0, seeds = which.max(nmf_k4_res$all_mse))
 nmf_k4_p1 <- plot_nmf(
   nmf_k4_res$fit, L, pops, 
   paste0("Best fit, 10 trials (MSE = ", round(min(nmf_k4_res$all_mse), 4), ")")
@@ -162,7 +169,7 @@ First we'll attempt to sparsify results by putting an L1 penalty on the document
 nnlm_k4_plots <- list()
 nnlm_k4_t <- numeric()
 for (L1pen in c(.001, .01, .1, 1, 2, 5)) {
-  next_res <- run_sparse_nmf(Ynorm, k = 4, L1pen = L1pen)
+  next_res <- run_sparse_nmf(Y, k = 4, L1pen = L1pen)
   next_p <- plot_nmf(next_res$fit, L, pops, paste0("L1 penalty = ", L1pen))
   nnlm_k4_plots <- c(nnlm_k4_plots, list(next_p))
   nnlm_k4_t <- c(nnlm_k4_t, next_res$t[3])
@@ -178,7 +185,7 @@ For sparse NMF,`RcppML` is both faster and simpler to use. Its L1 penalty (which
 rcppml_k4_plots <- list()
 rcppml_k4_t <- numeric()
 for (L1pen in c(.01, seq(0.1, 0.8, by = 0.1))) {
-  next_res <- run_RcppML_sparse_nmf(Ynorm, k = 4, L1pen = L1pen)
+  next_res <- run_RcppML_sparse_nmf(Y, k = 4, L1pen = L1pen)
   next_p <- plot_nmf(next_res$fit, L, pops, paste0("L1 penalty = ", L1pen))
   rcppml_k4_plots <- c(rcppml_k4_plots, list(next_p))
   rcppml_k4_t <- c(rcppml_k4_t, next_res$t[3])
