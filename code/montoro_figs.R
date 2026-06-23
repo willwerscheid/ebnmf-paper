@@ -2,7 +2,7 @@ library(tidyverse)
 library(cowplot)
 library(ggrepel)
 library(ggpubr)
-library(reactable)
+library(gt)
 
 glasbey <- fastTopics:::glasbey()[1:200]
 
@@ -302,8 +302,8 @@ ion_tib <- tibble(
   mutate(SYMBOL = ifelse(pm > 0.6 & pm - exprmean > 2.7, SYMBOL, ""))
 ggplot(ion_tib, aes(x = exprmean, y = pm, label = SYMBOL, color = uniqueness)) +
   geom_point() +
-  geom_text_repel(color = "darkgray",size = 2.25, fontface = "italic",
-                  segment.color = "darkgray", segment.size = 0.25,
+  geom_text_repel(color = "black",size = 2.25, fontface = "italic",
+                  segment.color = "black", segment.size = 0.25,
                   min.segment.length = 0, na.rm = TRUE, max.overlaps = 20) +
   scale_color_gradient(low = "dodgerblue", high = "darkred", trans = "log10") +
   theme_minimal() +
@@ -324,7 +324,7 @@ ggsave("output/plots/montoro_ionocyte.pdf", width = 8, height = 4)
 k1 <- 15
 k2 <- 17
 tuft_tib <- tibble(
-  cell_type = c(rep("Tuft-1", nrow(ebnmf_LL)), rep("Tuft-2", nrow(ebnmf_LL))),
+  cell_type = c(rep("Tuft-1 (k15)", nrow(ebnmf_LL)), rep("Tuft-2 (k17)", nrow(ebnmf_LL))),
   pm = c(ebnmf_LL[, k1], ebnmf_LL[, k2]),
   SYMBOL = rep(rownames(ebnmf_LL), times = 2),
   exprmean = rep(exprmean, times = 2),
@@ -336,8 +336,8 @@ tuft_tib <- tibble(
                          SYMBOL, ""))
 ggplot(tuft_tib, aes(x = exprmean, y = pm, label = SYMBOL, color = uniqueness)) +
   geom_point() +
-  geom_text_repel(color = "darkgray",size = 2.25, fontface = "italic",
-                  segment.color = "darkgray", segment.size = 0.25,
+  geom_text_repel(color = "black",size = 2.25, fontface = "italic",
+                  segment.color = "black", segment.size = 0.25,
                   min.segment.length = 0, na.rm = TRUE, max.overlaps = 20) +
   scale_color_gradient(low = "dodgerblue", high = "darkred", trans = "log10") +
   theme_minimal() +
@@ -360,9 +360,9 @@ k1 <- 24
 k2 <- 13
 k3 <- 28
 goblet_tib <- tibble(
-  cell_type = c(rep("Goblet-1 shared", nrow(ebnmf_LL)),
-                rep("Goblet-1 larger subset", nrow(ebnmf_LL)),
-                rep("Goblet-1 smaller subset", nrow(ebnmf_LL))),
+  cell_type = c(rep("Goblet-1 shared (k24)", nrow(ebnmf_LL)),
+                rep("Goblet-1 larger subset (k13)", nrow(ebnmf_LL)),
+                rep("Goblet-1 smaller subset (k28)", nrow(ebnmf_LL))),
   pm = c(ebnmf_LL[, k1], ebnmf_LL[, k2], ebnmf_LL[, k3]),
   SYMBOL = rep(rownames(ebnmf_LL), times = 3),
   exprmean = rep(exprmean, times = 3),
@@ -377,8 +377,8 @@ goblet_tib <- tibble(
   mutate(cell_type = factor(cell_type, levels = unique(cell_type)))
 ggplot(goblet_tib, aes(x = exprmean, y = pm, label = SYMBOL, color = uniqueness)) +
   geom_point() +
-  geom_text_repel(color = "darkgray",size = 2.25, fontface = "italic",
-                  segment.color = "darkgray", segment.size = 0.25,
+  geom_text_repel(color = "black",size = 2.25, fontface = "italic",
+                  segment.color = "black", segment.size = 0.25,
                   min.segment.length = 0, na.rm = TRUE, max.overlaps = 20) +
   scale_color_gradient(low = "dodgerblue", high = "darkred", trans = "log10") +
   theme_minimal() +
@@ -409,8 +409,8 @@ gob2_tib <- tibble(
                          SYMBOL, ""))
 ggplot(gob2_tib, aes(x = exprmean, y = pm, label = SYMBOL, color = uniqueness)) +
   geom_point() +
-  geom_text_repel(color = "darkgray",size = 2.25, fontface = "italic",
-                  segment.color = "darkgray", segment.size = 0.25,
+  geom_text_repel(color = "black",size = 2.25, fontface = "italic",
+                  segment.color = "black", segment.size = 0.25,
                   min.segment.length = 0, na.rm = TRUE, max.overlaps = 20) +
   scale_color_gradient(low = "dodgerblue", high = "darkred", trans = "log10") +
   theme_minimal() +
@@ -448,17 +448,17 @@ genesets <- keep_res |>
 
 ebnmf_LL <- scale_LL(ebnmf$fit$F_pm, ebnmf$fit$L_pm)
 colnames(ebnmf_LL) <- paste0("k", 1:ncol(ebnmf_LL))
-LL_tib <- as_tibble(LL) |>
-  mutate(Gene = gene_names) |>
+LL_tib <- as_tibble(ebnmf_LL) |>
+  mutate(Gene = rownames(ebnmf_LL)) |>
   pivot_longer(-Gene, names_to = "Component", values_to = "Loading") |>
-  mutate(Component = factor(Component, levels = colnames(LL))) |>
+  mutate(Component = factor(Component, levels = colnames(ebnmf_LL))) |>
   group_by(Gene) |>
   mutate(Uniqueness = Loading / sort(Loading, decreasing = TRUE)[2])
 
 top_unique_genes <- LL_tib |>
-  filter(Uniqueness > 2) |>
+  filter(Uniqueness > 1, Loading > 0.5) |>
   group_by(Component) |>
-  slice_max(Loading, n = 25) |>
+  slice_max(Uniqueness, n = 25) |>
   summarize(TopGenes = paste(Gene, collapse = ", "))
 
 res_tbl <- genesets |>
@@ -473,6 +473,6 @@ gt_res <- gt(res_tbl) |>
     style = cell_text(weight = "bold"),
     locations = cells_column_labels()
   ) |>
-  tab_options(table.font.size = px(10))
+  tab_options(table.font.size = px(9.5))
 
 gtsave(gt_res, "./output/montoro_ebnmf_gene_sets.pdf")
