@@ -37,7 +37,7 @@ sim_X <- function(L, F, colwise_noise = FALSE) {
   if (!colwise_noise) {
     X <- matrix(rpois(length(mu), expm1(mu)), nrow = nrow(mu), ncol = ncol(mu))
   } else {
-    size_params <- rep(exp(runif(ncol(mu), -2, 3)), each = nrow(mu))
+    size_params <- rep(exp(runif(ncol(mu), -10, 5)), each = nrow(mu))
     X <- matrix(rnbinom(length(mu), mu = expm1(mu), size = size_params),
                 nrow = nrow(mu), ncol = ncol(mu))
   }
@@ -358,7 +358,7 @@ run_ebnmf_cv <- function(Y, k, nfolds = 100, ntrials = 10, verbose = FALSE, meth
 
 ## Evaluation metrics
 
-calc_metrics <- function(res, sim_dat) {
+calc_metrics <- function(res, sim_dat, Kmax) {
   Lscale <- sqrt(apply(sim_dat$L, 2, function(x) sum(x^2)))
   Fscale <- sqrt(apply(sim_dat$F, 2, function(x) sum(x^2)))
   true_L <- t(t(sim_dat$L) / Lscale)
@@ -386,6 +386,11 @@ calc_metrics <- function(res, sim_dat) {
     return(c(LL_cosine, FF_cosine))
   }
 
+  sparseness_LL <- apply(LL, 2, function(x) {
+    (sqrt(nrow(LL)) - sum(abs(x)) / sqrt(sum(x^2))) / (sqrt(nrow(LL)) - 1)
+  })
+  sparseness_ordered <- rep(0, ncol(LL))
+
   used_cols <- numeric(0)
   LL_cosmat <- crossprod(true_L, LL)
   FF_cosmat <- crossprod(true_F, FF)
@@ -394,26 +399,46 @@ calc_metrics <- function(res, sim_dat) {
     colmax <- which.max(apply(abs(LL_cosmat), 2, max))
     LL_cosine[rowmax] <- LL_cosmat[rowmax, colmax]
     FF_cosine[rowmax] <- FF_cosmat[rowmax, colmax]
+    sparseness_ordered[rowmax] <- sparseness_LL[colmax]
     LL_cosmat[, colmax] <- 0
     LL_cosmat[rowmax, ] <- 0
     used_cols <- c(used_cols, colmax)
   }
 
-  unmatched_scales <- D[-used_cols] / sum(D)
-  unmatched_scales <- sort(unmatched_scales, decreasing = TRUE)
+  unmatched_cols <- setdiff(1:ncol(LL), used_cols)
+  if (length(unmatched_cols) > 0) {
+    unmatched_scales <- D[unmatched_cols] / sum(D)
+    unmatched_order <- order(-unmatched_scales)
+    unmatched_scales <- unmatched_scales[unmatched_order]
+    sparseness_ordered[(ncol(sim_dat$L) + 1):ncol(LL)] <- (sparseness_LL[unmatched_cols])[unmatched_order]
+  }
 
   names(LL_cosine) <- paste0("LLcosine", 1:length(LL_cosine))
   names(FF_cosine) <- paste0("FFcosine", 1:length(FF_cosine))
-  if (length(unmatched_scales) > 0) {
+  names(sparseness_ordered) <- paste0("Sparseness", 1:length(sparseness_ordered))
+  if (length(unmatched_cols) > 0) {
     names(unmatched_scales) <- paste0("Scale", (ncol(sim_dat$L) + 1):(ncol(sim_dat$L) + length(unmatched_scales)))
+  } else {
+    unmatched_scales <- numeric(0)
   }
 
-  all_metrics <- c(LL_cosine, FF_cosine, unmatched_scales)
+  avg_sparseness <- mean(c(sparseness_LL, rep(1, Kmax - ncol(LL))))
+  names(avg_sparseness) <- "SparsenessMean"
+
+  sparseness_Ltrue <- apply(sim_dat$L, 2, function(x) {
+    (sqrt(nrow(sim_dat$L)) - sum(abs(x)) / sqrt(sum(x^2))) / (sqrt(nrow(sim_dat$L)) - 1)
+  })
+  true_sparseness <- mean(c(sparseness_Ltrue, rep(1, Kmax - ncol(sim_dat$L))))
+  sparseness_ratio <- avg_sparseness / true_sparseness
+  names(sparseness_ratio) <- "SparsenessRatio"
+
+  all_metrics <- c(LL_cosine, FF_cosine, unmatched_scales, sparseness_ordered,
+                   avg_sparseness, sparseness_ratio)
   return(all_metrics)
 }
 
 next_tib <- function(seed, shape, varied_n, method, submethod, Kmax, res, sim_dat) {
-  metrics <- calc_metrics(res, sim_dat)
+  metrics <- calc_metrics(res, sim_dat, Kmax)
   return(tibble(
     seed = seed,
     method = method,
