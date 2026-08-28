@@ -1,7 +1,13 @@
 ---
 title: Explore results of applying EBNMF to Montoro et al scRNA-seq data
 author: Peter Carbonetto
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
 ---
 
 Here I will create some plots to learn more about the EBNMF analysis
