@@ -1,0 +1,33 @@
+---
+title: Explore results of applying EBNMF to Montoro et al scRNA-seq data
+author: Peter Carbonetto
+output:
+  workflowr::wflow_html:
+    toc: no
+    theme: readable
+    highlight: textmate
+    lib_dir: site_libs
+    self_contained: no
+---
+
+Here I will create some plots to learn more about the EBNMF analysis
+of the Montoro et al data set.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load some R packages that I will use to study the results.
+
+```{r load-pkgs, message=FALSE}
+library(ggplot2)
+library(cowplot)
+library(fastTopics)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
