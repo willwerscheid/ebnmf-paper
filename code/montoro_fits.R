@@ -176,3 +176,11 @@ do_montoro_fit(method = "glmpca",     K = 30, outfile = "./output/montoro-glmpca
 do_montoro_fit(method = "nmf-log",    K = 40, outfile = "./output/montoro-nmf-40.rds")
 do_montoro_fit(method = "ebmf-log",   K = 40, outfile = "./output/montoro-ebmf-40.rds")
 do_montoro_fit(method = "fasttopics", K = 40, outfile = "./output/montoro-topics-40.rds")
+
+#
+# sinteractive -p mstephens --mem=24G -c 8 --time=10:00:00
+# module load R/4.2.0
+# .libPaths()[1]
+# /home/pcarbo/R_libs_4_20
+# 
+do_montoro_fit(method = "ebmf-log",K = 10,outfile = "montoro-ebmf-10.rds")
