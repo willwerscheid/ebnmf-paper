@@ -178,9 +178,9 @@ do_montoro_fit(method = "ebmf-log",   K = 40, outfile = "./output/montoro-ebmf-4
 do_montoro_fit(method = "fasttopics", K = 40, outfile = "./output/montoro-topics-40.rds")
 
 #
-# sinteractive -p mstephens --mem=24G -c 8 --time=10:00:00
+# sinteractive -p mstephens --mem=24G -c 8 --time=24:00:00
 # module load R/4.2.0
 # .libPaths()[1]
 # /home/pcarbo/R_libs_4_20
 # 
-do_montoro_fit(method = "ebmf-log",K = 10,outfile = "montoro-ebmf-10.rds")
+do_montoro_fit(method = "ebmf-log",K = 12,outfile = "montoro-ebmf-12.rds")
