@@ -161,7 +161,7 @@ p2 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
         plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
 p3 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
                      topics = factors_to_plot,colors = factor_colors) +
-  labs(y = "membership",fill = "factor",title = "30 days") +
+  labs(y = "membership",fill = "factor",title = "60 days") +
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.6))
