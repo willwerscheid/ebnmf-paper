@@ -18,7 +18,10 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-Load some R packages that I will use to study the results.
+Initial setup
+-------------
+
+Load some R packages that I will use to study the results:
 
 ```{r load-pkgs, message=FALSE}
 library(ggplot2)
@@ -30,4 +33,28 @@ Set the seed for reproducibility:
 
 ```{r set-seed}
 set.seed(1)
+```
+
+Load the EBNMF results obtained from running the `montoro_fits.R`
+script:
+
+```{r load-results}
+load("output/montoro_ebmf_fits.RData")
+```
+
+Extract some information about the cells:
+
+```{r extract-meta-data}
+x <- rownames(fl_k12$fl_ldf$F)
+x <- strsplit(x,"_",fixed = TRUE)
+meta_data <- data.frame(barcode   = sapply(x,"[[",1),
+                        timepoint = sapply(x,"[[",2),
+						mouse     = sapply(x,"[[",3),
+						lineage   = sapply(x,"[[",4),
+						celltype  = sapply(x,"[[",5))
+meta_data <- transform(meta_data,
+                       timepoint = factor(timepoint),
+					   mouse     = factor(mouse),
+					   lineage   = factor(lineage),
+					   celltype  = factor(celltype))
 ```
