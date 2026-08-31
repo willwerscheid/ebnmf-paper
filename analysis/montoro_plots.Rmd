@@ -58,3 +58,57 @@ meta_data <- transform(meta_data,
 					   lineage   = factor(lineage),
 					   celltype  = factor(celltype))
 ```
+
+EBNMF with 12 factors
+---------------------
+
+ADD TEXT HERE.
+
+```{r residuals-k-12, fig.height=2, fig.width=2}
+residuals_plot <- function (baseline_exp, residual_sd) {
+  pdat <- data.frame(baseline_exp = baseline_exp,
+                     residual_sd = residual_sd)
+  return(ggplot(pdat,aes(x = baseline_exp,y = residual_sd)) +
+         geom_point(color = "black") +
+		 labs(x = "baseline expression",y = "residual s.d.") + 
+         theme_cowplot(font_size = 10))
+}
+residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
+               residual_sd = fl_k12$residuals_sd)
+```
+
+ADD TEXT HERE.
+
+```{r point-exp-priors-genes, fig.height=2, fig.width=4.5}
+fitted_priors_plot <- function (ghat) {
+  K <- length(ghat)
+  pdat <- data.frame(k     = 1:K,
+                     pi    = sapply(ghat,function (x) x$pi[2]),
+                     scale = sapply(ghat,function (x) x$scale[2]))
+  rows1 <- order(pdat$pi,decreasing = FALSE)
+  rows2 <- order(pdat$scale,decreasing = FALSE)
+  pdat1 <- pdat[rows1,]
+  pdat2 <- pdat[rows2,]
+  pdat1 <- transform(pdat1,k = factor(k,k))
+  pdat2 <- transform(pdat2,k = factor(k,k))
+  p1 <- ggplot(pdat1,aes(x = k,y = pi)) +
+    geom_point() +
+	labs(y = "prior probability") +
+    theme_cowplot(font_size = 10)
+  p2 <- ggplot(pdat2,aes(x = k,y = scale)) +
+    geom_point() +
+	labs(y = "scale parameter") +
+    theme_cowplot(font_size = 10)
+  return(plot_grid(p1,p2,nrow = 1,ncol = 2))
+ }
+fitted_priors_plot(fl_k12$L_ghat)
+```
+
+ADD TEXT HERE
+
+```{r point-exp-priors-cells, fig.height=2, fig.width=4.5}
+fitted_priors_plot(fl_k12$F_ghat)
+```
+
+EBNMF with 40 factors
+---------------------
