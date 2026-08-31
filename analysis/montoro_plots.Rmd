@@ -64,7 +64,7 @@ EBNMF with 12 factors
 
 ADD TEXT HERE.
 
-```{r residuals-k-12, fig.height=2.15, fig.width=2.25}
+```{r residuals-k12, fig.height=2.15, fig.width=2.25}
 residuals_plot <- function (baseline_exp, residual_sd) {
   pdat <- data.frame(baseline_exp = baseline_exp,
                      residual_sd = residual_sd)
@@ -79,7 +79,7 @@ residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
 
 ADD TEXT HERE.
 
-```{r point-exp-priors-genes, fig.height=1.75, fig.width=4}
+```{r point-exp-priors-genes-k12, fig.height=1.75, fig.width=4}
 fitted_priors_plot <- function (ghat) {
   K <- length(ghat)
   pdat <- data.frame(k     = 1:K,
@@ -106,8 +106,65 @@ fitted_priors_plot(fl_k12$L_ghat)
 
 ADD TEXT HERE
 
-```{r point-exp-priors-cells, fig.height=1.75, fig.width=4}
+```{r point-exp-priors-cells-k12, fig.height=1.75, fig.width=4}
 fitted_priors_plot(fl_k12$F_ghat)
+```
+
+ADD TEXT HERE.
+
+```{r structure-plot-k12, fig.height=5, fig.width=7.5, message=FALSE, results="hide"}
+set.seed(1)
+factor_colors <- c(k1 = "black",k2 = "forestgreen",k3 = "royalblue",
+                   k4 = "darkblue",k5 = "violet",k6 = "red",
+				   k7 = "lightgray",k8 = "limegreen",k9 = "cyan",
+				   k10 = "darkorange",k11 = "sienna",k12 = "gold")
+factors_to_plot <- c(7,4,5,11,8,2,6,9,10,3,12)
+celltypes <- as.character(meta_data$celltype)
+celltypes[celltypes == "Club (hillock-associated)"] <- "Club"
+celltypes[celltypes == "Goblet.1"] <- "Goblet"
+celltypes[celltypes == "Goblet.2"] <- "Goblet"
+celltypes[celltypes == "Goblet.progenitor"] <- "Goblet"
+celltypes[celltypes == "Tuft.1"] <- "Tuft"
+celltypes[celltypes == "Tuft.2"] <- "Tuft"
+celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
+celltypes <- factor(celltypes,
+                    c("Basal","Club","Goblet","Ionocyte","Ciliated",
+					  "Tuft","Neuroendocrine","Proliferating"))
+scale_cols <- function (A)
+  return(t(t(A) / apply(A,2,max)))
+L <- fl_k12$fl_ldf$L
+L <- scale_cols(L)
+F <- fl_k12$fl_ldf$F
+F <- scale_cols(F)
+colnames(L) <- paste0("k",1:12)
+colnames(F) <- paste0("k",1:12)
+rows <- c(sample(which(celltypes == "Basal"),10000),
+          sample(which(celltypes == "Club"),5000),
+          which(celltypes != "Basal" & celltypes != "Club"))
+rows <- sort(rows)
+F <- F[rows,]
+celltypes <- celltypes[rows]
+rows1 <- which(meta_data$timepoint == "Tp0")
+rows2 <- which(meta_data$timepoint == "Tp30")
+rows3 <- which(meta_data$timepoint == "Tp60")
+p1 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
+                     topics = factors_to_plot,colors = factor_colors) +
+  labs(y = "membership",fill = "factor") +
+  guides(fill = "none") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
+p2 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
+                     topics = factors_to_plot,colors = factor_colors) +
+  labs(y = "membership",fill = "factor") +
+  guides(fill = "none") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
+p3 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
+                     topics = factors_to_plot,colors = factor_colors) +
+  labs(y = "membership") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.6))
 ```
 
 EBNMF with 40 factors
