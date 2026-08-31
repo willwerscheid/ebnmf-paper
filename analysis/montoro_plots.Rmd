@@ -64,7 +64,7 @@ EBNMF with 12 factors
 
 ADD TEXT HERE.
 
-```{r residuals-k-12, fig.height=2, fig.width=2}
+```{r residuals-k-12, fig.height=2.15, fig.width=2.25}
 residuals_plot <- function (baseline_exp, residual_sd) {
   pdat <- data.frame(baseline_exp = baseline_exp,
                      residual_sd = residual_sd)
@@ -79,7 +79,7 @@ residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
 
 ADD TEXT HERE.
 
-```{r point-exp-priors-genes, fig.height=2, fig.width=4.5}
+```{r point-exp-priors-genes, fig.height=1.75, fig.width=4}
 fitted_priors_plot <- function (ghat) {
   K <- length(ghat)
   pdat <- data.frame(k     = 1:K,
@@ -94,7 +94,7 @@ fitted_priors_plot <- function (ghat) {
   p1 <- ggplot(pdat1,aes(x = k,y = pi)) +
     geom_point() +
 	labs(y = "prior probability") +
-    theme_cowplot(font_size = 10)
+    theme_cowplot(font_size = 9)
   p2 <- ggplot(pdat2,aes(x = k,y = scale)) +
     geom_point() +
 	labs(y = "scale parameter") +
@@ -106,7 +106,7 @@ fitted_priors_plot(fl_k12$L_ghat)
 
 ADD TEXT HERE
 
-```{r point-exp-priors-cells, fig.height=2, fig.width=4.5}
+```{r point-exp-priors-cells, fig.height=1.75, fig.width=4}
 fitted_priors_plot(fl_k12$F_ghat)
 ```
 
