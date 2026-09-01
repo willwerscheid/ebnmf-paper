@@ -151,9 +151,13 @@ F <- fl_k12$fl_ldf$F
 F <- scale_cols(F)
 colnames(L) <- paste0("k",1:12)
 colnames(F) <- paste0("k",1:12)
-rows <- c(sample(which(celltypes == "Basal"),10000),
-          sample(which(celltypes == "Club"),5000),
-          which(celltypes != "Basal" & celltypes != "Club"))
+rows <- c(sample(which(celltypes == "Basal" &
+                       meta_data$lineage == "Tom"),4000),
+          sample(which(celltypes == "Club" &
+		               meta_data$lineage == "Tom"),2500),
+          which(celltypes != "Basal" &
+		        celltypes != "Club" &
+				meta_data$lineage == "Tom"))
 rows <- sort(rows)
 F <- F[rows,]
 celltypes <- celltypes[rows]
@@ -178,6 +182,14 @@ p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 10,
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.75))
+```
+
+Structure plot merging the three time points:
+
+```{r another-structure-plot-k12, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
+structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
+               colors = factor_colors) +
+  labs(y = "membership",title = "0-60 days")
 ```
 
 EBNMF with 40 factors
@@ -276,4 +288,12 @@ p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 8,
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,2))
+```
+
+Structure plot merging the three time points:
+
+```{r another-structure-plot-k40, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
+structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
+               colors = factor_colors) +
+  labs(y = "membership",fill = "factor",title = "0-60 days")
 ```
