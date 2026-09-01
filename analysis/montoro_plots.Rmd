@@ -62,7 +62,8 @@ meta_data <- transform(meta_data,
 EBNMF with 12 factors
 ---------------------
 
-ADD TEXT HERE.
+First is a plot of the first ("baseline") factor vs. the residual
+s.d. parameters:
 
 ```{r residuals-k12, fig.height=2.15, fig.width=2.25}
 residuals_plot <- function (baseline_exp, residual_sd) {
@@ -77,47 +78,59 @@ residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
                residual_sd = fl_k12$residuals_sd)
 ```
 
-ADD TEXT HERE.
+These next plots summarize the priors on ${\bf F}$ and ${\bf L}$, and
+could accompany the Structure plot shown below. However I'm not sure
+if the scale parameter tells us anything useful—it is mainly the prior
+probability that should inform the sparsity pattern. So maybe in the
+end we will only use the left-hand plots.
+
+The first two plots show the priors on the columns of ${\bf L}$.
 
 ```{r point-exp-priors-genes-k12, fig.height=1.75, fig.width=3.5}
-fitted_priors_plot <- function (ghat) {
+factor_colors <- c(k1 = "black",k2 = "forestgreen",k3 = "royalblue",
+                   k4 = "darkmagenta",k5 = "violet",k6 = "red",
+				   k7 = "lightgray",k8 = "limegreen",k9 = "cyan",
+				   k10 = "darkorange",k11 = "sienna",k12 = "gold")
+fitted_priors_plot <- function (ghat, colors) {
   K <- length(ghat)
   pdat <- data.frame(k     = 1:K,
                      pi    = sapply(ghat,function (x) x$pi[2]),
-                     scale = sapply(ghat,function (x) x$scale[2]))
+                     scale = sapply(ghat,function (x) x$scale[2]),
+					 color = colors)
   rows1 <- order(pdat$pi,decreasing = FALSE)
   rows2 <- order(pdat$scale,decreasing = FALSE)
   pdat1 <- pdat[rows1,]
   pdat2 <- pdat[rows2,]
   pdat1 <- transform(pdat1,k = factor(k,k))
   pdat2 <- transform(pdat2,k = factor(k,k))
-  p1 <- ggplot(pdat1,aes(x = pi,y = k)) +
+  p1 <- ggplot(pdat1,aes(x = pi,y = k,color = k)) +
     geom_point() +
+	scale_color_manual(values = pdat1$color) +
 	labs(x = "prior probability") +
+	guides(color = "none") +
     theme_cowplot(font_size = 9)
-  p2 <- ggplot(pdat2,aes(x = scale,y = k)) +
+  p2 <- ggplot(pdat2,aes(x = scale,y = k,color = k)) +
     geom_point() +
+	scale_color_manual(values = pdat2$color) + 
 	labs(x = "scale parameter") +
+	guides(color = "none") +
     theme_cowplot(font_size = 9)
   return(plot_grid(p1,p2,nrow = 1,ncol = 2))
  }
-fitted_priors_plot(fl_k12$L_ghat)
+fitted_priors_plot(fl_k12$L_ghat,unname(factor_colors))
 ```
 
-ADD TEXT HERE
+The second two plots show the priors on the columns of ${\bf F}$.
 
 ```{r point-exp-priors-cells-k12, fig.height=1.75, fig.width=3.5}
-fitted_priors_plot(fl_k12$F_ghat)
+fitted_priors_plot(fl_k12$F_ghat,unname(factor_colors))
 ```
 
-ADD TEXT HERE.
+The non-negative matrix factorization with $K = 12$ factors identifies
+the higher-level structures in the Montoro et al data set:
 
 ```{r structure-plots-k12, fig.height=5, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-factor_colors <- c(k1 = "black",k2 = "forestgreen",k3 = "royalblue",
-                   k4 = "darkmagenta",k5 = "violet",k6 = "red",
-				   k7 = "lightgray",k8 = "limegreen",k9 = "cyan",
-				   k10 = "darkorange",k11 = "sienna",k12 = "gold")
 factors_to_plot <- c(7,4,5,11,8,2,6,9,10,3,12)
 celltypes <- as.character(meta_data$celltype)
 celltypes[celltypes == "Club (hillock-associated)"] <- "Club"
@@ -180,31 +193,84 @@ residuals_plot(baseline_exp = fl_k40$fl_ldf$L[,1],
 ADD TEXT HERE.
 
 ```{r point-exp-priors-genes-k40, fig.height=4, fig.width=3.5}
-fitted_priors_plot(fl_k40$L_ghat)
+factor_colors <-
+  c(k1 = "black",k2 = "black",k3 = "black",k4 = "black",k5 = "black",
+    k6 = "black",k7 = "black",k8 = "black",k9 = "black",k10 = "black",
+    k11 = "black",k12 = "black",k13 = "black",k14 = "black",k15 = "black",
+    k16 = "black",k17 = "black",k18 = "black",k19 = "black",k20 = "black",
+    k21 = "black",k22 = "black",k23 = "black",k24 = "black",k25 = "black",
+    k26 = "black",k27 = "black",k28 = "black",k29 = "black",k30 = "black",
+    k31 = "black",k32 = "black",k33 = "black",k34 = "black",k35 = "black",
+    k36 = "black",k37 = "black",k38 = "black",k39 = "black",k40 = "black")
+fitted_priors_plot(fl_k40$L_ghat,unname(factor_colors))
 ```
 
 ADD TEXT HERE
 
 ```{r point-exp-priors-cells-k40, fig.height=4, fig.width=3.5}
-fitted_priors_plot(fl_k40$F_ghat)
+fitted_priors_plot(fl_k40$F_ghat,unname(factor_colors))
 ```
 
 TO DO: Create the structure plots for the k=40 fit.
 
-```{r structure-plots-k40, fig.height=5, fig.width=7.5, message=FALSE, results="hide"}
+```{r structure-plots-k40, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
+celltype_factors <- c(2,3,4,5,6,7,10,12,13,16,17,19,20,21,25,34,37)
 celltypes <- meta_data$celltype
+celltypes <- as.character(meta_data$celltype)
+celltypes[celltypes == "Club (hillock-associated)"] <- "Club (hillock)"
+celltypes[celltypes == "Goblet.1"] <- "Goblet"
+celltypes[celltypes == "Goblet.2"] <- "Goblet"
+celltypes[celltypes == "Goblet.progenitor"] <- "Goblet"
+celltypes[celltypes == "Tuft.1"] <- "Tuft"
+celltypes[celltypes == "Tuft.2"] <- "Tuft"
+celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
+celltypes <- factor(celltypes,
+                    c("Basal","Club","Club (hillock)",
+					  "Goblet","Ionocyte","Ciliated",
+					  "Tuft","Neuroendocrine","Proliferating"))
 L <- fl_k40$fl_ldf$L
 L <- scale_cols(L)
 F <- fl_k40$fl_ldf$F
 F <- scale_cols(F)
 colnames(L) <- paste0("k",1:40)
 colnames(F) <- paste0("k",1:40)
-rows <- c(sample(which(celltypes == "Basal"),10000),
-          sample(which(celltypes == "Club"),5000),
+rows <- c(sample(which(celltypes == "Basal"),5000),
+          sample(which(celltypes == "Club"),4000),
           which(celltypes != "Basal" & celltypes != "Club"))
 rows <- sort(rows)
 F <- F[rows,]
 celltypes <- celltypes[rows]
-plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.6))
+rows1 <- which(meta_data[rows,"timepoint"] == "Tp0")
+rows2 <- which(meta_data[rows,"timepoint"] == "Tp30")
+rows3 <- which(meta_data[rows,"timepoint"] == "Tp60")
+p1 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
+                     topics = celltype_factors) +
+  labs(y = "membership",title = "0 days") +
+  guides(fill = "none") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
+p2 <- structure_plot(F[rows2,],grouping = celltypes[rows2],gap = 10,
+                     topics = celltype_factors) +
+  labs(y = "membership",title = "30 days") +
+  guides(fill = "none") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
+p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 10,
+                     topics = celltype_factors) +
+  labs(y = "membership",fill = "factor",title = "60 days") +
+  theme(plot.title = element_text(size = 9,face = "plain"),
+        plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
+plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,2))
+```
+
+```{r, eval=FALSE}
+round(sort(drop(cor(F,celltypes == "Ionocyte"))),digits = 4)
+round(sort(drop(cor(F,meta_data[rows,"mouse"] == "R3"))),digits = 4)
+round(sort(drop(cor(F,meta_data[rows,"lineage"] == "Tom"))),digits = 4)
+pdat <- cbind(F,meta_data[rows,])
+p1 <- ggplot(pdat,aes(x = mouse,y = k27)) +
+  geom_boxplot(width = 0.5) +
+  coord_flip() +
+  theme_cowplot(font_size = 10)
 ```
