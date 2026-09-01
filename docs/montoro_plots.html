@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree76fce325ac58f56de5b5e5e66078af60302c4645targetblank76fce32a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree623d01526f9e209b81803bd7b8e89f488d9a4971targetblank623d015a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/76fce325ac58f56de5b5e5e66078af60302c4645" target="_blank">76fce32</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/623d01526f9e209b81803bd7b8e89f488d9a4971" target="_blank">623d015</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree76fce325ac58f56de5b5e5e66078af60302c4645targetblank76fce32a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree623d01526f9e209b81803bd7b8e89f488d9a4971targetblank623d015a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/76fce325ac58f56de5b5e5e66078af60302c4645" target="_blank">76fce32</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/623d01526f9e209b81803bd7b8e89f488d9a4971" target="_blank">623d015</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -521,6 +521,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/623d01526f9e209b81803bd7b8e89f488d9a4971/analysis/montoro_plots.Rmd" target="_blank">623d015</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-01
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/aed340f13a7e787f5c7f8d20e23e7edfceb09ad9/docs/montoro_plots.html" target="_blank">aed340f</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1062,9 +1096,13 @@ F &lt;- fl_k12$fl_ldf$F
 F &lt;- scale_cols(F)
 colnames(L) &lt;- paste0(&quot;k&quot;,1:12)
 colnames(F) &lt;- paste0(&quot;k&quot;,1:12)
-rows &lt;- c(sample(which(celltypes == &quot;Basal&quot;),10000),
-          sample(which(celltypes == &quot;Club&quot;),5000),
-          which(celltypes != &quot;Basal&quot; &amp; celltypes != &quot;Club&quot;))
+rows &lt;- c(sample(which(celltypes == &quot;Basal&quot; &amp;
+                       meta_data$lineage == &quot;Tom&quot;),4000),
+          sample(which(celltypes == &quot;Club&quot; &amp;
+                       meta_data$lineage == &quot;Tom&quot;),2500),
+          which(celltypes != &quot;Basal&quot; &amp;
+                celltypes != &quot;Club&quot; &amp;
+                meta_data$lineage == &quot;Tom&quot;))
 rows &lt;- sort(rows)
 F &lt;- F[rows,]
 celltypes &lt;- celltypes[rows]
@@ -1127,6 +1165,11 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Structure plot merging the three time points:</p>
+<pre class="r"><code>structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
+               colors = factor_colors) +
+  labs(y = &quot;membership&quot;,title = &quot;0-60 days&quot;)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/another-structure-plot-k12-1.png" width="900" style="display: block; margin: auto;" /></p>
 </div>
 <div id="ebnmf-with-40-factors" class="section level2">
 <h2>EBNMF with 40 factors</h2>
@@ -1385,6 +1428,11 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Structure plot merging the three time points:</p>
+<pre class="r"><code>structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
+               colors = factor_colors) +
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,title = &quot;0-60 days&quot;)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/another-structure-plot-k40-1.png" width="900" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
