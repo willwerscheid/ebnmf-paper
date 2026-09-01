@@ -225,17 +225,6 @@ goblet and ionocyte.
 
 ```{r structure-plots-k40, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-factor_colors <-
-  c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
-    k5 = "cornflowerblue",k6 = "salmon",k7 = "gray",k8 = "black",
-    k9 = "black",k10 = "limegreen",k11 = "black",k12 = "red",
-    k13 = "darkorange",k14 = "black",k15 = "black",k16 = "dodgerblue",
-    k17 = "royalblue",k18 = "black",k19 = "darkmagenta",k20 = "gold",
-    k21 = "sienna",k22 = "black",k23 = "black",k24 = "black",
-    k25 = "magenta",k26 = "black",k27 = "black",k28 = "black",
-    k29 = "black",k30 = "black",k31 = "black",k32 = "black",
-    k33 = "black",k34 = "black",k35 = "black",k36 = "black",
-    k37 = "black",k38 = "black",k39 = "black",k40 = "black")
 celltype_factors <- c(7,19,2,3,4,5,21,17,16,13,6,12,10,25,20)
 celltypes <- meta_data$celltype
 celltypes <- as.character(meta_data$celltype)
