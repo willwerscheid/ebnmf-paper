@@ -183,14 +183,14 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.75))
 EBNMF with 40 factors
 ---------------------
 
-ADD TEXT HERE.
+Plot first ("baseline") factor vs. the residual s.d. parameters:
 
 ```{r residuals-k40, fig.height=2.15, fig.width=2.25}
 residuals_plot(baseline_exp = fl_k40$fl_ldf$L[,1],
                residual_sd = fl_k40$residuals_sd)
 ```
 
-ADD TEXT HERE.
+Plots summarizing the priors on the columns of ${\bf L}$:
 
 ```{r point-exp-priors-genes-k40, fig.height=4, fig.width=3.5}
 factor_colors <-
@@ -205,11 +205,14 @@ factor_colors <-
 fitted_priors_plot(fl_k40$L_ghat,unname(factor_colors))
 ```
 
-ADD TEXT HERE
+Plots summarizing the priors on the columns of ${\bf F}$:
 
 ```{r point-exp-priors-cells-k40, fig.height=4, fig.width=3.5}
 fitted_priors_plot(fl_k40$F_ghat,unname(factor_colors))
 ```
+
+Notice that the priors on ${\bf F}$ (which contains the memberships)
+is *a priori* much more sparse than ${\bf L}$
 
 TO DO: Create the structure plots for the k=40 fit.
 
