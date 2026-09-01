@@ -194,14 +194,16 @@ Plots summarizing the priors on the columns of ${\bf L}$:
 
 ```{r point-exp-priors-genes-k40, fig.height=4, fig.width=3.5}
 factor_colors <-
-  c(k1 = "black",k2 = "black",k3 = "black",k4 = "black",k5 = "black",
-    k6 = "black",k7 = "black",k8 = "black",k9 = "black",k10 = "black",
-    k11 = "black",k12 = "black",k13 = "black",k14 = "black",k15 = "black",
-    k16 = "black",k17 = "black",k18 = "black",k19 = "black",k20 = "black",
-    k21 = "black",k22 = "black",k23 = "black",k24 = "black",k25 = "black",
-    k26 = "black",k27 = "black",k28 = "black",k29 = "black",k30 = "black",
-    k31 = "black",k32 = "black",k33 = "black",k34 = "black",k35 = "black",
-    k36 = "black",k37 = "black",k38 = "black",k39 = "black",k40 = "black")
+  c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
+    k5 = "cornflowerblue",k6 = "salmon",k7 = "gray",k8 = "black",
+    k9 = "black",k10 = "limegreen",k11 = "black",k12 = "red",
+    k13 = "darkorange",k14 = "black",k15 = "black",k16 = "dodgerblue",
+    k17 = "royalblue",k18 = "black",k19 = "darkmagenta",k20 = "gold",
+    k21 = "sienna",k22 = "black",k23 = "black",k24 = "black",
+    k25 = "magenta",k26 = "black",k27 = "black",k28 = "black",
+    k29 = "black",k30 = "black",k31 = "black",k32 = "black",
+    k33 = "black",k34 = "black",k35 = "black",k36 = "black",
+    k37 = "black",k38 = "black",k39 = "black",k40 = "black")
 fitted_priors_plot(fl_k40$L_ghat,unname(factor_colors))
 ```
 
@@ -214,11 +216,27 @@ fitted_priors_plot(fl_k40$F_ghat,unname(factor_colors))
 Notice that the priors on ${\bf F}$ (which contains the memberships)
 is *a priori* much more sparse than ${\bf L}$
 
-TO DO: Create the structure plots for the k=40 fit.
+The $K = 40$ fit captures more fine-scale structure. The Structure
+plots show the primary cell-type-structure captured by the factors.
+(Factors that capture other types of structure are not shown.) Here we
+focus on the non-lineage-labeled cells ("tdTomato") since the
+lineage-labeled cells feature fewer of the rare cell types such as
+goblet and ionocyte.
 
 ```{r structure-plots-k40, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-celltype_factors <- c(2,3,4,5,6,7,10,12,13,16,17,19,20,21,25,34,37)
+factor_colors <-
+  c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
+    k5 = "cornflowerblue",k6 = "salmon",k7 = "gray",k8 = "black",
+    k9 = "black",k10 = "limegreen",k11 = "black",k12 = "red",
+    k13 = "darkorange",k14 = "black",k15 = "black",k16 = "dodgerblue",
+    k17 = "royalblue",k18 = "black",k19 = "darkmagenta",k20 = "gold",
+    k21 = "sienna",k22 = "black",k23 = "black",k24 = "black",
+    k25 = "magenta",k26 = "black",k27 = "black",k28 = "black",
+    k29 = "black",k30 = "black",k31 = "black",k32 = "black",
+    k33 = "black",k34 = "black",k35 = "black",k36 = "black",
+    k37 = "black",k38 = "black",k39 = "black",k40 = "black")
+celltype_factors <- c(7,19,2,3,4,5,21,17,16,13,6,12,10,25,20)
 celltypes <- meta_data$celltype
 celltypes <- as.character(meta_data$celltype)
 celltypes[celltypes == "Club (hillock-associated)"] <- "Club (hillock)"
@@ -230,50 +248,43 @@ celltypes[celltypes == "Tuft.2"] <- "Tuft"
 celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
 celltypes <- factor(celltypes,
                     c("Basal","Club","Club (hillock)",
-					  "Goblet","Ionocyte","Ciliated",
-					  "Tuft","Neuroendocrine","Proliferating"))
+                      "Goblet","Ionocyte","Ciliated",
+                      "Tuft","Neuroendocrine","Proliferating"))
 L <- fl_k40$fl_ldf$L
 L <- scale_cols(L)
 F <- fl_k40$fl_ldf$F
 F <- scale_cols(F)
 colnames(L) <- paste0("k",1:40)
 colnames(F) <- paste0("k",1:40)
-rows <- c(sample(which(celltypes == "Basal"),5000),
-          sample(which(celltypes == "Club"),4000),
-          which(celltypes != "Basal" & celltypes != "Club"))
+rows <- c(sample(which(celltypes == "Basal" &
+                       meta_data$lineage == "Tom"),5000),
+          sample(which(celltypes == "Club" &
+                       meta_data$lineage == "Tom"),4000),
+          which(celltypes != "Basal" & celltypes != "Club" &
+                meta_data$lineage == "Tom"))
 rows <- sort(rows)
 F <- F[rows,]
 celltypes <- celltypes[rows]
 rows1 <- which(meta_data[rows,"timepoint"] == "Tp0")
 rows2 <- which(meta_data[rows,"timepoint"] == "Tp30")
 rows3 <- which(meta_data[rows,"timepoint"] == "Tp60")
-p1 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 10,
-                     topics = celltype_factors) +
+p1 <- structure_plot(F[rows1,],grouping = celltypes[rows1],gap = 8,
+                     topics = celltype_factors,colors = factor_colors) +
   labs(y = "membership",title = "0 days") +
   guides(fill = "none") +
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
-p2 <- structure_plot(F[rows2,],grouping = celltypes[rows2],gap = 10,
-                     topics = celltype_factors) +
+p2 <- structure_plot(F[rows2,],grouping = celltypes[rows2],gap = 8,
+                     topics = celltype_factors,colors = factor_colors) +
   labs(y = "membership",title = "30 days") +
   guides(fill = "none") +
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = -2,l = 0),"lines"))
-p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 10,
-                     topics = celltype_factors) +
-  labs(y = "membership",fill = "factor",title = "60 days") +
+p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 8,
+                     topics = celltype_factors,colors = factor_colors) +
+    labs(y = "membership",fill = "factor",title = "60 days") +
+  ylim(0,1.75) +
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,2))
-```
-
-```{r, eval=FALSE}
-round(sort(drop(cor(F,celltypes == "Ionocyte"))),digits = 4)
-round(sort(drop(cor(F,meta_data[rows,"mouse"] == "R3"))),digits = 4)
-round(sort(drop(cor(F,meta_data[rows,"lineage"] == "Tom"))),digits = 4)
-pdat <- cbind(F,meta_data[rows,])
-p1 <- ggplot(pdat,aes(x = mouse,y = k27)) +
-  geom_boxplot(width = 0.5) +
-  coord_flip() +
-  theme_cowplot(font_size = 10)
 ```
