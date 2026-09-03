@@ -184,6 +184,12 @@ p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 10,
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
 ```
 
+Note the number of cells per cell-type:
+
+```{r cell-type-numbers}
+table(meta_data$celltype,meta_data$timepoint)
+```
+
 Structure plot merging the three time points:
 
 ```{r another-structure-plot-k12, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
@@ -292,27 +298,26 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
 
 Structure plot merging the three time points:
 
-```{r another-structure-plot-k30, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
+```{r another-structure-plot-k30, fig.height=3, fig.width=7.5, message=FALSE, results="hide"}
 structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
                colors = factor_colors) +
   labs(y = "membership",fill = "factor",title = "0-60 days")
 ```
 
-```{r, eval=FALSE}
-celltypes <- meta_data$celltype
-celltypes <- as.character(meta_data$celltype)
-celltypes[celltypes == "Club (hillock-associated)"] <- "Club (hillock)"
-celltypes[celltypes == "Goblet.1"] <- "Goblet"
-celltypes[celltypes == "Goblet.2"] <- "Goblet"
-celltypes[celltypes == "Goblet.progenitor"] <- "Goblet"
-celltypes[celltypes == "Tuft.1"] <- "Tuft"
-celltypes[celltypes == "Tuft.2"] <- "Tuft"
-celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
+Note that factor 15 is more promminent in Tuft-1 and factor 17 is more
+prominent in Tuft-2:
+
+```{r tuft}
 F <- fl_k30$ldf$F
 F <- scale_cols(F)
-colnames(F) <- paste0("k",1:30)
 rows <- which(meta_data$timepoint == "Tp60")
-F <- F[rows,]
-celltypes <- celltypes[rows]
-round(sort(drop(cor(celltypes == "Club (hillock)",F))),digits = 3)
+cat("k = 15:\n")
+tail(round(sort(tapply(F[rows,15],meta_data[rows,"celltype"],mean)),
+           digits = 3),n = 3)
+cat("k = 17:\n")
+tail(round(sort(tapply(F[rows,17],meta_data[rows,"celltype"],mean)),
+           digits = 3),n = 3)
 ```
+
+TO DO: Generate tables containing top-ranked genes and "most
+distinctive" genes for each factor.
