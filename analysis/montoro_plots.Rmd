@@ -211,7 +211,7 @@ factor_colors <-
     k9 = "cornflowerblue",k10 = "limegreen",k11 = "black",k12 = "darkorange",
     k13 = "black",k14 = "black",k15 = "dodgerblue",k16 = "darkmagenta",
     k17 = "royalblue",k18 = "salmon",k19 = "gold",k20 = "sienna",
-    k21 = "darkmagenta",k22 = "peru",k23 = "black",k24 = "magenta",
+    k21 = "black",k22 = "peru",k23 = "black",k24 = "magenta",
     k25 = "black",k26 = "black",k27 = "black",k28 = "black",
     k29 = "black",k30 = "black")
 fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors))
