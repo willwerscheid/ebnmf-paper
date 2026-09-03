@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec256170fb331e94ccc000fc5ce683f90b7d41331targetblankc256170a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree69f6ddce2495e0c58b8166c15e273dbdcdf23aebtargetblank69f6ddca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c256170fb331e94ccc000fc5ce683f90b7d41331" target="_blank">c256170</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/69f6ddce2495e0c58b8166c15e273dbdcdf23aeb" target="_blank">69f6ddc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreec256170fb331e94ccc000fc5ce683f90b7d41331targetblankc256170a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree69f6ddce2495e0c58b8166c15e273dbdcdf23aebtargetblank69f6ddca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/c256170fb331e94ccc000fc5ce683f90b7d41331" target="_blank">c256170</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/69f6ddce2495e0c58b8166c15e273dbdcdf23aeb" target="_blank">69f6ddc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -472,9 +472,6 @@ Ignored files:
     Ignored:    output/montoro_ebmf_fits.RData
 
 Untracked files:
-    Untracked:  analysis/#montoro_plots.Rmd#
-    Untracked:  analysis/.#montoro_plots.Rmd
-    Untracked:  analysis/temp.R
     Untracked:  flash_greedy_init_noisy_F.txt
     Untracked:  flash_greedy_init_noisy_L.txt
     Untracked:  noisy_swimmer.mat
@@ -525,6 +522,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/69f6ddce2495e0c58b8166c15e273dbdcdf23aeb/analysis/montoro_plots.Rmd" target="_blank">69f6ddc</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", view = F, verbose = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/montoro_plots.html" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1310,6 +1341,23 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Note the number of cells per cell-type:</p>
+<pre class="r"><code>table(meta_data$celltype,meta_data$timepoint)
+#                            
+#                               Tp0  Tp30  Tp60
+#   Basal                     13337 11822 16934
+#   Ciliated                    772   873  1371
+#   Club                       2726  5830  5012
+#   Club (hillock-associated)   539  1963  1630
+#   Goblet.1                     40    26    13
+#   Goblet.2                      4     1     4
+#   Goblet.progenitor           126    93    96
+#   Ionocyte                     63   116    97
+#   Neuroendocrine              104   318   208
+#   Proliferating               217   586   610
+#   Tuft.1                       77   187   149
+#   Tuft.2                       53   113    93
+#   Tuft.progenitor               5    33    24</code></pre>
 <p>Structure plot merging the three time points:</p>
 <pre class="r"><code>structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
                colors = factor_colors) +
@@ -1359,6 +1407,43 @@ Peter Carbonetto
 <pre class="r"><code>residuals_plot(baseline_exp = fl_k30$ldf$L[,1],
                residual_sd = fl_k30$residuals_sd)</code></pre>
 <p><img src="figure/montoro_plots.Rmd/residuals-k30-1.png" width="270" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-residuals-k30-1">
+Past versions of residuals-k30-1.png
+</button>
+</p>
+<div id="fig-residuals-k30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/residuals-k30-1.png" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Plots summarizing the priors on the columns of <span
 class="math inline">\({\bf L}\)</span>:</p>
 <pre class="r"><code>factor_colors &lt;-
@@ -1372,10 +1457,84 @@ class="math inline">\({\bf L}\)</span>:</p>
     k29 = &quot;black&quot;,k30 = &quot;black&quot;)
 fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors))</code></pre>
 <p><img src="figure/montoro_plots.Rmd/point-exp-priors-genes-k30-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-point-exp-priors-genes-k30-1">
+Past versions of point-exp-priors-genes-k30-1.png
+</button>
+</p>
+<div id="fig-point-exp-priors-genes-k30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/point-exp-priors-genes-k30-1.png" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Plots summarizing the priors on the columns of <span
 class="math inline">\({\bf F}\)</span>:</p>
 <pre class="r"><code>fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors))</code></pre>
 <p><img src="figure/montoro_plots.Rmd/point-exp-priors-cells-k30-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-point-exp-priors-cells-k30-1">
+Past versions of point-exp-priors-cells-k30-1.png
+</button>
+</p>
+<div id="fig-point-exp-priors-cells-k30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/point-exp-priors-cells-k30-1.png" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Notice that the priors on <span class="math inline">\({\bf
 F}\)</span> (which contains the memberships) is <em>a priori</em> much
 more sparse than <span class="math inline">\({\bf L}\)</span></p>
@@ -1440,27 +1599,104 @@ p3 &lt;- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 8,
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),&quot;lines&quot;))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))</code></pre>
 <p><img src="figure/montoro_plots.Rmd/structure-plots-k30-1.png" width="900" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-structure-plots-k30-1">
+Past versions of structure-plots-k30-1.png
+</button>
+</p>
+<div id="fig-structure-plots-k30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/structure-plots-k30-1.png" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Structure plot merging the three time points:</p>
 <pre class="r"><code>structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
                colors = factor_colors) +
   labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,title = &quot;0-60 days&quot;)</code></pre>
 <p><img src="figure/montoro_plots.Rmd/another-structure-plot-k30-1.png" width="900" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>celltypes &lt;- meta_data$celltype
-celltypes &lt;- as.character(meta_data$celltype)
-celltypes[celltypes == &quot;Club (hillock-associated)&quot;] &lt;- &quot;Club (hillock)&quot;
-celltypes[celltypes == &quot;Goblet.1&quot;] &lt;- &quot;Goblet&quot;
-celltypes[celltypes == &quot;Goblet.2&quot;] &lt;- &quot;Goblet&quot;
-celltypes[celltypes == &quot;Goblet.progenitor&quot;] &lt;- &quot;Goblet&quot;
-celltypes[celltypes == &quot;Tuft.1&quot;] &lt;- &quot;Tuft&quot;
-celltypes[celltypes == &quot;Tuft.2&quot;] &lt;- &quot;Tuft&quot;
-celltypes[celltypes == &quot;Tuft.progenitor&quot;] &lt;- &quot;Tuft&quot;
-F &lt;- fl_k30$ldf$F
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-another-structure-plot-k30-1">
+Past versions of another-structure-plot-k30-1.png
+</button>
+</p>
+<div id="fig-another-structure-plot-k30-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/another-structure-plot-k30-1.png" target="_blank">45c4516</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Note that factor 15 is more promminent in Tuft-1 and factor 17 is
+more prominent in Tuft-2:</p>
+<pre class="r"><code>F &lt;- fl_k30$ldf$F
 F &lt;- scale_cols(F)
-colnames(F) &lt;- paste0(&quot;k&quot;,1:30)
 rows &lt;- which(meta_data$timepoint == &quot;Tp60&quot;)
-F &lt;- F[rows,]
-celltypes &lt;- celltypes[rows]
-round(sort(drop(cor(celltypes == &quot;Club (hillock)&quot;,F))),digits = 3)</code></pre>
+cat(&quot;k = 15:\n&quot;)
+tail(round(sort(tapply(F[rows,15],meta_data[rows,&quot;celltype&quot;],mean)),
+           digits = 3),n = 3)
+cat(&quot;k = 17:\n&quot;)
+tail(round(sort(tapply(F[rows,17],meta_data[rows,&quot;celltype&quot;],mean)),
+           digits = 3),n = 3)
+# k = 15:
+#          Tuft.2 Tuft.progenitor          Tuft.1 
+#           0.216           0.361           0.687 
+# k = 17:
+#          Tuft.1 Tuft.progenitor          Tuft.2 
+#           0.223           0.261           0.644</code></pre>
+<p>TO DO: Generate tables containing top-ranked genes and “most
+distinctive” genes for each factor.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
