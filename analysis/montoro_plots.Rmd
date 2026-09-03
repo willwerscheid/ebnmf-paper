@@ -192,19 +192,19 @@ structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
   labs(y = "membership",title = "0-60 days")
 ```
 
-EBNMF with 40 factors
+EBNMF with 30 factors
 ---------------------
 
 Plot first ("baseline") factor vs. the residual s.d. parameters:
 
-```{r residuals-k40, fig.height=2.15, fig.width=2.25}
-residuals_plot(baseline_exp = fl_k40$fl_ldf$L[,1],
-               residual_sd = fl_k40$residuals_sd)
+```{r residuals-k30, fig.height=2.15, fig.width=2.25}
+residuals_plot(baseline_exp = fl_k30$ldf$L[,1],
+               residual_sd = fl_k30$residuals_sd)
 ```
 
 Plots summarizing the priors on the columns of ${\bf L}$:
 
-```{r point-exp-priors-genes-k40, fig.height=4, fig.width=3.5}
+```{r point-exp-priors-genes-k30, fig.height=3, fig.width=3.5}
 factor_colors <-
   c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
     k5 = "cornflowerblue",k6 = "salmon",k7 = "gray",k8 = "black",
@@ -213,29 +213,27 @@ factor_colors <-
     k17 = "royalblue",k18 = "black",k19 = "darkmagenta",k20 = "gold",
     k21 = "sienna",k22 = "black",k23 = "black",k24 = "black",
     k25 = "magenta",k26 = "black",k27 = "black",k28 = "black",
-    k29 = "black",k30 = "black",k31 = "black",k32 = "black",
-    k33 = "black",k34 = "black",k35 = "black",k36 = "black",
-    k37 = "black",k38 = "black",k39 = "black",k40 = "black")
-fitted_priors_plot(fl_k40$L_ghat,unname(factor_colors))
+    k29 = "black",k30 = "black")
+fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors))
 ```
 
 Plots summarizing the priors on the columns of ${\bf F}$:
 
-```{r point-exp-priors-cells-k40, fig.height=4, fig.width=3.5}
-fitted_priors_plot(fl_k40$F_ghat,unname(factor_colors))
+```{r point-exp-priors-cells-k30, fig.height=3, fig.width=3.5}
+fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors))
 ```
 
 Notice that the priors on ${\bf F}$ (which contains the memberships)
 is *a priori* much more sparse than ${\bf L}$
 
-The $K = 40$ fit captures more fine-scale structure. The Structure
+The $K = 30$ fit captures more fine-scale structure. The Structure
 plots show the primary cell-type-structure captured by the factors.
 (Factors that capture other types of structure are not shown.) Here we
 focus on the non-lineage-labeled cells ("tdTomato") since the
 lineage-labeled cells feature fewer of the rare cell types such as
 goblet and ionocyte.
 
-```{r structure-plots-k40, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
+```{r structure-plots-k30, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide", eval=FALSE}
 set.seed(1)
 celltype_factors <- c(7,19,2,3,4,5,21,17,16,13,6,12,10,25,20)
 celltypes <- meta_data$celltype
@@ -251,9 +249,9 @@ celltypes <- factor(celltypes,
                     c("Basal","Club","Club (hillock)",
                       "Goblet","Ionocyte","Ciliated",
                       "Tuft","Neuroendocrine","Proliferating"))
-L <- fl_k40$fl_ldf$L
+L <- fl_k30$ldf$L
 L <- scale_cols(L)
-F <- fl_k40$fl_ldf$F
+F <- fl_k30$ldf$F
 F <- scale_cols(F)
 colnames(L) <- paste0("k",1:40)
 colnames(F) <- paste0("k",1:40)
@@ -292,7 +290,7 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
 
 Structure plot merging the three time points:
 
-```{r another-structure-plot-k40, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
+```{r another-structure-plot-k40, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide", eval=FALSE}
 structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
                colors = factor_colors) +
   labs(y = "membership",fill = "factor",title = "0-60 days")
