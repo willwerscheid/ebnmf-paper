@@ -208,8 +208,8 @@ Plots summarizing the priors on the columns of ${\bf L}$:
 factor_colors <-
   c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
     k5 = "red",k6 = "gray",k7 = "black",k8 = "black",
-    k9 = "cornflowerblue",k10 = "darkmagenta",k11 = "black",k12 = "darkorange",
-    k13 = "black",k14 = "black",k15 = "dodgerblue",k16 = "limegreen",
+    k9 = "cornflowerblue",k10 = "limegreen",k11 = "black",k12 = "darkorange",
+    k13 = "black",k14 = "black",k15 = "dodgerblue",k16 = "darkmagenta",
     k17 = "royalblue",k18 = "salmon",k19 = "gold",k20 = "sienna",
     k21 = "darkmagenta",k22 = "peru",k23 = "black",k24 = "magenta",
     k25 = "black",k26 = "black",k27 = "black",k28 = "black",
@@ -233,10 +233,9 @@ focus on the non-lineage-labeled cells ("tdTomato") since the
 lineage-labeled cells feature fewer of the rare cell types such as
 goblet and ionocyte.
 
-```{r structure-plots-k30, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
+```{r structure-plots-k30, fig.height=6, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-celltype_factors <- c(6,10,16,9,2,4,3,22,20,18,5,24,17,15,19,12)
-celltype_factors_old <- c(7,19,2,3,4,5,21,17,16,13,6,12,10,25,20)
+celltype_factors <- c(6,16,10,9,2,4,3,22,20,18,5,24,17,15,19,12)
 celltypes <- meta_data$celltype
 celltypes <- as.character(meta_data$celltype)
 celltypes[celltypes == "Club (hillock-associated)"] <- "Club (hillock)"
@@ -253,8 +252,10 @@ celltypes <- factor(celltypes,
 L <- fl_k30$ldf$L
 L <- scale_cols(L)
 F <- fl_k30$ldf$F
-F <- scale_cols(F)
-F[,24] <- pmin(F[,24],0.6)/0.6
+for (i in 1:30) {
+  y <- quantile(F[,i],0.999)
+  F[,i] <- pmin(1,F[,i]/y)
+}
 colnames(L) <- paste0("k",1:30)
 colnames(F) <- paste0("k",1:30)
 rows <- c(sample(which(celltypes == "Basal" &
@@ -284,7 +285,6 @@ p2 <- structure_plot(F[rows2,],grouping = celltypes[rows2],gap = 8,
 p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 8,
                      topics = celltype_factors,colors = factor_colors) +
     labs(y = "membership",fill = "factor",title = "60 days") +
-  ylim(0,1.75) +
   theme(plot.title = element_text(size = 9,face = "plain"),
         plot.margin = unit(c(t = 0,r = 0,b = 0,l = 0),"lines"))
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
