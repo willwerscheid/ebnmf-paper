@@ -204,19 +204,21 @@ table(meta_data$celltype,meta_data$timepoint)
 Structure plot merging the three time points:
 
 ```{r another-structure-plot-k12, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
-structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
+p <- structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
                colors = factor_colors) +
   labs(y = "membership",fill = "factor",title = "0-60 days")
+print(p)
 ```
 
 ```{r key-genes-k12}
-key_genes <- c("Krt5","Dapl1",     # Basal (k3, k4, k5)
+key_genes <- c("Krt5","Dapl1",     # Basal (k4, k5)
                "Bpifa1","Scgb1a1", # Club (k2, k8)
 			   "Krt13","Krt4",     # "Hillock" (k5, k8)
                "Cdhr4","Cdh26",    # Ciliated (k6)
 			   "Ccdc67","Ccdc34",  # Ciliated (k11)
 			   "Chga","Calca",     # Neuroendocrine (k10)
 			   "Trpm5","Gng13",    # Tuft (k9)
+			   "Krt18","Sfn",      # Transitional (k3)
 			   "Hspa1a","Hspb1")   # Unknown (k7)
 gene_rankings <- apply(-L,2,rank)
 gene_rankings[key_genes,]
@@ -231,6 +233,7 @@ round(L[top_cell_cycle,],digits = 3)
 ```
 
 ```{r another-structure-plot-k12-ggsave, echo=FALSE}
+ggsave("montoro_structure_plot_k12_alldays.pdf",height = 3.25,width = 8)
 ```
 
 EBNMF with 30 factors
