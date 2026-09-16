@@ -233,7 +233,7 @@ round(L[top_cell_cycle,],digits = 3)
 ```
 
 ```{r another-structure-plot-k12-ggsave, echo=FALSE}
-ggsave("montoro_structure_plot_k12_alldays.pdf",height = 3.25,width = 8)
+ggsave("montoro_structure_plot_k12_alldays.pdf",p,height = 2.85,width = 8)
 ```
 
 EBNMF with 30 factors
