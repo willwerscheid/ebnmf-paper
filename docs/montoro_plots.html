@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-09-03
+<strong>Last updated:</strong> 2026-09-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree69f6ddce2495e0c58b8166c15e273dbdcdf23aebtargetblank69f6ddca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreed20bc5303a38c5a60592f613041cea7a274aa88dtargetblankd20bc53a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/69f6ddce2495e0c58b8166c15e273dbdcdf23aeb" target="_blank">69f6ddc</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/d20bc5303a38c5a60592f613041cea7a274aa88d" target="_blank">d20bc53</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree69f6ddce2495e0c58b8166c15e273dbdcdf23aebtargetblank69f6ddca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreed20bc5303a38c5a60592f613041cea7a274aa88dtargetblankd20bc53a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/69f6ddce2495e0c58b8166c15e273dbdcdf23aeb" target="_blank">69f6ddc</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/d20bc5303a38c5a60592f613041cea7a274aa88d" target="_blank">d20bc53</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -472,8 +472,11 @@ Ignored files:
     Ignored:    output/montoro_ebmf_fits.RData
 
 Untracked files:
+    Untracked:  analysis/#montoro_plots.Rmd#
+    Untracked:  analysis/.#montoro_plots.Rmd
     Untracked:  flash_greedy_init_noisy_F.txt
     Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  montoro_structure_plot_k12_alldays.pdf
     Untracked:  noisy_swimmer.mat
     Untracked:  noisy_swimmer_more.pdf
     Untracked:  scripts/svm.test.normgrey.gz
@@ -522,6 +525,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d20bc5303a38c5a60592f613041cea7a274aa88d/analysis/montoro_plots.Rmd" target="_blank">d20bc53</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/d2aef59c810c52bb4b40328ba58d52702975fac1/analysis/montoro_plots.Rmd" target="_blank">d2aef59</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Identified ‘key genes’ for k=12 fit.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/37540a14cebe1ca1e3eb78e759944a70f678bcc5/docs/montoro_plots.html" target="_blank">37540a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1032,6 +1086,11 @@ meta_data &lt;- transform(meta_data,
                        mouse     = factor(mouse),
                        lineage   = factor(lineage),
                        celltype  = factor(celltype))</code></pre>
+<p>Number of cells and genes:</p>
+<pre class="r"><code>cat(&quot;Number of cells:&quot;,nrow(fl_k12$fl_ldf$F),&quot;\n&quot;)
+cat(&quot;Number of genes:&quot;,nrow(fl_k12$fl_ldf$L),&quot;\n&quot;)
+# Number of cells: 66265 
+# Number of genes: 3440</code></pre>
 </div>
 <div id="ebnmf-with-12-factors" class="section level2">
 <h2>EBNMF with 12 factors</h2>
@@ -1230,7 +1289,7 @@ Peter Carbonetto
 class="math inline">\(K = 12\)</span> factors identifies the
 higher-level structures in the Montoro et al data set:</p>
 <pre class="r"><code>set.seed(1)
-factors_to_plot &lt;- c(7,4,5,11,8,2,6,9,10,3,12)
+factors_to_plot &lt;- c(7,5,8,3,11,2,4,6,9,10,12)
 celltypes &lt;- as.character(meta_data$celltype)
 celltypes[celltypes == &quot;Club (hillock-associated)&quot;] &lt;- &quot;Club&quot;
 celltypes[celltypes == &quot;Goblet.1&quot;] &lt;- &quot;Goblet&quot;
@@ -1242,12 +1301,10 @@ celltypes[celltypes == &quot;Tuft.progenitor&quot;] &lt;- &quot;Tuft&quot;
 celltypes &lt;- factor(celltypes,
                     c(&quot;Basal&quot;,&quot;Club&quot;,&quot;Goblet&quot;,&quot;Ionocyte&quot;,&quot;Ciliated&quot;,
                       &quot;Tuft&quot;,&quot;Neuroendocrine&quot;,&quot;Proliferating&quot;))
-scale_cols &lt;- function (A)
-  return(t(t(A) / apply(A,2,max)))
-L &lt;- fl_k12$fl_ldf$L
-L &lt;- scale_cols(L)
+scale_cols &lt;- function (A, b)
+  return(t(t(A) * b))
 F &lt;- fl_k12$fl_ldf$F
-F &lt;- scale_cols(F)
+L &lt;- with(fl_k12$fl_ldf,scale_cols(L,D))
 colnames(L) &lt;- paste0(&quot;k&quot;,1:12)
 colnames(F) &lt;- paste0(&quot;k&quot;,1:12)
 rows &lt;- c(sample(which(celltypes == &quot;Basal&quot; &amp;
@@ -1341,7 +1398,20 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>Note the number of cells per cell-type:</p>
+<p>Note the number of cells per cell type:</p>
+<pre class="r"><code>table(meta_data$celltype)
+# 
+#                     Basal                  Ciliated                      Club 
+#                     42093                      3016                     13568 
+# Club (hillock-associated)                  Goblet.1                  Goblet.2 
+#                      4132                        79                         9 
+#         Goblet.progenitor                  Ionocyte            Neuroendocrine 
+#                       315                       276                       630 
+#             Proliferating                    Tuft.1                    Tuft.2 
+#                      1413                       413                       259 
+#           Tuft.progenitor 
+#                        62</code></pre>
+<p>And the number of cells per cell type at each time point:</p>
 <pre class="r"><code>table(meta_data$celltype,meta_data$timepoint)
 #                            
 #                               Tp0  Tp30  Tp60
@@ -1359,9 +1429,10 @@ Peter Carbonetto
 #   Tuft.2                       53   113    93
 #   Tuft.progenitor               5    33    24</code></pre>
 <p>Structure plot merging the three time points:</p>
-<pre class="r"><code>structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
+<pre class="r"><code>p &lt;- structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
                colors = factor_colors) +
-  labs(y = &quot;membership&quot;,title = &quot;0-60 days&quot;)</code></pre>
+  labs(y = &quot;membership&quot;,fill = &quot;factor&quot;,title = &quot;0-60 days&quot;)
+print(p)</code></pre>
 <p><img src="figure/montoro_plots.Rmd/another-structure-plot-k12-1.png" width="900" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-another-structure-plot-k12-1">
@@ -1400,6 +1471,63 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<pre class="r"><code>key_genes &lt;- c(&quot;Krt5&quot;,&quot;Dapl1&quot;,     # Basal (k4, k5)
+               &quot;Bpifa1&quot;,&quot;Scgb1a1&quot;, # Club (k2, k8)
+               &quot;Krt13&quot;,&quot;Krt4&quot;,     # &quot;Hillock&quot; (k5, k8)
+               &quot;Cdhr4&quot;,&quot;Cdh26&quot;,    # Ciliated (k6)
+               &quot;Ccdc67&quot;,&quot;Ccdc34&quot;,  # Ciliated (k11)
+               &quot;Chga&quot;,&quot;Calca&quot;,     # Neuroendocrine (k10)
+               &quot;Trpm5&quot;,&quot;Gng13&quot;,    # Tuft (k9)
+               &quot;Krt18&quot;,&quot;Sfn&quot;,      # Transitional (k3)
+               &quot;Hspa1a&quot;,&quot;Hspb1&quot;)   # Unknown (k7)
+gene_rankings &lt;- apply(-L,2,rank)
+gene_rankings[key_genes,]
+round(L[key_genes,],digits = 3)
+#           k1   k2   k3   k4   k5   k6   k7   k8   k9  k10  k11  k12
+# Krt5    2557 3263  666  108   17 2640  891 2890 2355 2382 2497 1200
+# Dapl1    557 3411  160   34  116 3267  584 2441 1195 2752 3058  912
+# Bpifa1   216    1   12  109 3157  101   79   23   75   43   21  295
+# Scgb1a1  349    4  894  371 2083   52  128    2  101   62   91  193
+# Krt13   3412 3317 3349 3378  205 2614 3408  317 2257 2420 2555 1949
+# Krt4    2064  616  846  578   39 2744 2398   18 2137 2242 2676 1692
+# Cdhr4   1823 1837 2004 1983 2070  146 2016 1716 2533 2563  784 2409
+# Cdh26   2167 1654 2130 2136 2334  149 2451 2945 2715 2778 3435 2111
+# Ccdc67  2778 1955 2851 3227 3038 1782 1255 2919 2944 2585  558 1317
+# Ccdc34   598 1264 2238 1347 1324  797 1000  985 1222 1471  114   41
+# Chga    3119 2418 2412 2449 3226 3016 1505 1855 3440   31 2955 2884
+# Calca   1741 1717 1460 2143 2147 2384 1487 1504 3349   28 2701 2003
+# Trpm5   2483 1827 1914 2221 2909 3169 2102 2168   91 3390 3035 2970
+# Gng13    945 1699 1780 2932 3108 2318 2245 1719    7 1355 1205 2283
+# Krt18    234   26    7  248 3100   47   74   22    8   13  301  320
+# Sfn      370  238    1   20    8  687  107  231 1855  587 1166  411
+# Hspa1a   313   40   82  298  808  751    1   49 1228 2550 1058 3035
+# Hspb1    184  156  328  207  247 2439    2   12 2471  711 1243 2544
+#            k1    k2    k3    k4    k5    k6    k7    k8    k9   k10   k11   k12
+# Krt5    0.000 0.000 0.250 1.462 2.963 0.000 0.050 0.000 0.000 0.000 0.000 0.084
+# Dapl1   0.140 0.000 1.139 2.200 1.480 0.000 0.172 0.000 0.130 0.000 0.000 0.188
+# Bpifa1  0.823 7.912 2.885 1.452 0.000 2.005 1.241 3.450 2.463 2.822 3.263 0.885
+# Scgb1a1 0.359 5.930 0.110 0.679 0.000 2.584 0.986 4.818 2.264 2.614 2.239 1.189
+# Krt13   0.000 0.000 0.000 0.000 1.150 0.000 0.000 0.894 0.000 0.000 0.000 0.001
+# Krt4    0.000 0.335 0.132 0.422 2.251 0.000 0.000 3.746 0.001 0.001 0.000 0.006
+# Cdhr4   0.000 0.002 0.000 0.000 0.000 1.701 0.000 0.000 0.000 0.000 0.493 0.000
+# Cdh26   0.000 0.009 0.000 0.000 0.000 1.692 0.000 0.000 0.000 0.000 0.000 0.000
+# Ccdc67  0.000 0.000 0.000 0.000 0.000 0.067 0.010 0.000 0.000 0.000 0.812 0.055
+# Ccdc34  0.117 0.044 0.000 0.047 0.063 0.559 0.034 0.152 0.119 0.093 2.092 1.938
+# Chga    0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 3.089 0.000 0.000
+# Calca   0.000 0.006 0.001 0.000 0.000 0.000 0.000 0.016 0.000 3.382 0.000 0.000
+# Trpm5   0.000 0.002 0.000 0.000 0.000 0.000 0.000 0.000 2.330 0.000 0.000 0.000
+# Gng13   0.014 0.007 0.000 0.000 0.000 0.001 0.000 0.000 4.227 0.125 0.196 0.000
+# Krt18   0.754 2.995 3.123 0.885 0.000 2.720 1.275 3.479 4.119 3.977 1.428 0.808
+# Sfn     0.330 0.885 4.066 2.380 3.503 0.654 1.067 1.212 0.010 0.700 0.211 0.622
+# Hspa1a  0.463 2.549 1.636 0.802 0.319 0.602 5.618 2.625 0.117 0.000 0.264 0.000
+# Hspb1   1.022 1.158 0.715 0.992 1.063 0.000 3.858 3.930 0.000 0.508 0.178 0.000</code></pre>
+<p>This is for k12:</p>
+<pre class="r"><code>top_cell_cycle &lt;- c(&quot;Cdk1&quot;,&quot;Ube2c&quot;,&quot;Top2a&quot;)
+round(L[top_cell_cycle,],digits = 3)
+#       k1    k2    k3    k4 k5 k6 k7 k8    k9 k10   k11   k12
+# Cdk1   0 0.003 0.000 0.005  0  0  0  0 0.000   0 0.173 1.678
+# Ube2c  0 0.000 0.013 0.000  0  0  0  0 0.000   0 0.000 2.861
+# Top2a  0 0.000 0.012 0.000  0  0  0  0 0.017   0 0.040 2.100</code></pre>
 </div>
 <div id="ebnmf-with-30-factors" class="section level2">
 <h2>EBNMF with 30 factors</h2>
@@ -1559,12 +1687,12 @@ celltypes &lt;- factor(celltypes,
                     c(&quot;Basal&quot;,&quot;Club&quot;,&quot;Club (hillock)&quot;,
                       &quot;Goblet&quot;,&quot;Ionocyte&quot;,&quot;Ciliated&quot;,
                       &quot;Tuft&quot;,&quot;Neuroendocrine&quot;,&quot;Proliferating&quot;))
-L &lt;- fl_k30$ldf$L
-L &lt;- scale_cols(L)
 F &lt;- fl_k30$ldf$F
+L &lt;- with(fl_k30$ldf,scale_cols(L,D))
 for (i in 1:30) {
   y &lt;- quantile(F[,i],0.999)
   F[,i] &lt;- pmin(1,F[,i]/y)
+  L[,i] &lt;- pmin(1,L[,i]*y)
 }
 colnames(L) &lt;- paste0(&quot;k&quot;,1:30)
 colnames(F) &lt;- paste0(&quot;k&quot;,1:30)
@@ -1665,6 +1793,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/37540a14cebe1ca1e3eb78e759944a70f678bcc5/docs/figure/montoro_plots.Rmd/another-structure-plot-k30-1.png" target="_blank">37540a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/45c4516dcc91de2c2b4fd16526a987053349dad6/docs/figure/montoro_plots.Rmd/another-structure-plot-k30-1.png" target="_blank">45c4516</a>
 </td>
 <td>
@@ -1681,7 +1820,6 @@ Peter Carbonetto
 <p>Note that factor 15 is more promminent in Tuft-1 and factor 17 is
 more prominent in Tuft-2:</p>
 <pre class="r"><code>F &lt;- fl_k30$ldf$F
-F &lt;- scale_cols(F)
 rows &lt;- which(meta_data$timepoint == &quot;Tp60&quot;)
 cat(&quot;k = 15:\n&quot;)
 tail(round(sort(tapply(F[rows,15],meta_data[rows,&quot;celltype&quot;],mean)),
@@ -1736,25 +1874,26 @@ Session information
 # [19] SQUAREM_2021.1      RColorBrewer_1.1-3  RcppParallel_5.1.10
 # [22] lifecycle_1.0.4     truncnorm_1.0-9     compiler_4.3.3     
 # [25] farver_2.1.2        stringr_1.5.1       git2r_0.33.0       
-# [28] progress_1.2.3      RhpcBLASctl_0.23-42 getPass_0.2-4      
-# [31] httpuv_1.6.14       htmltools_0.5.8.1   sass_0.4.10        
-# [34] yaml_2.3.10         lazyeval_0.2.2      plotly_4.11.0      
-# [37] crayon_1.5.3        tidyr_1.3.1         later_1.4.2        
-# [40] pillar_1.11.0       jquerylib_0.1.4     whisker_0.4.1      
-# [43] uwot_0.2.3          cachem_1.1.0        gtools_3.9.5       
-# [46] tidyselect_1.2.1    digest_0.6.37       Rtsne_0.17         
-# [49] stringi_1.8.7       reshape2_1.4.4      dplyr_1.1.4        
-# [52] purrr_1.0.4         ashr_2.2-66         labeling_0.4.3     
-# [55] rprojroot_2.0.4     fastmap_1.2.0       grid_4.3.3         
-# [58] cli_3.6.5           invgamma_1.2        magrittr_2.0.3     
-# [61] dichromat_2.0-0.1   withr_3.0.2         prettyunits_1.2.0  
-# [64] scales_1.4.0        promises_1.3.3      rmarkdown_2.29     
-# [67] httr_1.4.7          hms_1.1.3           pbapply_1.7-2      
-# [70] evaluate_1.0.4      knitr_1.50          viridisLite_0.4.2  
-# [73] irlba_2.3.5.1       rlang_1.1.6         Rcpp_1.1.0         
-# [76] mixsqp_0.3-54       glue_1.8.0          rstudioapi_0.15.0  
-# [79] jsonlite_2.0.0      plyr_1.8.9          R6_2.6.1           
-# [82] fs_1.6.6</code></pre>
+# [28] textshaping_0.3.7   progress_1.2.3      RhpcBLASctl_0.23-42
+# [31] getPass_0.2-4       httpuv_1.6.14       htmltools_0.5.8.1  
+# [34] sass_0.4.10         yaml_2.3.10         lazyeval_0.2.2     
+# [37] plotly_4.11.0       crayon_1.5.3        tidyr_1.3.1        
+# [40] later_1.4.2         pillar_1.11.0       jquerylib_0.1.4    
+# [43] whisker_0.4.1       uwot_0.2.3          cachem_1.1.0       
+# [46] gtools_3.9.5        tidyselect_1.2.1    digest_0.6.37      
+# [49] Rtsne_0.17          stringi_1.8.7       reshape2_1.4.4     
+# [52] dplyr_1.1.4         purrr_1.0.4         ashr_2.2-66        
+# [55] labeling_0.4.3      rprojroot_2.0.4     fastmap_1.2.0      
+# [58] grid_4.3.3          cli_3.6.5           invgamma_1.2       
+# [61] magrittr_2.0.3      dichromat_2.0-0.1   withr_3.0.2        
+# [64] prettyunits_1.2.0   scales_1.4.0        promises_1.3.3     
+# [67] rmarkdown_2.29      httr_1.4.7          ragg_1.4.0         
+# [70] hms_1.1.3           pbapply_1.7-2       evaluate_1.0.4     
+# [73] knitr_1.50          viridisLite_0.4.2   irlba_2.3.5.1      
+# [76] rlang_1.1.6         Rcpp_1.1.0          mixsqp_0.3-54      
+# [79] glue_1.8.0          rstudioapi_0.15.0   jsonlite_2.0.0     
+# [82] plyr_1.8.9          R6_2.6.1            systemfonts_1.2.3  
+# [85] fs_1.6.6</code></pre>
 </div>
 </div>
 </div>
