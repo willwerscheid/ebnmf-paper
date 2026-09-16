@@ -218,7 +218,7 @@ key_genes <- c("Krt5","Dapl1",     # Basal (k4, k5)
 			   "Ccdc67","Ccdc34",  # Ciliated (k11)
 			   "Chga","Calca",     # Neuroendocrine (k10)
 			   "Trpm5","Gng13",    # Tuft (k9)
-			   "Krt18","Sfn",      # Transitional (k3)
+			   "Krt18","Sfn",      # Transitional/differentiating (k3)
 			   "Hspa1a","Hspb1")   # Unknown (k7)
 gene_rankings <- apply(-L,2,rank)
 gene_rankings[key_genes,]
@@ -235,6 +235,9 @@ round(L[top_cell_cycle,],digits = 3)
 ```{r another-structure-plot-k12-ggsave, echo=FALSE}
 ggsave("montoro_structure_plot_k12_alldays.pdf",p,height = 2.85,width = 8)
 ```
+
+TO DO: Generate tables containing all the LFCs by gene, and their
+rankings.
 
 EBNMF with 30 factors
 ---------------------
