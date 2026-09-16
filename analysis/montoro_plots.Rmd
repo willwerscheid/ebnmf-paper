@@ -59,6 +59,13 @@ meta_data <- transform(meta_data,
 					   celltype  = factor(celltype))
 ```
 
+Number of cells and genes:
+
+```{r numbers}
+cat("Number of cells:",nrow(fl_k12$fl_ldf$F),"\n")
+cat("Number of genes:",nrow(fl_k12$fl_ldf$L),"\n")
+```
+
 EBNMF with 12 factors
 ---------------------
 
@@ -131,7 +138,7 @@ the higher-level structures in the Montoro et al data set:
 
 ```{r structure-plots-k12, fig.height=5.5, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-factors_to_plot <- c(7,4,5,11,8,2,6,9,10,3,12)
+factors_to_plot <- c(7,5,8,3,11,2,4,6,9,10,12)
 celltypes <- as.character(meta_data$celltype)
 celltypes[celltypes == "Club (hillock-associated)"] <- "Club"
 celltypes[celltypes == "Goblet.1"] <- "Goblet"
@@ -143,12 +150,10 @@ celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
 celltypes <- factor(celltypes,
                     c("Basal","Club","Goblet","Ionocyte","Ciliated",
 					  "Tuft","Neuroendocrine","Proliferating"))
-scale_cols <- function (A)
-  return(t(t(A) / apply(A,2,max)))
-L <- fl_k12$fl_ldf$L
-L <- scale_cols(L)
+scale_cols <- function (A, b)
+  return(t(t(A) * b))
 F <- fl_k12$fl_ldf$F
-F <- scale_cols(F)
+L <- with(fl_k12$fl_ldf,scale_cols(L,D))
 colnames(L) <- paste0("k",1:12)
 colnames(F) <- paste0("k",1:12)
 rows <- c(sample(which(celltypes == "Basal" &
@@ -184,7 +189,13 @@ p3 <- structure_plot(F[rows3,],grouping = celltypes[rows3],gap = 10,
 plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
 ```
 
-Note the number of cells per cell-type:
+Note the number of cells per cell type:
+
+```{r cell-type-table}
+table(meta_data$celltype)
+```
+
+And the number of cells per cell type at each time point:
 
 ```{r cell-type-numbers}
 table(meta_data$celltype,meta_data$timepoint)
@@ -195,7 +206,31 @@ Structure plot merging the three time points:
 ```{r another-structure-plot-k12, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide"}
 structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
                colors = factor_colors) +
-  labs(y = "membership",title = "0-60 days")
+  labs(y = "membership",fill = "factor",title = "0-60 days")
+```
+
+```{r key-genes-k12}
+key_genes <- c("Krt5","Dapl1",     # Basal (k3, k4, k5)
+               "Bpifa1","Scgb1a1", # Club (k2, k8)
+			   "Krt13","Krt4",     # "Hillock" (k5, k8)
+               "Cdhr4","Cdh26",    # Ciliated (k6)
+			   "Ccdc67","Ccdc34",  # Ciliated (k11)
+			   "Chga","Calca",     # Neuroendocrine (k10)
+			   "Trpm5","Gng13",    # Tuft (k9)
+			   "Hspa1a","Hspb1")   # Unknown (k7)
+gene_rankings <- apply(-L,2,rank)
+gene_rankings[key_genes,]
+round(L[key_genes,],digits = 3)
+```
+
+This is for k12:
+
+```{r cell-cycle-genes-k12}
+top_cell_cycle <- c("Cdk1","Ube2c","Top2a")
+round(L[top_cell_cycle,],digits = 3)
+```
+
+```{r another-structure-plot-k12-ggsave, echo=FALSE}
 ```
 
 EBNMF with 30 factors
@@ -255,12 +290,12 @@ celltypes <- factor(celltypes,
                     c("Basal","Club","Club (hillock)",
                       "Goblet","Ionocyte","Ciliated",
                       "Tuft","Neuroendocrine","Proliferating"))
-L <- fl_k30$ldf$L
-L <- scale_cols(L)
 F <- fl_k30$ldf$F
+L <- with(fl_k30$ldf,scale_cols(L,D))
 for (i in 1:30) {
   y <- quantile(F[,i],0.999)
   F[,i] <- pmin(1,F[,i]/y)
+  L[,i] <- pmin(1,L[,i]*y)
 }
 colnames(L) <- paste0("k",1:30)
 colnames(F) <- paste0("k",1:30)
@@ -309,7 +344,6 @@ prominent in Tuft-2:
 
 ```{r tuft}
 F <- fl_k30$ldf$F
-F <- scale_cols(F)
 rows <- which(meta_data$timepoint == "Tp60")
 cat("k = 15:\n")
 tail(round(sort(tapply(F[rows,15],meta_data[rows,"celltype"],mean)),
