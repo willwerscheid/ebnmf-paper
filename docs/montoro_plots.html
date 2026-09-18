@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-09-16
+<strong>Last updated:</strong> 2026-09-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree44ebb140d9c6c6923fc5bc200ebd3f60381cca4ftargetblank44ebb14a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree1be771b123263b8a78f05909932cd6d5ad7f0f56targetblank1be771ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/44ebb140d9c6c6923fc5bc200ebd3f60381cca4f" target="_blank">44ebb14</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/1be771b123263b8a78f05909932cd6d5ad7f0f56" target="_blank">1be771b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree44ebb140d9c6c6923fc5bc200ebd3f60381cca4ftargetblank44ebb14a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree1be771b123263b8a78f05909932cd6d5ad7f0f56targetblank1be771ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/44ebb140d9c6c6923fc5bc200ebd3f60381cca4f" target="_blank">44ebb14</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/1be771b123263b8a78f05909932cd6d5ad7f0f56" target="_blank">1be771b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -468,12 +468,16 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    analysis/.DS_Store
     Ignored:    analysis/lps_fail_cache/
+    Ignored:    data/SupTab7_Transition_Genes.csv~
     Ignored:    output/.DS_Store
     Ignored:    output/montoro_ebmf_fits.RData
 
 Untracked files:
     Untracked:  flash_greedy_init_noisy_F.txt
     Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  montoro_more_tsne_plots.png
+    Untracked:  montoro_structure_plot_k12_alldays.pdf
+    Untracked:  montoro_tsne_plot.pdf
     Untracked:  noisy_swimmer.mat
     Untracked:  noisy_swimmer_more.pdf
     Untracked:  scripts/svm.test.normgrey.gz
@@ -522,6 +526,74 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/1be771b123263b8a78f05909932cd6d5ad7f0f56/analysis/montoro_plots.Rmd" target="_blank">1be771b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-18
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/54f6e4203027f706166f8c5971fb057ac87ce212/analysis/montoro_plots.Rmd" target="_blank">54f6e42</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-18
+</td>
+<td>
+Added some t-sne plots to the montoro_plots analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0c1e012ec7021cdd835cd66fd22a67a801403b72/analysis/montoro_plots.Rmd" target="_blank">0c1e012</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Small edit to the montoro_plots analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/13b1b9a33beb25ce688861ee5655dd7ded3ba866/docs/montoro_plots.html" target="_blank">13b1b9a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-16
+</td>
+<td>
+Improved the k=12 structure plot.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1524,6 +1596,7 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>The log-fold change (LFC) estimates for selected genes:</p>
 <pre class="r"><code>key_genes &lt;- c(&quot;Krt5&quot;,&quot;Dapl1&quot;,     # Basal (k4, k5)
                &quot;Bpifa1&quot;,&quot;Scgb1a1&quot;, # Club (k2, k8)
                &quot;Krt13&quot;,&quot;Krt4&quot;,     # &quot;Hillock&quot; (k5, k8)
@@ -1531,7 +1604,7 @@ Peter Carbonetto
                &quot;Ccdc67&quot;,&quot;Ccdc34&quot;,  # Ciliated (k11)
                &quot;Chga&quot;,&quot;Calca&quot;,     # Neuroendocrine (k10)
                &quot;Trpm5&quot;,&quot;Gng13&quot;,    # Tuft (k9)
-               &quot;Krt18&quot;,&quot;Sfn&quot;,      # Transitional (k3)
+               &quot;Krt18&quot;,&quot;Sfn&quot;,      # Transitional/differentiating (k3)
                &quot;Hspa1a&quot;,&quot;Hspb1&quot;)   # Unknown (k7)
 gene_rankings &lt;- apply(-L,2,rank)
 gene_rankings[key_genes,]
@@ -1574,13 +1647,77 @@ round(L[key_genes,],digits = 3)
 # Sfn     0.330 0.885 4.066 2.380 3.503 0.654 1.067 1.212 0.010 0.700 0.211 0.622
 # Hspa1a  0.463 2.549 1.636 0.802 0.319 0.602 5.618 2.625 0.117 0.000 0.264 0.000
 # Hspb1   1.022 1.158 0.715 0.992 1.063 0.000 3.858 3.930 0.000 0.508 0.178 0.000</code></pre>
-<p>This is for k12:</p>
+<p>Factor 12 identifies a population of ploliferating cells and indeed
+some of the top genes include cell cycle genes:</p>
 <pre class="r"><code>top_cell_cycle &lt;- c(&quot;Cdk1&quot;,&quot;Ube2c&quot;,&quot;Top2a&quot;)
 round(L[top_cell_cycle,],digits = 3)
 #       k1    k2    k3    k4 k5 k6 k7 k8    k9 k10   k11   k12
 # Cdk1   0 0.003 0.000 0.005  0  0  0  0 0.000   0 0.173 1.678
 # Ube2c  0 0.000 0.013 0.000  0  0  0  0 0.000   0 0.000 2.861
 # Top2a  0 0.000 0.012 0.000  0  0  0  0 0.017   0 0.040 2.100</code></pre>
+<p>This plot replicates the <em>t</em>-SNE plot in Fig. 3a of the
+Montoro et al (2018) paper:</p>
+<pre class="r"><code>tsne &lt;- read.csv(&quot;data/41586_2018_393_MOESM6_ESM.csv.gz&quot;,
+                 stringsAsFactors = FALSE,header = TRUE)
+tsne &lt;- transform(tsne,
+                  cluster = factor(cluster),
+                  mouse   = factor(mouse),
+                  barcode = paste(barcode,1,sep = &quot;-&quot;))
+F &lt;- fl_k12$fl_ldf$F
+colnames(F) &lt;- paste0(&quot;k&quot;,1:12)
+ids1 &lt;- strsplit(rownames(F),&quot;_&quot;)
+ids1 &lt;- paste(sapply(ids1,&quot;[[&quot;,1),
+              sapply(ids1,&quot;[[&quot;,2),
+              sapply(ids1,&quot;[[&quot;,3),
+              sep = &quot;_&quot;)
+ids2 &lt;- paste(tsne$barcode,tsne$mouse,sep = &quot;_&quot;)
+ids  &lt;- unique(intersect(ids1,ids2))
+rows1 &lt;- match(ids,ids1)
+rows2 &lt;- match(ids,ids2)
+F &lt;- F[rows1,]
+tsne &lt;- tsne[rows2,]
+pdat &lt;- cbind(tsne,F)
+cluster_colors &lt;- c(&quot;royalblue&quot;,&quot;red&quot;,&quot;forestgreen&quot;,&quot;gold&quot;,
+                    &quot;darkmagenta&quot;,&quot;darkorange&quot;,&quot;peru&quot;,&quot;cornflowerblue&quot;)
+p1 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
+  geom_point(size = 0.35) +
+  scale_color_manual(values = cluster_colors) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;) +
+  theme_cowplot(font_size = 9)
+print(p1)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/tsne-plot-1.png" width="420" style="display: block; margin: auto;" /></p>
+<p>Compare some of the EBNMF factors to the <em>t</em>-SNE embedding
+from the Montoro et al (2018) paper:</p>
+<pre class="r"><code>p2 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k2)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;darkgreen&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 2&quot;) +
+  theme_cowplot(font_size = 9)
+p3 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k4)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;darkmagenta&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 4&quot;) +
+  theme_cowplot(font_size = 9)
+p4 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;darkviolet&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 5&quot;) +
+  theme_cowplot(font_size = 9)
+p5 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k6)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;red&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 6&quot;) +
+  theme_cowplot(font_size = 9)
+p6 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k8)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;green&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 8&quot;) +
+  theme_cowplot(font_size = 9)
+plot_grid(p1 + guides(color = &quot;none&quot;) + ggtitle(&quot;clusters&quot;),
+          p2,p3,p4,p5,p6,nrow = 2,ncol = 3)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/more-tsne-plots-1.png" width="720" style="display: block; margin: auto;" /></p>
+<p>TO DO: Generate a CSV containing all the (rescaled) LFCs by gene, and
+their rankings.</p>
 </div>
 <div id="ebnmf-with-30-factors" class="section level2">
 <h2>EBNMF with 30 factors</h2>
