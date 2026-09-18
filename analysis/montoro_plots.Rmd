@@ -210,6 +210,8 @@ p <- structure_plot(F,grouping = celltypes,gap = 10,topics = factors_to_plot,
 print(p)
 ```
 
+The log-fold change (LFC) estimates for selected genes:
+
 ```{r key-genes-k12}
 key_genes <- c("Krt5","Dapl1",     # Basal (k4, k5)
                "Bpifa1","Scgb1a1", # Club (k2, k8)
@@ -225,7 +227,8 @@ gene_rankings[key_genes,]
 round(L[key_genes,],digits = 3)
 ```
 
-This is for k12:
+Factor 12 identifies a population of ploliferating cells and indeed
+some of the top genes include cell cycle genes:
 
 ```{r cell-cycle-genes-k12}
 top_cell_cycle <- c("Cdk1","Ube2c","Top2a")
@@ -236,8 +239,72 @@ round(L[top_cell_cycle,],digits = 3)
 ggsave("montoro_structure_plot_k12_alldays.pdf",p,height = 2.85,width = 8)
 ```
 
-TO DO: Generate tables containing all the LFCs by gene, and their
-rankings.
+Compare EBNMF factors to the t-SNE embedding from the Montoro et al (2018)
+paper:
+
+```{r nmf-vs-tsne, fig.height=3, fig.width=4}
+tsne <- read.csv("data/41586_2018_393_MOESM6_ESM.csv.gz",
+                 stringsAsFactors = FALSE,header = TRUE)
+tsne <- transform(tsne,
+                  cluster = factor(cluster),
+				  mouse   = factor(mouse),
+				  barcode = paste(barcode,1,sep = "-"))
+F <- fl_k12$fl_ldf$F
+colnames(F) <- paste0("k",1:12)
+ids1 <- strsplit(rownames(F),"_")
+ids1 <- paste(sapply(ids1,"[[",1),
+              sapply(ids1,"[[",2),
+			  sapply(ids1,"[[",3),
+			  sep = "_")
+ids2 <- paste(tsne$barcode,tsne$mouse,sep = "_")
+ids  <- unique(intersect(ids1,ids2))
+rows1 <- match(ids,ids1)
+rows2 <- match(ids,ids2)
+F <- F[rows1,]
+tsne <- tsne[rows2,]
+pdat <- cbind(tsne,F)
+cluster_colors <- c("royalblue","red","forestgreen","gold",
+                    "darkmagenta","darkorange","peru","cornflowerblue")
+p1 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
+  geom_point(size = 0.35) +
+  scale_color_manual(values = cluster_colors) +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+print(p1)
+```
+
+```{r, fig.height=4, fig.width=6}
+p2 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k6)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "red") +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+p3 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k2)) +
+  geom_point(size = 0.35) +
+  scale_color_gradient(low = "lightgray",high = "forestgreen") +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+p4 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k4)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "darkmagenta") +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+p5 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "violet") +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+p6 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k8)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "limegreen") +
+  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  theme_cowplot(font_size = 9)
+plot_grid(p1 + guides(color = "none"),
+          p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
+```
+
+TO DO: Generate a CSV containing all the (rescaled) LFCs by gene, and
+their rankings.
 
 EBNMF with 30 factors
 ---------------------
