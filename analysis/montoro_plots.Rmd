@@ -308,6 +308,7 @@ plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
 
 ```{r tsne-plots-ggsave, echo=FALSE}
 ggsave("montoro_tsne_plot.pdf",p1,height = 2.75,width = 4)
+ggsave("montoro_tsne_plot_k2.pdf",p2,height = 2.25,width = 2.25)
 ggsave("montoro_more_tsne_plots.png",
        plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
                  p2,p3,p4,p5,p6,nrow = 2,ncol = 3),
