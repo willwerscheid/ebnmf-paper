@@ -239,10 +239,10 @@ round(L[top_cell_cycle,],digits = 3)
 ggsave("montoro_structure_plot_k12_alldays.pdf",p,height = 2.85,width = 8)
 ```
 
-Compare EBNMF factors to the t-SNE embedding from the Montoro et al (2018)
-paper:
+This plot replicates the *t*-SNE plot in Fig. 3a of the Montoro et al
+(2018) paper:
 
-```{r nmf-vs-tsne, fig.height=3, fig.width=4}
+```{r tsne-plot, fig.height=2.35, fig.width=3.5}
 tsne <- read.csv("data/41586_2018_393_MOESM6_ESM.csv.gz",
                  stringsAsFactors = FALSE,header = TRUE)
 tsne <- transform(tsne,
@@ -273,34 +273,45 @@ p1 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
 print(p1)
 ```
 
-```{r, fig.height=4, fig.width=6}
-p2 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k6)) +
+Compare some of the EBNMF factors to the *t*-SNE embedding from the
+Montoro et al (2018) paper:
+
+```{r more-tsne-plots, fig.height=4, fig.width=6}
+p2 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k2)) +
   geom_point(size = 0.35,show.legend = FALSE) +
-  scale_color_gradient(low = "lightgray",high = "red") +
-  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  scale_color_gradient(low = "lightgray",high = "darkgreen") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 2") +
   theme_cowplot(font_size = 9)
-p3 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k2)) +
-  geom_point(size = 0.35) +
-  scale_color_gradient(low = "lightgray",high = "forestgreen") +
-  labs(x = "t-SNE 1",y = "t-SNE 2") +
-  theme_cowplot(font_size = 9)
-p4 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k4)) +
+p3 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k4)) +
   geom_point(size = 0.35,show.legend = FALSE) +
   scale_color_gradient(low = "lightgray",high = "darkmagenta") +
-  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 4") +
   theme_cowplot(font_size = 9)
-p5 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
+p4 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
   geom_point(size = 0.35,show.legend = FALSE) +
-  scale_color_gradient(low = "lightgray",high = "violet") +
-  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  scale_color_gradient(low = "lightgray",high = "darkviolet") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 5") +
+  theme_cowplot(font_size = 9)
+p5 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k6)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "red") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 6") +
   theme_cowplot(font_size = 9)
 p6 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k8)) +
   geom_point(size = 0.35,show.legend = FALSE) +
-  scale_color_gradient(low = "lightgray",high = "limegreen") +
-  labs(x = "t-SNE 1",y = "t-SNE 2") +
+  scale_color_gradient(low = "lightgray",high = "green") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 8") +
   theme_cowplot(font_size = 9)
-plot_grid(p1 + guides(color = "none"),
+plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
           p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
+```
+
+```{r tsne-plots-ggsave, echo=FALSE}
+ggsave("montoro_tsne_plot.pdf",p1,height = 2.75,width = 4)
+ggsave("montoro_more_tsne_plots.png",
+       plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
+                 p2,p3,p4,p5,p6,nrow = 2,ncol = 3),
+	   height = 4,width = 6,dpi = 600)
 ```
 
 TO DO: Generate a CSV containing all the (rescaled) LFCs by gene, and
