@@ -78,7 +78,7 @@ residuals_plot <- function (baseline_exp, residual_sd) {
                      residual_sd = residual_sd)
   return(ggplot(pdat,aes(x = baseline_exp,y = residual_sd)) +
          geom_point(color = "black") +
-		 labs(x = "baseline expression",y = "residual s.d.") + 
+		 labs(x = "first factor",y = "residual s.d.") + 
          theme_cowplot(font_size = 10))
 }
 residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
@@ -98,39 +98,43 @@ factor_colors <- c(k1 = "black",k2 = "forestgreen",k3 = "royalblue",
                    k4 = "darkmagenta",k5 = "violet",k6 = "red",
 				   k7 = "lightgray",k8 = "limegreen",k9 = "cyan",
 				   k10 = "darkorange",k11 = "sienna",k12 = "gold")
-fitted_priors_plot <- function (ghat, colors) {
+fitted_priors_plot <- function (ghat, colors, hidden_factors = NULL) {
   K <- length(ghat)
   pdat <- data.frame(k     = 1:K,
                      pi    = sapply(ghat,function (x) x$pi[2]),
                      scale = sapply(ghat,function (x) x$scale[2]),
-					 color = colors)
+					 color = colors,
+					 hidden = FALSE)
+  pdat[hidden_factors,"hidden"] <- TRUE
   rows1 <- order(pdat$pi,decreasing = FALSE)
   rows2 <- order(pdat$scale,decreasing = FALSE)
   pdat1 <- pdat[rows1,]
   pdat2 <- pdat[rows2,]
   pdat1 <- transform(pdat1,k = factor(k,k))
   pdat2 <- transform(pdat2,k = factor(k,k))
-  p1 <- ggplot(pdat1,aes(x = pi,y = k,color = k)) +
+  p1 <- ggplot(pdat1,aes(x = pi,y = k,color = k,shape = hidden)) +
     geom_point() +
 	scale_color_manual(values = pdat1$color) +
+	scale_shape_manual(values = c(19,1)) +
 	labs(x = "prior probability") +
-	guides(color = "none") +
+	guides(color = "none",shape = "none") +
     theme_cowplot(font_size = 9)
-  p2 <- ggplot(pdat2,aes(x = scale,y = k,color = k)) +
+  p2 <- ggplot(pdat2,aes(x = scale,y = k,color = k,shape = hidden)) +
     geom_point() +
 	scale_color_manual(values = pdat2$color) + 
+	scale_shape_manual(values = c(19,1)) +
 	labs(x = "scale parameter") +
-	guides(color = "none") +
+	guides(color = "none",shape = "none") +
     theme_cowplot(font_size = 9)
   return(plot_grid(p1,p2,nrow = 1,ncol = 2))
  }
-fitted_priors_plot(fl_k12$L_ghat,unname(factor_colors))
+fitted_priors_plot(fl_k12$L_ghat,unname(factor_colors),hidden_factors = 1)
 ```
 
 The second two plots show the priors on the columns of ${\bf F}$.
 
 ```{r point-exp-priors-cells-k12, fig.height=1.75, fig.width=3.5}
-fitted_priors_plot(fl_k12$F_ghat,unname(factor_colors))
+fitted_priors_plot(fl_k12$F_ghat,unname(factor_colors),hidden_factors = 1)
 ```
 
 The non-negative matrix factorization with $K = 12$ factors identifies
@@ -227,7 +231,7 @@ gene_rankings[key_genes,]
 round(L[key_genes,],digits = 3)
 ```
 
-Factor 12 identifies a population of ploliferating cells and indeed
+Factor 12 identifies a population of proliferating cells and indeed
 some of the top genes include cell cycle genes:
 
 ```{r cell-cycle-genes-k12}
@@ -324,9 +328,6 @@ ggsave("montoro_more_tsne_plots.png",
 	   height = 4,width = 6,dpi = 600)
 ```
 
-TO DO: Generate a CSV containing all the (rescaled) LFCs by gene, and
-their rankings.
-
 EBNMF with 30 factors
 ---------------------
 
@@ -343,19 +344,23 @@ Plots summarizing the priors on the columns of ${\bf L}$:
 factor_colors <-
   c(k1 = "black",k2 = "darkblue",k3 = "forestgreen",k4 = "blue",
     k5 = "red",k6 = "gray",k7 = "black",k8 = "black",
-    k9 = "cornflowerblue",k10 = "limegreen",k11 = "black",k12 = "darkorange",
+    k9 = "cyan",k10 = "limegreen",k11 = "black",k12 = "darkorange",
     k13 = "black",k14 = "black",k15 = "dodgerblue",k16 = "darkmagenta",
     k17 = "royalblue",k18 = "salmon",k19 = "gold",k20 = "sienna",
     k21 = "black",k22 = "peru",k23 = "black",k24 = "magenta",
     k25 = "black",k26 = "black",k27 = "black",k28 = "black",
     k29 = "black",k30 = "black")
-fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors))
+celltype_factors_v1 <- c(6,16,10,9,2,4,3,18,5,17,15,12,22,20,24,19)
+celltype_factors <- c(9,16,10,2,4,3,18,5,17,15,12,22,20,24,19)
+fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors),
+                   hidden_factors = setdiff(1:30,celltype_factors))
 ```
 
 Plots summarizing the priors on the columns of ${\bf F}$:
 
 ```{r point-exp-priors-cells-k30, fig.height=3, fig.width=3.5}
-fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors))
+fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors),
+                   hidden_factors = setdiff(1:30,celltype_factors))
 ```
 
 Notice that the priors on ${\bf F}$ (which contains the memberships)
@@ -370,29 +375,24 @@ goblet and ionocyte.
 
 ```{r structure-plots-k30, fig.height=6, fig.width=7.5, message=FALSE, results="hide"}
 set.seed(1)
-celltype_factors <- c(6,16,10,9,2,4,3,22,20,18,5,24,17,15,19,12)
 celltypes <- meta_data$celltype
 celltypes <- as.character(meta_data$celltype)
 celltypes[celltypes == "Club (hillock-associated)"] <- "Club (hillock)"
 celltypes[celltypes == "Goblet.1"] <- "Goblet"
 celltypes[celltypes == "Goblet.2"] <- "Goblet"
 celltypes[celltypes == "Goblet.progenitor"] <- "Goblet"
-celltypes[celltypes == "Tuft.1"] <- "Tuft"
-celltypes[celltypes == "Tuft.2"] <- "Tuft"
-celltypes[celltypes == "Tuft.progenitor"] <- "Tuft"
+celltypes[celltypes == "Tuft.progenitor"] <- "Tuft.2"
 celltypes <- factor(celltypes,
                     c("Basal","Club","Club (hillock)",
                       "Goblet","Ionocyte","Ciliated",
-                      "Tuft","Neuroendocrine","Proliferating"))
+                      "Tuft.1","Tuft.2","Neuroendocrine","Proliferating"))
 F <- fl_k30$ldf$F
 L <- with(fl_k30$ldf,scale_cols(L,D))
-for (i in 1:30) {
-  y <- quantile(F[,i],0.999)
-  F[,i] <- pmin(1,F[,i]/y)
-  L[,i] <- pmin(1,L[,i]*y)
-}
 colnames(L) <- paste0("k",1:30)
 colnames(F) <- paste0("k",1:30)
+F[,9]  <- 2.5*F[,9]
+F[,10] <- 2.5*F[,10]
+F[,24] <- 1.5*F[,24]
 rows <- c(sample(which(celltypes == "Basal" &
                        meta_data$lineage == "Tom"),5000),
           sample(which(celltypes == "Club" &
@@ -427,25 +427,17 @@ plot_grid(p1,p2,p3,nrow = 3,ncol = 1,rel_heights = c(1,1,1.85))
 
 Structure plot merging the three time points:
 
-```{r another-structure-plot-k30, fig.height=3, fig.width=7.5, message=FALSE, results="hide"}
+```{r another-structure-plot-k30, fig.height=2.75, fig.width=7.5, message=FALSE, results="hide", warning=FALSE}
+set.seed(1)
 structure_plot(F,grouping = celltypes,gap = 8,topics = celltype_factors,
-               colors = factor_colors) +
-  labs(y = "membership",fill = "factor",title = "0-60 days")
+               colors = factor_colors,perplexity = 100) +
+  labs(y = "membership",fill = "factor",title = "0-60 days") +
+  ylim(0,1.75) 
 ```
 
-Note that factor 15 is more promminent in Tuft-1 and factor 17 is more
-prominent in Tuft-2:
+TO DO NEXT: 
 
-```{r tuft}
-F <- fl_k30$ldf$F
-rows <- which(meta_data$timepoint == "Tp60")
-cat("k = 15:\n")
-tail(round(sort(tapply(F[rows,15],meta_data[rows,"celltype"],mean)),
-           digits = 3),n = 3)
-cat("k = 17:\n")
-tail(round(sort(tapply(F[rows,17],meta_data[rows,"celltype"],mean)),
-           digits = 3),n = 3)
-```
++ Show the LFC estimates for selected ("key") genes and factors.
 
-TO DO: Generate tables containing top-ranked genes and "most
++ Generate tables containing top-ranked genes and "most
 distinctive" genes for each factor.
