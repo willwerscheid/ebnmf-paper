@@ -25,6 +25,7 @@ Load some R packages that I will use to study the results:
 
 ```{r load-pkgs, message=FALSE}
 library(ggplot2)
+library(ggrepel)
 library(cowplot)
 library(fastTopics)
 ```
@@ -72,17 +73,20 @@ EBNMF with 12 factors
 First is a plot of the first ("baseline") factor vs. the residual
 s.d. parameters:
 
-```{r residuals-k12, fig.height=2.15, fig.width=2.25}
-residuals_plot <- function (baseline_exp, residual_sd) {
-  pdat <- data.frame(baseline_exp = baseline_exp,
-                     residual_sd = residual_sd)
-  return(ggplot(pdat,aes(x = baseline_exp,y = residual_sd)) +
+```{r residuals-k12, fig.height=2.5, fig.width=2.65}
+residuals_plot <- function (baseline_exp, residual_sd, genes) {
+  pdat <- data.frame(gene         = genes,
+                     baseline_exp = baseline_exp,
+                     residual_sd  = residual_sd)
+  return(ggplot(pdat,aes(x = baseline_exp,y = residual_sd,label = gene)) +
          geom_point(color = "black") +
+		 geom_text_repel(color = "black",size = 2.5,max.overlaps = 35) +
 		 labs(x = "first factor",y = "residual s.d.") + 
          theme_cowplot(font_size = 10))
 }
 residuals_plot(baseline_exp = fl_k12$fl_ldf$L[,1],
-               residual_sd = fl_k12$residuals_sd)
+               residual_sd = fl_k12$residuals_sd,
+               genes = rownames(fl_k12$fl_ldf$L))
 ```
 
 These next plots summarize the priors on ${\bf F}$ and ${\bf L}$, and
@@ -333,9 +337,12 @@ EBNMF with 30 factors
 
 Plot first ("baseline") factor vs. the residual s.d. parameters:
 
-```{r residuals-k30, fig.height=2.15, fig.width=2.25}
-residuals_plot(baseline_exp = fl_k30$ldf$L[,1],
-               residual_sd = fl_k30$residuals_sd)
+```{r residuals-k30, fig.height=2.5, fig.width=2.65}
+p <- residuals_plot(baseline_exp = fl_k30$ldf$L[,1],
+                    residual_sd = fl_k30$residuals_sd,
+	        	    genes = rownames(fl_k30$ldf$L))
+print(p)
+ggsave("montoro_residuals_plot_k30.pdf",p,height = 3.5,width = 3.5)
 ```
 
 Plots summarizing the priors on the columns of ${\bf L}$:
@@ -466,5 +473,12 @@ round(L[top_cell_cycle,],digits = 3)
 
 TO DO NEXT: 
 
++ Create figure comparing residual parameters vs. factor 1 for the
+  k=30 fit.
+
++ Create figure comparing fitted priors for the k=30 fit.
+
++ Create a figure (PDF) of the Structure plot for the k=30 fit.
+
 + Generate tables containing top-ranked genes and "most
-  distinctive" genes for each factor.
+  distinctive" genes for each factor in the k=30 fit.
