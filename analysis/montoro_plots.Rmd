@@ -359,15 +359,21 @@ factor_colors <-
     k29 = "black",k30 = "black")
 celltype_factors_v1 <- c(6,16,10,9,2,4,3,18,5,17,15,12,22,20,24,19)
 celltype_factors <- c(9,16,10,2,4,3,18,5,17,15,12,22,20,24,19)
-fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors),
-                   hidden_factors = setdiff(1:30,celltype_factors))
+p1 <- fitted_priors_plot(fl_k30$L_ghat,unname(factor_colors),
+                         hidden_factors = setdiff(1:30,celltype_factors))
 ```
 
 Plots summarizing the priors on the columns of ${\bf F}$:
 
 ```{r point-exp-priors-cells-k30, fig.height=3, fig.width=3.5}
-fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors),
-                   hidden_factors = setdiff(1:30,celltype_factors))
+p2 <- fitted_priors_plot(fl_k30$F_ghat,unname(factor_colors),
+                         hidden_factors = setdiff(1:30,celltype_factors))
+```
+
+```{r point-exp-priors-k30-ggsave, echo=FALSE}
+ggsave("montoro_fitted_priors_k30.pdf",
+       plot_grid(p1,p2,nrow = 1,ncol = 2),
+	   height = 3.25,width = 7)
 ```
 
 Notice that the priors on ${\bf F}$ (which contains the memberships)
