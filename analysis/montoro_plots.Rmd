@@ -460,13 +460,16 @@ The log-fold change (LFC) estimates for selected genes:
 ```{r key-genes-k30}
 key_genes <- c("Krt5","Dapl1",     # Basal (k2, k4, k9)
                "Bpifa1","Scgb1a1", # Club (k3, k16, k10)
+			   "Krt18","Sfn",      # Transitional/differentiating (k2)
 			   "Krt13","Krt4",     # "Hillock" (k9, k10)
                "Cdhr4","Cdh26",    # Ciliated (k5)
 			   "Ccdc67","Ccdc34",  # Ciliated (k18)
 			   "Chga","Calca",     # Neuroendocrine (k12)
 			   "Trpm5","Gng13",    # Tuft (k15, k17)
-			   "Gp2",              # Goblet (k24)
-			   "Foxi1","Cftr")     # Ionocyte (k19)
+			   "Alox5ap","Gnb3",   # Tuft (k15, k17)
+			   "Gp2","Tff2",       # Goblet (k24)
+			   "Foxi1","Cftr",     # Ionocyte (k19)
+			   "Ces1f")
 gene_rankings <- apply(-L,2,rank)
 gene_rankings[key_genes,]
 round(L[key_genes,sort(celltype_factors)],digits = 3)
@@ -480,13 +483,6 @@ round(L[top_cell_cycle,],digits = 3)
 ```
 
 TO DO NEXT: 
-
-+ Create figure comparing residual parameters vs. factor 1 for the
-  k=30 fit.
-
-+ Create figure comparing fitted priors for the k=30 fit.
-
-+ Create a figure (PDF) of the Structure plot for the k=30 fit.
 
 + Generate tables containing top-ranked genes and "most
   distinctive" genes for each factor in the k=30 fit.
