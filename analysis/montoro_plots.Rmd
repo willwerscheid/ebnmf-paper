@@ -249,7 +249,7 @@ ggsave("montoro_structure_plot_k12_alldays.pdf",p,height = 2.85,width = 8)
 
 Save the LFC estimates from the $K = 12$ fit to a CSV file:
 
-```{r write-lfc}
+```{r write-lfc-k12}
 out <- as.data.frame(round(L,digits = 4))
 out <- cbind(data.frame(gene = rownames(out)),out)
 write.csv(format(out,scientific = FALSE,digits = 4),
@@ -482,7 +482,11 @@ top_cell_cycle <- c("Cdk1","Ube2c","Top2a")
 round(L[top_cell_cycle,],digits = 3)
 ```
 
-TO DO NEXT: 
+Save the LFC estimates from the $K = 30$ fit to a CSV file:
 
-+ Generate tables containing top-ranked genes and "most
-  distinctive" genes for each factor in the k=30 fit.
+```{r write-lfc-k30}
+out <- as.data.frame(round(L,digits = 4))
+out <- cbind(data.frame(gene = rownames(out)),out)
+write.csv(format(out,scientific = FALSE,digits = 4),
+          file = "montoro_lfc_k30.csv",quote = FALSE,row.names = FALSE)
+```
