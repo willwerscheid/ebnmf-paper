@@ -379,7 +379,25 @@ ggsave("montoro_fitted_priors_k30.pdf",
 ```
 
 Notice that the priors on ${\bf F}$ (which contains the memberships)
-is *a priori* much more sparse than ${\bf L}$
+is *a priori* much more sparse than ${\bf L}$.
+
+These are the prior probabilities for ${\bf F}$ shown in the plot
+above:
+
+```{r prior-probs-genes-k30}
+y <- sapply(fl_k30$F_ghat,function (x) x$pi[2])
+names(y) <- paste0("k",1:30)
+round(100*y,digits = 2)
+```
+
+These are the prior probabilities for ${\bf L}$ shown in the plot
+above:
+
+```{r prior-probs-cells-k30}
+y <- sapply(fl_k30$L_ghat,function (x) x$pi[2])
+names(y) <- paste0("k",1:30)
+round(100*y,digits = 2)
+```
 
 The $K = 30$ fit captures more fine-scale structure. The Structure
 plots show the primary cell-type-structure captured by the factors.
