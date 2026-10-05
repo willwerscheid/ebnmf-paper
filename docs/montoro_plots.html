@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-09-28
+<strong>Last updated:</strong> 2026-10-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree08c96bae88952f9e447034f5ee252b0c71ace7dftargetblank08c96baa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa5e475c7092176ff6e1ed7c1d13bde0113f86d2targetblankfa5e475a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/08c96bae88952f9e447034f5ee252b0c71ace7df" target="_blank">08c96ba</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa5e475c7092176ff6e1ed7c1d13bde0113f86d2" target="_blank">fa5e475</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree08c96bae88952f9e447034f5ee252b0c71ace7dftargetblank08c96baa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefa5e475c7092176ff6e1ed7c1d13bde0113f86d2targetblankfa5e475a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/08c96bae88952f9e447034f5ee252b0c71ace7df" target="_blank">08c96ba</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fa5e475c7092176ff6e1ed7c1d13bde0113f86d2" target="_blank">fa5e475</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -531,6 +531,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/fa5e475c7092176ff6e1ed7c1d13bde0113f86d2/analysis/montoro_plots.Rmd" target="_blank">fa5e475</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-10-05
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/6436d14f4b8b4da68118c55688c10bfe91e4331d/docs/montoro_plots.html" target="_blank">6436d14</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1501,6 +1535,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6436d14f4b8b4da68118c55688c10bfe91e4331d/docs/figure/montoro_plots.Rmd/residuals-k12-1.png" target="_blank">6436d14</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/08c96bae88952f9e447034f5ee252b0c71ace7df/docs/figure/montoro_plots.Rmd/residuals-k12-1.png" target="_blank">08c96ba</a>
 </td>
 <td>
@@ -2157,6 +2202,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/6436d14f4b8b4da68118c55688c10bfe91e4331d/docs/figure/montoro_plots.Rmd/residuals-k30-1.png" target="_blank">6436d14</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-09-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/08c96bae88952f9e447034f5ee252b0c71ace7df/docs/figure/montoro_plots.Rmd/residuals-k30-1.png" target="_blank">08c96ba</a>
 </td>
 <td>
@@ -2677,6 +2733,18 @@ round(L[top_cell_cycle,],digits = 3)
 out &lt;- cbind(data.frame(gene = rownames(out)),out)
 write.csv(format(out,scientific = FALSE,digits = 4),
           file = &quot;montoro_lfc_k30.csv&quot;,quote = FALSE,row.names = FALSE)</code></pre>
+<p>Factor 29 distinguishes goblet-1 and goblet-2 cells:</p>
+<pre class="r"><code>round(sort(tapply(fl_k30$ldf$F[,29],meta_data$celltype,median)),digits = 3)
+#                    Tuft.2                    Tuft.1           Tuft.progenitor 
+#                     0.000                     0.000                     0.000 
+#                  Ciliated Club (hillock-associated)                      Club 
+#                     0.000                     0.000                     0.000 
+#         Goblet.progenitor            Neuroendocrine                     Basal 
+#                     0.000                     0.000                     0.000 
+#                  Ionocyte             Proliferating                  Goblet.1 
+#                     0.000                     0.000                     0.000 
+#                  Goblet.2 
+#                     0.794</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
