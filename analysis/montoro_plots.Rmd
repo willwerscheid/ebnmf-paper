@@ -508,3 +508,9 @@ out <- cbind(data.frame(gene = rownames(out)),out)
 write.csv(format(out,scientific = FALSE,digits = 4),
           file = "montoro_lfc_k30.csv",quote = FALSE,row.names = FALSE)
 ```
+
+Factor 29 distinguishes goblet-1 and goblet-2 cells:
+
+```{r goblet-cells}
+round(sort(tapply(fl_k30$ldf$F[,29],meta_data$celltype,median)),digits = 3)
+```
