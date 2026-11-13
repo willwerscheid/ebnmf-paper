@@ -282,12 +282,12 @@ tsne <- tsne[rows2,]
 pdat <- cbind(tsne,F)
 cluster_colors <- c("royalblue","red","forestgreen","gold",
                     "darkmagenta","darkorange","peru","cornflowerblue")
-p1 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
+p_tsne <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
   geom_point(size = 0.35) +
   scale_color_manual(values = cluster_colors) +
   labs(x = "t-SNE 1",y = "t-SNE 2") +
   theme_cowplot(font_size = 9)
-print(p1)
+print(p_tsne)
 ```
 
 Compare some of the EBNMF factors to the *t*-SNE embedding from the
@@ -319,15 +319,15 @@ p6 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k8)) +
   scale_color_gradient(low = "lightgray",high = "green") +
   labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 8") +
   theme_cowplot(font_size = 9)
-plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
+plot_grid(p_tsne + guides(color = "none") + ggtitle("clusters"),
           p2,p3,p4,p5,p6,nrow = 2,ncol = 3)
 ```
 
 ```{r tsne-plots-ggsave, echo=FALSE}
-ggsave("montoro_tsne_plot.pdf",p1,height = 2.75,width = 4)
+ggsave("montoro_tsne_plot.pdf",p_tsne,height = 2.75,width = 4)
 ggsave("montoro_tsne_plot_k2.pdf",p2,height = 2.25,width = 2.25)
 ggsave("montoro_more_tsne_plots.png",
-       plot_grid(p1 + guides(color = "none") + ggtitle("clusters"),
+       plot_grid(p_tsne + guides(color = "none") + ggtitle("clusters"),
                  p2,p3,p4,p5,p6,nrow = 2,ncol = 3),
 	   height = 4,width = 6,dpi = 600)
 ```
@@ -513,4 +513,64 @@ Factor 29 distinguishes goblet-1 and goblet-2 cells:
 
 ```{r goblet-cells}
 round(sort(tapply(fl_k30$ldf$F[,29],meta_data$celltype,median)),digits = 3)
+```
+
+Compare some of the EBNMF factors to the *t*-SNE embedding from the
+Montoro et al (2018) paper:
+
+```{r yet-more-tsne-plots, fig.height=4, fig.width=6}
+tsne <- read.csv("data/41586_2018_393_MOESM6_ESM.csv.gz",
+                 stringsAsFactors = FALSE,header = TRUE)
+tsne <- transform(tsne,
+                  cluster = factor(cluster),
+                  mouse   = factor(mouse),
+                  barcode = paste(barcode,1,sep = "-"))
+F <- fl_k30$ldf$F
+colnames(F) <- paste0("k",1:30)
+ids1 <- strsplit(rownames(F),"_")
+ids1 <- paste(sapply(ids1,"[[",1),
+              sapply(ids1,"[[",2),
+              sapply(ids1,"[[",3),
+              sep = "_")
+ids2 <- paste(tsne$barcode,tsne$mouse,sep = "_")
+ids  <- unique(intersect(ids1,ids2))
+rows1 <- match(ids,ids1)
+rows2 <- match(ids,ids2)
+F <- F[rows1,]
+tsne <- tsne[rows2,]
+pdat <- cbind(tsne,F)
+p3 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k3)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "darkgreen") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 3") +
+  theme_cowplot(font_size = 9)
+p5 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "red") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 5") +
+  theme_cowplot(font_size = 9)
+p9 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k9)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "cyan") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 9") +
+  theme_cowplot(font_size = 9)
+p10 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k10)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "green") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 10") +
+  theme_cowplot(font_size = 9)
+p19 <- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k19)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = "lightgray",high = "gold") +
+  labs(x = "t-SNE 1",y = "t-SNE 2",title = "factor 19") +
+  theme_cowplot(font_size = 9)
+plot_grid(p_tsne + guides(color = "none") + ggtitle("clusters"),
+          p3,p5,p9,p10,p19,nrow = 2,ncol = 3)
+```
+
+```{r yet-more-tsne-plots-ggsave, echo=FALSE, eval=FALSE}
+ggsave("montoro_yet_more_tsne_plots.png",
+       plot_grid(p_tsne + guides(color = "none") + ggtitle("clusters"),
+                 p3,p5,p9,p10,p19,nrow = 2,ncol = 3),
+	   height = 4,width = 6,dpi = 600)
 ```
