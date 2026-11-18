@@ -354,7 +354,7 @@ factor_colors <-
     k9 = "cyan",k10 = "limegreen",k11 = "black",k12 = "darkorange",
     k13 = "black",k14 = "black",k15 = "dodgerblue",k16 = "darkmagenta",
     k17 = "blue",k18 = "salmon",k19 = "gold",k20 = "sienna",
-    k21 = "black",k22 = "peru",k23 = "black",k24 = "magenta",
+    k21 = "black",k22 = "peru",k23 = "yellow",k24 = "magenta",
     k25 = "black",k26 = "black",k27 = "black",k28 = "black",
     k29 = "black",k30 = "black")
 celltype_factors_v1 <- c(6,16,10,9,2,4,3,18,5,17,15,12,22,20,24,19)
@@ -574,3 +574,70 @@ ggsave("montoro_yet_more_tsne_plots.png",
                  p3,p5,p9,p10,p19,nrow = 2,ncol = 3),
 	   height = 4,width = 6,dpi = 600)
 ```
+
+### Notes about components not included in the Structure plots.
+
+A total of 15 components were included in the Structure plots. Here we
+attempt to interpret the other factors.
+
+```{r other-factors}
+other_factors <- c("k1","k6","k7","k8","k11","k13","k14","k21","k23",
+                   "k25","k26","k27","k28","k29","k30")
+```
+
+Component 1 captures "baseline expression".
+
+Components 6, 7, 11 and 13 seem to be capturing experimental effects
+(lineage, timepoint, mouse):
+
+```{r batch-factors, fig.height=3.5, fig.width=4}
+F <- fl_k30$ldf$F
+L <- fl_k30$ldf$L
+colnames(F) <- paste0("k",1:30)
+colnames(L) <- paste0("k",1:30)
+pdat <- cbind(meta_data,F)
+p1 <- ggplot(pdat,aes(x = mouse,y = k7)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(pdat,aes(x = timepoint,y = k11)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p3 <- ggplot(pdat,aes(x = lineage,y = k6)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p4 <- ggplot(pdat,aes(x = lineage,y = k13)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4)
+```
+
+Components 26-30 perhaps capture very small subsets of cells:
+
+```{r rare-factors}
+sum(F[,"k26"] > 0.5)
+sum(F[,"k27"] > 0.5)
+sum(F[,"k28"] > 0.5)
+sum(F[,"k29"] > 0.5)
+sum(F[,"k30"] > 0.5)
+```
+
+Component 23, which is rarely occuring, appears to be capturing
+macrophages or a gene program expressing *Cd74* and MHC genes (*B2m*,
+*H2-D1*, *etc*):
+
+```{r component-23}
+head(round(sort(L[,23],decreasing = TRUE),digits = 4),n = 10)
+```
+
+Finally, component 25, which is also rarely occuring, may be capturing
+interferon-stimulated genes, e.g., *Isg15*, *Isg20*, *Irf7*, *Ifit1*,
+*Ifit3* (see [Hamele et al 2022](https://doi.org/10.1128/jvi.00505-22)):
+
+```{r component-25}
+head(round(sort(L[,25],decreasing = TRUE),digits = 4),n = 20)
+```
+
+Components 8, 14 and 21 appear in many or most cell types and their
+interpretation is unclear. Component 14 in particular is picking a
+strong signal of mitochondrial genes.
+
