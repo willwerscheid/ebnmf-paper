@@ -621,6 +621,8 @@ sum(F[,"k29"] > 0.5)
 sum(F[,"k30"] > 0.5)
 ```
 
+Component 27 may be capturing dendritic cells.
+
 Component 23, which is rarely occuring, appears to be capturing
 macrophages or a gene program expressing *Cd74* and MHC genes (*B2m*,
 *H2-D1*, *etc*):
