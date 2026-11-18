@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-10-05
+<strong>Last updated:</strong> 2026-11-18
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -432,15 +432,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefcd51332e50adc461bee0947b6024a171d1f3226targetblankfcd5133a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree5dd4792690d2fe88d4408c00fa85353ba40b22c9targetblank5dd4792a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fcd51332e50adc461bee0947b6024a171d1f3226" target="_blank">fcd5133</a>
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/5dd4792690d2fe88d4408c00fa85353ba40b22c9" target="_blank">5dd4792</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertreefcd51332e50adc461bee0947b6024a171d1f3226targetblankfcd5133a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomwillwerscheidebnmfpapertree5dd4792690d2fe88d4408c00fa85353ba40b22c9targetblank5dd4792a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -450,7 +450,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/willwerscheid/ebnmf-paper/tree/fcd51332e50adc461bee0947b6024a171d1f3226" target="_blank">fcd5133</a>.
+<a href="https://github.com/willwerscheid/ebnmf-paper/tree/5dd4792690d2fe88d4408c00fa85353ba40b22c9" target="_blank">5dd4792</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -475,6 +475,15 @@ Ignored files:
 Untracked files:
     Untracked:  flash_greedy_init_noisy_F.txt
     Untracked:  flash_greedy_init_noisy_L.txt
+    Untracked:  montoro_fitted_priors_k30.pdf
+    Untracked:  montoro_lfc_k12.csv
+    Untracked:  montoro_lfc_k30.csv
+    Untracked:  montoro_more_tsne_plots.png
+    Untracked:  montoro_residuals_plot_k30.pdf
+    Untracked:  montoro_structure_plot_k12_alldays.pdf
+    Untracked:  montoro_structure_plot_k30_alldays.pdf
+    Untracked:  montoro_tsne_plot.pdf
+    Untracked:  montoro_tsne_plot_k2.pdf
     Untracked:  noisy_swimmer.mat
     Untracked:  scripts/svm.test.normgrey.gz
     Untracked:  scripts/svm.train.normgrey.gz
@@ -522,6 +531,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/5dd4792690d2fe88d4408c00fa85353ba40b22c9/analysis/montoro_plots.Rmd" target="_blank">5dd4792</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-11-18
+</td>
+<td>
+wflow_publish("analysis/montoro_plots.Rmd", verbose = T, view = F)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/ca1d2160c2cfb36a42cafe39ac17960c75848156/analysis/montoro_plots.Rmd" target="_blank">ca1d216</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-11-13
+</td>
+<td>
+Added tsne plots for the k=30 ebnmf fit.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/willwerscheid/ebnmf-paper/0309444e4809bbd0affa335d94732c313f47a04e/docs/montoro_plots.html" target="_blank">0309444</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-10-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1543,6 +1603,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0309444e4809bbd0affa335d94732c313f47a04e/docs/figure/montoro_plots.Rmd/residuals-k12-1.png" target="_blank">0309444</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-10-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/fcd51332e50adc461bee0947b6024a171d1f3226/docs/figure/montoro_plots.Rmd/residuals-k12-1.png" target="_blank">fcd5133</a>
 </td>
 <td>
@@ -2075,12 +2146,12 @@ tsne &lt;- tsne[rows2,]
 pdat &lt;- cbind(tsne,F)
 cluster_colors &lt;- c(&quot;royalblue&quot;,&quot;red&quot;,&quot;forestgreen&quot;,&quot;gold&quot;,
                     &quot;darkmagenta&quot;,&quot;darkorange&quot;,&quot;peru&quot;,&quot;cornflowerblue&quot;)
-p1 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
+p_tsne &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = cluster)) +
   geom_point(size = 0.35) +
   scale_color_manual(values = cluster_colors) +
   labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;) +
   theme_cowplot(font_size = 9)
-print(p1)</code></pre>
+print(p_tsne)</code></pre>
 <p><img src="figure/montoro_plots.Rmd/tsne-plot-1.png" width="420" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-tsne-plot-1">
@@ -2146,7 +2217,7 @@ p6 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k8)) +
   scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;green&quot;) +
   labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 8&quot;) +
   theme_cowplot(font_size = 9)
-plot_grid(p1 + guides(color = &quot;none&quot;) + ggtitle(&quot;clusters&quot;),
+plot_grid(p_tsne + guides(color = &quot;none&quot;) + ggtitle(&quot;clusters&quot;),
           p2,p3,p4,p5,p6,nrow = 2,ncol = 3)</code></pre>
 <p><img src="figure/montoro_plots.Rmd/more-tsne-plots-1.png" width="720" style="display: block; margin: auto;" /></p>
 <p>
@@ -2219,6 +2290,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/willwerscheid/ebnmf-paper/blob/0309444e4809bbd0affa335d94732c313f47a04e/docs/figure/montoro_plots.Rmd/residuals-k30-1.png" target="_blank">0309444</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-10-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/willwerscheid/ebnmf-paper/blob/fcd51332e50adc461bee0947b6024a171d1f3226/docs/figure/montoro_plots.Rmd/residuals-k30-1.png" target="_blank">fcd5133</a>
@@ -2300,7 +2382,7 @@ class="math inline">\({\bf L}\)</span>:</p>
     k9 = &quot;cyan&quot;,k10 = &quot;limegreen&quot;,k11 = &quot;black&quot;,k12 = &quot;darkorange&quot;,
     k13 = &quot;black&quot;,k14 = &quot;black&quot;,k15 = &quot;dodgerblue&quot;,k16 = &quot;darkmagenta&quot;,
     k17 = &quot;blue&quot;,k18 = &quot;salmon&quot;,k19 = &quot;gold&quot;,k20 = &quot;sienna&quot;,
-    k21 = &quot;black&quot;,k22 = &quot;peru&quot;,k23 = &quot;black&quot;,k24 = &quot;magenta&quot;,
+    k21 = &quot;black&quot;,k22 = &quot;peru&quot;,k23 = &quot;yellow&quot;,k24 = &quot;magenta&quot;,
     k25 = &quot;black&quot;,k26 = &quot;black&quot;,k27 = &quot;black&quot;,k28 = &quot;black&quot;,
     k29 = &quot;black&quot;,k30 = &quot;black&quot;)
 celltype_factors_v1 &lt;- c(6,16,10,9,2,4,3,18,5,17,15,12,22,20,24,19)
@@ -2775,6 +2857,118 @@ write.csv(format(out,scientific = FALSE,digits = 4),
 #                     0.000                     0.000                     0.000 
 #                  Goblet.2 
 #                     0.794</code></pre>
+<p>Compare some of the EBNMF factors to the <em>t</em>-SNE embedding
+from the Montoro et al (2018) paper:</p>
+<pre class="r"><code>tsne &lt;- read.csv(&quot;data/41586_2018_393_MOESM6_ESM.csv.gz&quot;,
+                 stringsAsFactors = FALSE,header = TRUE)
+tsne &lt;- transform(tsne,
+                  cluster = factor(cluster),
+                  mouse   = factor(mouse),
+                  barcode = paste(barcode,1,sep = &quot;-&quot;))
+F &lt;- fl_k30$ldf$F
+colnames(F) &lt;- paste0(&quot;k&quot;,1:30)
+ids1 &lt;- strsplit(rownames(F),&quot;_&quot;)
+ids1 &lt;- paste(sapply(ids1,&quot;[[&quot;,1),
+              sapply(ids1,&quot;[[&quot;,2),
+              sapply(ids1,&quot;[[&quot;,3),
+              sep = &quot;_&quot;)
+ids2 &lt;- paste(tsne$barcode,tsne$mouse,sep = &quot;_&quot;)
+ids  &lt;- unique(intersect(ids1,ids2))
+rows1 &lt;- match(ids,ids1)
+rows2 &lt;- match(ids,ids2)
+F &lt;- F[rows1,]
+tsne &lt;- tsne[rows2,]
+pdat &lt;- cbind(tsne,F)
+p3 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k3)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;darkgreen&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 3&quot;) +
+  theme_cowplot(font_size = 9)
+p5 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k5)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;red&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 5&quot;) +
+  theme_cowplot(font_size = 9)
+p9 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k9)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;cyan&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 9&quot;) +
+  theme_cowplot(font_size = 9)
+p10 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k10)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;green&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 10&quot;) +
+  theme_cowplot(font_size = 9)
+p19 &lt;- ggplot(pdat,aes(x = tSNE_1,y = tSNE_2,color = k19)) +
+  geom_point(size = 0.35,show.legend = FALSE) +
+  scale_color_gradient(low = &quot;lightgray&quot;,high = &quot;gold&quot;) +
+  labs(x = &quot;t-SNE 1&quot;,y = &quot;t-SNE 2&quot;,title = &quot;factor 19&quot;) +
+  theme_cowplot(font_size = 9)
+plot_grid(p_tsne + guides(color = &quot;none&quot;) + ggtitle(&quot;clusters&quot;),
+          p3,p5,p9,p10,p19,nrow = 2,ncol = 3)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/yet-more-tsne-plots-1.png" width="720" style="display: block; margin: auto;" /></p>
+<div id="notes-about-components-not-included-in-the-structure-plots."
+class="section level3">
+<h3>Notes about components not included in the Structure plots.</h3>
+<p>A total of 15 components were included in the Structure plots. Here
+we attempt to interpret the other factors.</p>
+<pre class="r"><code>other_factors &lt;- c(&quot;k1&quot;,&quot;k6&quot;,&quot;k7&quot;,&quot;k8&quot;,&quot;k11&quot;,&quot;k13&quot;,&quot;k14&quot;,&quot;k21&quot;,&quot;k23&quot;,
+                   &quot;k25&quot;,&quot;k26&quot;,&quot;k27&quot;,&quot;k28&quot;,&quot;k29&quot;,&quot;k30&quot;)</code></pre>
+<p>Component 1 captures “baseline expression”.</p>
+<p>Components 6, 7, 11 and 13 seem to be capturing experimental effects
+(lineage, timepoint, mouse):</p>
+<pre class="r"><code>F &lt;- fl_k30$ldf$F
+L &lt;- fl_k30$ldf$L
+colnames(F) &lt;- paste0(&quot;k&quot;,1:30)
+colnames(L) &lt;- paste0(&quot;k&quot;,1:30)
+pdat &lt;- cbind(meta_data,F)
+p1 &lt;- ggplot(pdat,aes(x = mouse,y = k7)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p2 &lt;- ggplot(pdat,aes(x = timepoint,y = k11)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p3 &lt;- ggplot(pdat,aes(x = lineage,y = k6)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+p4 &lt;- ggplot(pdat,aes(x = lineage,y = k13)) +
+  geom_boxplot(width = 0.5) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4)</code></pre>
+<p><img src="figure/montoro_plots.Rmd/batch-factors-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Components 26-30 perhaps capture very small subsets of cells:</p>
+<pre class="r"><code>sum(F[,&quot;k26&quot;] &gt; 0.5)
+sum(F[,&quot;k27&quot;] &gt; 0.5)
+sum(F[,&quot;k28&quot;] &gt; 0.5)
+sum(F[,&quot;k29&quot;] &gt; 0.5)
+sum(F[,&quot;k30&quot;] &gt; 0.5)
+# [1] 7
+# [1] 53
+# [1] 7
+# [1] 6
+# [1] 5</code></pre>
+<p>Component 23, which is rarely occuring, appears to be capturing
+macrophages or a gene program expressing <em>Cd74</em> and MHC genes
+(<em>B2m</em>, <em>H2-D1</em>, <em>etc</em>):</p>
+<pre class="r"><code>head(round(sort(L[,23],decreasing = TRUE),digits = 4),n = 10)
+#     Cd74      B2m    H2-K1    H2-D1  Scgb1a1   H2-Ab1 AW112010    H2-Q7 
+#   1.0000   0.7270   0.5082   0.4033   0.3780   0.2971   0.2532   0.2504 
+#    H2-Aa     Xist 
+#   0.2379   0.2350</code></pre>
+<p>Finally, component 25, which is also rarely occuring, may be
+capturing interferon-stimulated genes, e.g., <em>Isg15</em>,
+<em>Isg20</em>, <em>Irf7</em>, <em>Ifit1</em>, <em>Ifit3</em> (see <a
+href="https://doi.org/10.1128/jvi.00505-22">Hamele et al 2022</a>):</p>
+<pre class="r"><code>head(round(sort(L[,25],decreasing = TRUE),digits = 4),n = 20)
+#    Ifit3    Ifit1    Isg15   Ifitm3    Oasl2    Usp18     Irf7      B2m 
+#   1.0000   0.7140   0.6760   0.4897   0.3556   0.3470   0.3440   0.3218 
+#     Rtp4     Ly6a    Rsad2   Ifit3b  Scgb1a1     Bst2    Iigp1 AW112010 
+#   0.3045   0.2806   0.2516   0.2423   0.2275   0.2217   0.2055   0.2012 
+#     Ly6e     Gbp2   Lgals9    H2-D1 
+#   0.2011   0.1901   0.1834   0.1827</code></pre>
+<p>Components 8, 14 and 21 appear in many or most cell types and their
+interpretation is unclear. Component 14 in particular is picking a
+strong signal of mitochondrial genes.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2807,12 +3001,12 @@ Session information
 # 
 # loaded via a namespace (and not attached):
 #  [1] gtable_0.3.6        xfun_0.52           bslib_0.9.0        
-#  [4] htmlwidgets_1.6.4   processx_3.8.3      lattice_0.22-5     
-#  [7] callr_3.7.5         quadprog_1.5-8      vctrs_0.6.5        
-# [10] tools_4.3.3         ps_1.7.6            generics_0.1.4     
+#  [4] htmlwidgets_1.6.4   processx_3.8.6      lattice_0.22-5     
+#  [7] callr_3.8.0         quadprog_1.5-8      vctrs_0.6.5        
+# [10] tools_4.3.3         ps_1.9.1            generics_0.1.4     
 # [13] parallel_4.3.3      tibble_3.3.0        pkgconfig_2.0.3    
 # [16] Matrix_1.6-5        data.table_1.17.6   SQUAREM_2021.1     
-# [19] RColorBrewer_1.1-3  RcppParallel_5.1.10 lifecycle_1.0.4    
+# [19] RColorBrewer_1.1-3  RcppParallel_5.1.10 lifecycle_1.0.5    
 # [22] truncnorm_1.0-9     compiler_4.3.3      farver_2.1.2       
 # [25] stringr_1.5.1       git2r_0.33.0        textshaping_0.3.7  
 # [28] progress_1.2.3      RhpcBLASctl_0.23-42 getPass_0.2-4      
@@ -2824,7 +3018,7 @@ Session information
 # [46] tidyselect_1.2.1    digest_0.6.37       Rtsne_0.17         
 # [49] stringi_1.8.7       reshape2_1.4.4      dplyr_1.1.4        
 # [52] purrr_1.0.4         ashr_2.2-66         labeling_0.4.3     
-# [55] rprojroot_2.0.4     fastmap_1.2.0       grid_4.3.3         
+# [55] rprojroot_2.1.1     fastmap_1.2.0       grid_4.3.3         
 # [58] cli_3.6.5           invgamma_1.2        magrittr_2.0.3     
 # [61] dichromat_2.0-0.1   withr_3.0.2         prettyunits_1.2.0  
 # [64] scales_1.4.0        promises_1.3.3      rmarkdown_2.29     
@@ -2834,6 +3028,7 @@ Session information
 # [76] Rcpp_1.1.0          mixsqp_0.3-54       glue_1.8.0         
 # [79] rstudioapi_0.15.0   jsonlite_2.0.0      plyr_1.8.9         
 # [82] R6_2.6.1            systemfonts_1.2.3   fs_1.6.6</code></pre>
+</div>
 </div>
 </div>
 </div>
